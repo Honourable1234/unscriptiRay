@@ -17,14 +17,22 @@ export default async function Layout(props: {
   return (
     <BaseTemplate
       leftNav={(
-        <li>
-          <Link
-            href="/"
-            className="border-none text-gray-700 hover:text-gray-900"
-          >
-            {t('home_link')}
-          </Link>
-        </li>
+        <div className="flex gap-5">
+          <li>
+            <Link
+              href="/"
+              className="border-none text-gray-700 hover:text-gray-900"
+            >
+              {t('home_link')}
+            </Link>
+          </li>
+          <li>
+            <Link href="/sign-in" className="border-none text-gray-700 hover:text-gray-900">
+              Sign in
+            </Link>
+          </li>
+        </div>
+
       )}
       rightNav={(
         <li>
