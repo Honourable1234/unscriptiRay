@@ -64,7 +64,9 @@ export default async function RootLayout(props: {
       <body className="font-poppins">
         <NextIntlClientProvider>
           <PostHogProvider>
-            {props.children}
+            <div className="mx-auto max-w-screen-2xl">
+              {props.children}
+            </div>
           </PostHogProvider>
         </NextIntlClientProvider>
       </body>
