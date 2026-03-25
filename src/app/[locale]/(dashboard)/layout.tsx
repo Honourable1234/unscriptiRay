@@ -8,5 +8,9 @@ export default async function Layout(props: {
   const { locale } = await props.params;
   setRequestLocale(locale);
 
-  return <DashboardTemplate>{props.children}</DashboardTemplate>;
+  return (
+    <DashboardTemplate isAuthenticated={true} isPremium={false}>
+      {props.children}
+    </DashboardTemplate>
+  );
 }

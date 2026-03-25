@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, UpgradeIcon } from '@/components/icons';
 import { Link } from '@/libs/I18nNavigation';
+import { Button } from './Button';
 
 type NavItem = {
   label: string;
@@ -19,7 +20,7 @@ const navItems: NavItem[] = [
   { label: 'Feed', href: '/feed', icon: <FeedIcon /> },
 ];
 
-export const SideBar = () => {
+export const SideBar = (props: { isAuthenticated?: boolean; isPremium?: boolean }) => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -85,10 +86,18 @@ export const SideBar = () => {
           </nav>
         </div>
 
-        <button className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}>
-          <UpgradeIcon />
-          {isOpen && <span>Upgrade</span>}
-        </button>
+        {!props.isPremium && (
+          props.isAuthenticated
+            ? (
+                <button className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}>
+                  <UpgradeIcon />
+                  {isOpen && <span>Upgrade</span>}
+                </button>
+              )
+            : (
+                <Button text="signIn" className="border-primary-100 text-primary-100" />
+              )
+        )}
       </aside>
     </>
   );

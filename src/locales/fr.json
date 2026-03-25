@@ -1,17 +1,4 @@
 {
-  "RootLayout": {
-    "home_link": "Accueil"
-  },
-  "BaseTemplate": {
-    "description": "",
-    "footer_text": "© {year} {name}.",
-    "main_navigation_label": "Navigation principale"
-  },
-  "Index": {
-    "meta_title": "Accueil",
-    "meta_description": "",
-    "heading": "Bienvenue"
-  },
   "LocaleSwitcher": {
     "change_language": "Changer de langue"
   }

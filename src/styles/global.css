@@ -12,6 +12,7 @@
 
   --color-white-75: #ababaf;
   --color-white-25: #50515a;
+  --color-white-50: #74757c;
 
   --color-primary-100: #3977da;
   --color-primary-200: #2472fc;
@@ -32,5 +33,14 @@
 @layer base {
   body {
     animation: fadeIn 0.5s ease-in-out;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }
