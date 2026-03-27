@@ -1,8 +1,7 @@
-import { CharacterCard } from '@/components/explore/CharacterCard';
+import { CharacterGrid } from '@/components/explore/CharacterGrid';
 import { FilterDropdown } from '@/components/explore/FilterDropdown';
 import { SearchBar } from '@/components/explore/SearchBar';
 import { TagFilter } from '@/components/explore/TagFilter';
-// import { Env } from '@/libs/Env';
 import { characters } from '@/data/characters';
 
 export default function ExplorePage() {
@@ -24,11 +23,7 @@ export default function ExplorePage() {
         <TagFilter />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {characters.slice(0, 10).map(character => (
-          <CharacterCard key={character.id} character={character} />
-        ))}
-      </div>
+      <CharacterGrid characters={characters.slice(0, 16)} />
     </div>
   );
 }

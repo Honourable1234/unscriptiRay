@@ -531,6 +531,222 @@ export const FilterIcon = () => (
     />
   </svg>
 );
+export const CloseIcon = () => (
+  <svg width={16} height={16} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 4L4 12M4 4L12 12" stroke="white" strokeWidth={2} strokeLinecap="round" />
+  </svg>
+);
+
+export const ChevronLeftIcon = () => (
+  <svg
+    width={49}
+    height={65}
+    viewBox="0 0 49 65"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_d_263_2515)">
+      <path
+        d="M35.0725 10.0725C33.6425 8.6425 31.3325 8.6425 29.9025 10.0725L13.0725 26.9025C11.6425 28.3325 11.6425 30.6425 13.0725 32.0725L29.9025 48.9025C31.3325 50.3325 33.6425 50.3325 35.0725 48.9025C36.5025 47.4725 36.5025 45.1625 35.0725 43.7325L20.8458 29.4692L35.0725 15.2425C36.5025 13.8125 36.4658 11.4658 35.0725 10.0725V10.0725Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_263_2515"
+        x={0}
+        y={0}
+        width="48.145"
+        height="64.9751"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity={0} result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dy={3} />
+        <feGaussianBlur stdDeviation={6} />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_263_2515"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_263_2515"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+);
+
+export const ChevronRightIcon = () => (
+  <svg
+    width={49}
+    height={65}
+    viewBox="0 0 49 65"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_d_263_3240)">
+      <path
+        d="M13.0725 10.0771C11.6425 11.5071 11.6425 13.8171 13.0725 15.2471L27.2992 29.4738L13.0725 43.7005C11.6425 45.1305 11.6425 47.4405 13.0725 48.8705C14.5025 50.3005 16.8125 50.3005 18.2425 48.8705L35.0725 32.0405C36.5025 30.6105 36.5025 28.3005 35.0725 26.8705L18.2425 10.0405C16.8492 8.64713 14.5025 8.64713 13.0725 10.0771Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_263_3240"
+        x={0}
+        y={0}
+        width="48.145"
+        height="64.9429"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity={0} result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dy={3} />
+        <feGaussianBlur stdDeviation={6} />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_263_3240"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_263_3240"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+);
+
+export const PictureIcon = () => (
+  <svg
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M15 22.75H9C3.57 22.75 1.25 20.43 1.25 15V9C1.25 3.57 3.57 1.25 9 1.25H15C20.43 1.25 22.75 3.57 22.75 9V15C22.75 20.43 20.43 22.75 15 22.75ZM9 2.75C4.39 2.75 2.75 4.39 2.75 9V15C2.75 19.61 4.39 21.25 9 21.25H15C19.61 21.25 21.25 19.61 21.25 15V9C21.25 4.39 19.61 2.75 15 2.75H9Z"
+      fill="#ABABAF"
+    />
+    <path
+      d="M9 10.75C7.48 10.75 6.25 9.52 6.25 8C6.25 6.48 7.48 5.25 9 5.25C10.52 5.25 11.75 6.48 11.75 8C11.75 9.52 10.52 10.75 9 10.75ZM9 6.75C8.31 6.75 7.75 7.31 7.75 8C7.75 8.69 8.31 9.25 9 9.25C9.69 9.25 10.25 8.69 10.25 8C10.25 7.31 9.69 6.75 9 6.75Z"
+      fill="#ABABAF"
+    />
+    <path
+      d="M2.67002 19.7001C2.43002 19.7001 2.19002 19.5801 2.05002 19.3701C1.82002 19.0301 1.91002 18.5601 2.26002 18.3301L7.19002 15.0201C8.27002 14.2901 9.76002 14.3801 10.74 15.2101L11.07 15.5001C11.57 15.9301 12.42 15.9301 12.91 15.5001L17.07 11.9301C18.13 11.0201 19.8 11.0201 20.87 11.9301L22.5 13.3301C22.81 13.6001 22.85 14.0701 22.58 14.3901C22.31 14.7001 21.84 14.7401 21.52 14.4701L19.89 13.0701C19.39 12.6401 18.54 12.6401 18.04 13.0701L13.88 16.6401C12.82 17.5501 11.15 17.5501 10.08 16.6401L9.75002 16.3501C9.29002 15.9601 8.53002 15.9201 8.02002 16.2701L3.09002 19.5801C2.96002 19.6601 2.81002 19.7001 2.67002 19.7001Z"
+      fill="#ABABAF"
+    />
+  </svg>
+
+);
+export const VideoIcon = () => (
+  <svg
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M16.2969 15.5383C16.3778 17.3704 14.8992 18.9196 12.9946 18.9975C12.8543 19.0034 6.01531 18.9896 6.01531 18.9896C4.11996 19.1335 2.46115 17.7715 2.31165 15.9463C2.30039 15.8103 2.30346 8.47219 2.30346 8.47219C2.21949 6.63815 3.69604 5.08499 5.60163 5.00418C5.74396 4.99728 12.5738 5.01009 12.5738 5.01009C14.4783 4.86818 16.1423 6.24001 16.2897 8.07405C16.3 8.2061 16.2969 15.5383 16.2969 15.5383Z"
+      stroke="#ABABAF"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16.3 9.97984L19.593 7.28484C20.409 6.61684 21.633 7.19884 21.632 8.25184L21.62 15.6008C21.619 16.6538 20.394 17.2308 19.58 16.5628L16.3 13.8678"
+      stroke="#ABABAF"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+export const ProfileIcon = () => (
+  <svg
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M11.9847 15.3462C8.11707 15.3462 4.81421 15.931 4.81421 18.2729C4.81421 20.6148 8.09611 21.2205 11.9847 21.2205C15.8523 21.2205 19.1542 20.6348 19.1542 18.2938C19.1542 15.9529 15.8733 15.3462 11.9847 15.3462Z"
+      stroke="#ABABAF"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M11.9846 12.0059C14.5227 12.0059 16.5799 9.94779 16.5799 7.40969C16.5799 4.8716 14.5227 2.81445 11.9846 2.81445C9.44655 2.81445 7.38845 4.8716 7.38845 7.40969C7.37988 9.93922 9.42369 11.9973 11.9523 12.0059H11.9846Z"
+      stroke="#ABABAF"
+      strokeWidth="1.42857"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+export const MaleIcon = () => (
+  <svg
+    width={17}
+    height={16}
+    viewBox="0 0 17 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M16.7985 0.30672C16.467 -0.0787322 15.7861 -0.0214171 14.8493 0.0575386C14.3719 0.0977408 13.8308 0.143376 13.2394 0.140569C12.4834 0.194534 11.7621 0.174976 11.212 0.258187C10.3096 0.513978 10.3764 1.8641 11.2422 2.08177C11.2861 2.08775 11.3454 2.09146 11.4237 2.09309C12.0902 2.09771 12.9698 2.0336 13.6584 1.99657L10.8756 4.5649C7.19603 0.501302 1.15721 2.64415 0.113051 7.98806C-0.64237 11.9719 2.49788 16.0453 6.25652 15.9996C10.9338 15.9505 14.1322 10.6996 11.8984 6.09539L14.8672 3.35548C14.8503 3.45173 14.8321 3.5545 14.8141 3.65627C14.4781 5.55338 14.4444 5.89908 14.4976 6.03191C14.6884 6.90305 15.8187 6.96788 16.1433 6.17896C16.2166 5.96102 16.2406 5.78961 16.2894 5.46926C16.4008 4.76029 16.5939 3.54309 16.7353 2.8103C16.8414 2.11247 17.2355 0.641105 16.7985 0.30672ZM10.8439 9.22591C10.8374 11.0568 9.8992 13.0403 7.88686 13.7917C6.88814 14.1645 5.80055 14.1585 4.79998 13.7912C0.806743 12.3254 0.786251 6.21989 4.68757 4.68089C5.73705 4.26691 6.89177 4.26265 7.94243 4.67337C9.93344 5.45179 10.8504 7.41762 10.8439 9.22591Z"
+      fill="#5C95FF"
+    />
+  </svg>
+
+);
+
+export const FemaleIcon = () => (
+  <svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx={7} cy={5.5} r={4} stroke="#F87BB5" strokeWidth={1.5} />
+    <path d="M7 9.5V13M5 11H9" stroke="#F87BB5" strokeWidth={1.5} strokeLinecap="round" />
+  </svg>
+);
+
 export const ChevronDownIcon = () => (
   <svg
     width={12}
@@ -545,4 +761,93 @@ export const ChevronDownIcon = () => (
     />
   </svg>
 
+);
+export const HeartIcon2 = () => (
+  <svg
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 21.6501C11.69 21.6501 11.39 21.6101 11.14 21.5201C7.32 20.2101 1.25 15.5601 1.25 8.6901C1.25 5.1901 4.08 2.3501 7.56 2.3501C9.25 2.3501 10.83 3.0101 12 4.1901C13.17 3.0101 14.75 2.3501 16.44 2.3501C19.92 2.3501 22.75 5.2001 22.75 8.6901C22.75 15.5701 16.68 20.2101 12.86 21.5201C12.61 21.6101 12.31 21.6501 12 21.6501ZM7.56 3.8501C4.91 3.8501 2.75 6.0201 2.75 8.6901C2.75 15.5201 9.32 19.3201 11.63 20.1101C11.81 20.1701 12.2 20.1701 12.38 20.1101C14.68 19.3201 21.26 15.5301 21.26 8.6901C21.26 6.0201 19.1 3.8501 16.45 3.8501C14.93 3.8501 13.52 4.5601 12.61 5.7901C12.33 6.1701 11.69 6.1701 11.41 5.7901C10.48 4.5501 9.08 3.8501 7.56 3.8501Z"
+      fill="#ABABAF"
+    />
+  </svg>
+);
+export const CaptureIcon = () => (
+  <svg
+    width={20}
+    height={18}
+    viewBox="0 0 20 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M13.04 1.0515C14.05 1.4535 14.359 2.8535 14.772 3.3035C15.185 3.7535 15.776 3.9065 16.103 3.9065C17.841 3.9065 19.25 5.3155 19.25 7.0525V12.8475C19.25 15.1775 17.36 17.0675 15.03 17.0675H4.97C2.639 17.0675 0.75 15.1775 0.75 12.8475V7.0525C0.75 5.3155 2.159 3.9065 3.897 3.9065C4.223 3.9065 4.814 3.7535 5.228 3.3035C5.641 2.8535 5.949 1.4535 6.959 1.0515C7.97 0.6495 12.03 0.6495 13.04 1.0515Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M15.4953 6.5H15.5043"
+      stroke="white"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M13.1788 10.1282C13.1788 8.37222 11.7558 6.94922 9.9998 6.94922C8.2438 6.94922 6.8208 8.37222 6.8208 10.1282C6.8208 11.8842 8.2438 13.3072 9.9998 13.3072C11.7558 13.3072 13.1788 11.8842 13.1788 10.1282Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+export const ChatIcon2 = () => (
+  <svg
+    width={22}
+    height={22}
+    viewBox="0 0 22 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M17.8211 17.8199C14.765 20.8763 10.2395 21.5367 6.53617 19.824C5.98946 19.6039 5.54124 19.426 5.11513 19.426C3.92824 19.433 2.45092 20.5839 1.68312 19.817C0.915309 19.0491 2.06702 17.5706 2.06702 16.3766C2.06702 15.9504 1.89617 15.5102 1.67608 14.9624C-0.0374134 11.2596 0.623865 6.73269 3.68001 3.67721C7.58135 -0.225568 13.9198 -0.225568 17.8211 3.6762C21.7295 7.58501 21.7225 13.9181 17.8211 17.8199Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M14.6891 11.1631H14.6981"
+      stroke="white"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.6801 11.1631H10.6891"
+      stroke="white"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.67104 11.1631H6.68004"
+      stroke="white"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );

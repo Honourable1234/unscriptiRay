@@ -2,9 +2,9 @@ import type { Character } from '@/data/characters';
 import Image from 'next/image';
 import { CommentIcon, HeartIcon } from '@/components/icons';
 
-export const CharacterCard = (props: { character: Character }) => {
+export const CharacterCard = (props: { character: Character; onClick?: () => void }) => {
   return (
-    <div className="relative h-77.5 max-w-75 min-w-65 flex-1 cursor-pointer overflow-hidden rounded-2xl">
+    <div className="relative h-77.5 max-w-75 min-w-65 flex-1 cursor-pointer overflow-hidden rounded-2xl" role="button" tabIndex={0} onClick={props.onClick} onKeyDown={props.onClick}>
       <Image
         src={props.character.image}
         alt={props.character.name}
