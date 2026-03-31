@@ -1,7 +1,8 @@
 import { setRequestLocale } from 'next-intl/server';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { AuthProvider } from '@/context/AuthContext';
-import { DashboardTemplate } from '@/templates/DashboardTemplate';
+import { ChatProvider } from '@/context/ChatContext';
+import { ChatTemplate } from '@/templates/ChatTemplate';
 
 export default async function Layout(props: {
   children: React.ReactNode;
@@ -12,11 +13,13 @@ export default async function Layout(props: {
 
   return (
     <AuthProvider>
-      <DashboardTemplate>
-        <AuthGuard>
-          {props.children}
-        </AuthGuard>
-      </DashboardTemplate>
+      <ChatProvider>
+        <ChatTemplate>
+          <AuthGuard>
+            {props.children}
+          </AuthGuard>
+        </ChatTemplate>
+      </ChatProvider>
     </AuthProvider>
   );
 }

@@ -1,9 +1,10 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { BouncingDots } from '@/components/general/BouncingDots';
 import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, UpgradeIcon } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
-import { Button } from './Button';
 
 type NavItem = {
   label: string;
@@ -20,7 +21,9 @@ const navItems: NavItem[] = [
   { label: 'Feed', href: '/feed', icon: <FeedIcon /> },
 ];
 
-export const SideBar = (props: { isAuthenticated?: boolean; isPremium?: boolean }) => {
+export const SideBar = () => {
+  const { isAuthenticated, isPremium } = useAuth();
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -86,16 +89,25 @@ export const SideBar = (props: { isAuthenticated?: boolean; isPremium?: boolean 
           </nav>
         </div>
 
-        {!props.isPremium && (
-          props.isAuthenticated
+        {!isPremium && (
+          isAuthenticated
             ? (
-                <button className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}>
+                <button
+                  className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}
+                  disabled={upgradeLoading}
+                  onClick={() => {
+                    setUpgradeLoading(true);
+                    setTimeout(() => setUpgradeLoading(false), 3000);
+                  }}
+                >
                   <UpgradeIcon />
-                  {isOpen && <span>Upgrade</span>}
+                  {isOpen && (upgradeLoading ? <BouncingDots /> : <span>Upgrade</span>)}
                 </button>
               )
             : (
-                <Button text="signIn" className="border-primary-100 text-primary-100" />
+                <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-sm font-semibold text-primary-100 transition-opacity hover:opacity-80">
+                  Sign In
+                </Link>
               )
         )}
       </aside>

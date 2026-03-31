@@ -1,7 +1,7 @@
 import { CharacterGrid } from '@/components/explore/CharacterGrid';
 import { FilterDropdown } from '@/components/explore/FilterDropdown';
-import { SearchBar } from '@/components/explore/SearchBar';
 import { TagFilter } from '@/components/explore/TagFilter';
+import { SearchBar } from '@/components/general/SearchBar';
 import { characters } from '@/data/characters';
 
 export default function ExplorePage() {

@@ -2,7 +2,9 @@
 
 import type { Character } from '@/data/characters';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
+import { BouncingDots } from '@/components/general/BouncingDots';
 import {
   CaptureIcon,
   ChatIcon2,
@@ -24,8 +26,16 @@ export const CharacterModal = (props: {
   onClose: () => void;
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
   const [navClicks, setNavClicks] = useState(0);
+  const [generateLoading, setGenerateLoading] = useState(false);
+  const [chatLoading, setChatLoading] = useState(false);
+  const descRef = (node: HTMLParagraphElement | null) => {
+    if (node) {
+      setIsClamped(node.scrollHeight > node.clientHeight);
+    }
+  };
 
   const images = [props.character.image, '/General/GojoSatoru2.png', '/General/GojoSatoru3.png', '/General/GojoSatoru4.png'];
   const tags = props.character.tags;
@@ -34,14 +44,14 @@ export const CharacterModal = (props: {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       role="button"
       tabIndex={0}
       onClick={props.onClose}
       onKeyDown={props.onClose}
     >
       <div
-        className="relative w-full max-w-130 rounded-2xl border border-white-25 bg-black-80 pt-5 shadow-2xl"
+        className="relative w-full max-w-120 rounded-2xl border border-white-25 bg-black-80 pt-5 shadow-2xl"
         role="button"
         tabIndex={0}
         onClick={e => e.stopPropagation()}
@@ -63,19 +73,20 @@ export const CharacterModal = (props: {
         </div>
 
         {/* Description */}
-        <p className="mb-3 px-4 text-xs leading-relaxed text-white-75">
-          {expanded
-            ? props.character.description
-            : `${props.character.description.slice(0, 120)}...`}
-          {props.character.description.length > 120 && (
+        <div className="mb-3 px-4">
+          <p ref={descRef} className={`text-xs leading-relaxed text-white-75 ${!expanded ? 'line-clamp-2' : ''}`}>
+            {props.character.description}
+          </p>
+          {(isClamped || expanded) && (
             <button
-              className="ml-1 text-sm font-semibold text-white hover:underline"
+              className="mt-1 cursor-pointer text-xs font-semibold text-white hover:underline"
               onClick={() => setExpanded(v => !v)}
             >
               {expanded ? 'show less' : 'show more'}
             </button>
           )}
-        </p>
+
+        </div>
 
         {/* Stats */}
         <div className="mb-6 flex items-center gap-4 px-4 text-xs text-white-75">
@@ -116,11 +127,8 @@ export const CharacterModal = (props: {
             </span>
           )}
         </div>
-
-        {/* Image carousel */}
         <div className="relative mx-4 mb-8 flex items-center justify-center" style={{ aspectRatio: '4/3' }}>
-          {/* Previous — peeks in from left */}
-          <div className="absolute top-1/2 left-0 z-10 h-70 w-60 -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
+          <div className="absolute top-1/2 left-0 z-10 h-[76%] w-[49%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
             <Image
               src={images[(imageIndex - 1 + images.length) % images.length] ?? props.character.image}
               alt={props.character.name}
@@ -128,9 +136,7 @@ export const CharacterModal = (props: {
               className="object-cover blur-[4px]"
             />
           </div>
-
-          {/* Current — centered, slightly smaller */}
-          <div className="relative z-20 mx-auto h-full w-85 overflow-hidden rounded-3xl">
+          <div className="relative z-20 mx-auto h-full w-[70%] overflow-hidden rounded-3xl">
             <Image
               src={images[imageIndex] ?? props.character.image}
               alt={props.character.name}
@@ -158,16 +164,14 @@ export const CharacterModal = (props: {
           </div>
 
           {navClicks >= 3 && (
-            <div className="absolute left-1/2 z-40 flex h-full w-85 -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
-              <p className="text-[20px] font-bold text-white">Want to see more?</p>
-              <button className="cursor-pointer rounded-xl bg-primary-100 px-8 py-2 text-xs font-semibold text-white">
+            <div className="absolute left-1/2 z-40 flex h-full w-[70%] -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
+              <p className="text-sm font-bold text-white sm:text-[20px]">Want to see more?</p>
+              <Link href={`/character/${props.character.id}`} className="rounded-xl bg-primary-100 px-2 py-2 text-xs font-semibold text-white sm:px-8">
                 View Content
-              </button>
+              </Link>
             </div>
           )}
-
-          {/* Next — peeks in from right */}
-          <div className="absolute top-1/2 right-0 z-10 h-70 w-50 -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
+          <div className="absolute top-1/2 right-0 z-10 h-[76%] w-[41%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
             <Image
               src={images[(imageIndex + 1) % images.length] ?? props.character.image}
               alt={props.character.name}
@@ -176,16 +180,28 @@ export const CharacterModal = (props: {
             />
           </div>
         </div>
-
-        {/* Actions */}
         <div className="flex gap-3 border-t border-black-40 p-4">
-          <button className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black-20 py-3 text-sm font-semibold text-white">
+          <button
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black-20 py-3 text-sm font-semibold text-white"
+            disabled={generateLoading}
+            onClick={() => {
+              setGenerateLoading(true);
+              setTimeout(() => setGenerateLoading(false), 3000);
+            }}
+          >
             <CaptureIcon />
-            Generate
+            {generateLoading ? <BouncingDots /> : 'Generate'}
           </button>
-          <button className="flex flex-2 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white">
+          <button
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white md:flex-2"
+            disabled={chatLoading}
+            onClick={() => {
+              setChatLoading(true);
+              setTimeout(() => setChatLoading(false), 3000);
+            }}
+          >
             <ChatIcon2 />
-            Chat
+            {chatLoading ? <BouncingDots /> : 'Chat'}
           </button>
         </div>
       </div>

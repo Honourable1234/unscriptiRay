@@ -18,6 +18,8 @@
   --color-primary-100: #3977da;
   --color-primary-200: #2472fc;
 
+  --color-success-100: #4e9f3d;
+
   --color-error-100: #8711c1;
 }
 @keyframes fadeIn {

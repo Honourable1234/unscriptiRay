@@ -8,6 +8,9 @@ export const InputField = (props: {
   id: string;
   isPassword?: boolean;
   placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,6 +27,8 @@ export const InputField = (props: {
         <input
           id={props.id}
           type={type}
+          value={props.value}
+          onChange={e => props.onChange?.(e.target.value)}
           placeholder={!props.isPassword ? props.placeholder : undefined}
           className="mt-1 h-14 w-full rounded-xl border border-white-25 bg-black-60 px-3 py-2 text-sm text-white placeholder:text-white sm:mt-2 md:mt-3 md:px-4 md:py-3"
         />
@@ -37,6 +42,7 @@ export const InputField = (props: {
           </button>
         )}
       </div>
+      {props.error && <span className="text-xs text-red-400">{props.error}</span>}
     </div>
   );
 };

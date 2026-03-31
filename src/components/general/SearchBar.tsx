@@ -4,6 +4,8 @@ import { FilterIcon, SearchIcon } from '@/components/icons';
 
 export const SearchBar = (props: {
   onSearch?: (value: string) => void;
+  onChange?: (value: string) => void;
+  hideFilter?: boolean;
 }) => {
   const [value, setValue] = useState('');
 
@@ -17,18 +19,23 @@ export const SearchBar = (props: {
           type="text"
           value={value}
           placeholder="Search"
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            props.onChange?.(e.target.value);
+          }}
           onKeyDown={e => e.key === 'Enter' && props.onSearch?.(value)}
           className="w-full bg-transparent text-sm text-white placeholder-white-75 focus:outline-none"
         />
       </div>
 
-      <button
-        type="button"
-        className="flex shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white-25 bg-black-60 px-4 py-3 text-white-75 transition-colors hover:text-white md:px-6 md:py-4"
-      >
-        <FilterIcon />
-      </button>
+      {!props.hideFilter && (
+        <button
+          type="button"
+          className="flex shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white-25 bg-black-60 px-4 py-3 text-white-75 transition-colors hover:text-white md:px-6 md:py-4"
+        >
+          <FilterIcon />
+        </button>
+      )}
     </div>
   );
 };
