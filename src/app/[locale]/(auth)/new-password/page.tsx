@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { InputField } from '@/components/auth/InputField';
 import { PadlockIcon } from '@/components/icons';
-import { api } from '@/libs/api';
+import { supabase } from '@/libs/supabase';
 
 export default function NewPasswordPage() {
   const router = useRouter();
@@ -24,11 +24,11 @@ export default function NewPasswordPage() {
 
     setIsLoading(true);
 
-    const res = await api.post('/auth/reset-password', { password });
-    console.warn('[Backend /auth/reset-password] response:', res);
+    const { error: supabaseError } = await supabase.auth.updateUser({ password });
+    console.warn('[Supabase updateUser] error:', supabaseError);
 
-    if (!res.success) {
-      setError(res.content?.message ?? 'Reset failed');
+    if (supabaseError) {
+      setError(supabaseError.message);
       setIsLoading(false);
       return;
     }

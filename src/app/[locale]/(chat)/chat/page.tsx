@@ -1,6 +1,8 @@
 'use client';
 
+import type { Character } from '@/data/characters';
 import { useState } from 'react';
+import { ChatRoom } from '@/components/chat/ChatRoom';
 import { NewGroupView } from '@/components/chat/NewGroupView';
 import { NewScenarioView } from '@/components/chat/NewScenarioView';
 import { CharacterGrid } from '@/components/explore/CharacterGrid';
@@ -9,6 +11,7 @@ import { useChat } from '@/context/ChatContext';
 import { characters } from '@/data/characters';
 
 const ChatView = () => {
+  const { setActiveChat } = useChat();
   const [query, setQuery] = useState('');
 
   const filtered = characters
@@ -22,14 +25,21 @@ const ChatView = () => {
       </h1>
       <SearchBar hideFilter onChange={setQuery} />
       <div className="mt-6">
-        <CharacterGrid characters={filtered} />
+        <CharacterGrid
+          characters={filtered}
+          onCharacterClick={(c: Character) => setActiveChat({ name: c.name, image: c.image })}
+        />
       </div>
     </div>
   );
 };
 
 export default function ChatPage() {
-  const { activeView } = useChat();
+  const { activeView, activeChat } = useChat();
+
+  if (activeChat) {
+    return <ChatRoom />;
+  }
 
   if (activeView === 'group') {
     return <NewGroupView />;

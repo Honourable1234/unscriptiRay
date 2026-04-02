@@ -8,7 +8,7 @@ import { Divider } from '@/components/auth/Divider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
-import { api } from '@/libs/api';
+// import { api } from '@/libs/api';
 import { supabase } from '@/libs/supabase';
 
 export default function SignUpPage() {
@@ -17,6 +17,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -29,8 +30,11 @@ export default function SignUpPage() {
 
     setIsLoading(true);
 
-    const { data, error: supabaseError } = await supabase.auth.signUp({ email, password });
-    console.warn('[Supabase signUp] data:', data, 'error:', supabaseError);
+    const { data, error: supabaseError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
 
     if (supabaseError || !data.user) {
       setError(supabaseError?.message ?? 'Sign up failed');
@@ -38,9 +42,11 @@ export default function SignUpPage() {
       return;
     }
 
-    const res = await api.post('/auth/register', { email, password });
-    console.warn('[Backend /auth/register] response:', res);
-
+    if (!data.session) {
+      setSuccess('Check your email to confirm your account.');
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(false);
     router.push('/sign-in');
   };
@@ -54,6 +60,7 @@ export default function SignUpPage() {
       <InputField id="password" label="Password" isPassword value={password} onChange={setPassword} />
       <InputField id="confirm-password" label="Confirm Password" isPassword value={confirmPassword} onChange={setConfirmPassword} />
       {error && <p className="text-xs text-red-400">{error}</p>}
+      {success && <p className="text-xs text-primary-100">{success}</p>}
       <div>
         <AuthButton text="Sign Up" isLoading={isLoading} onClick={handleSubmit} />
         <AuthLink text="Have an account?" linkText="Sign In" href="/sign-in" />

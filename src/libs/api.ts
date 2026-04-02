@@ -1,6 +1,13 @@
 import { Env } from './Env';
 
 export const api = {
+  get: async (path: string) => {
+    const res = await fetch(`${Env.NEXT_PUBLIC_API_URL}${path}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    return res.json();
+  },
   post: async (path: string, body: Record<string, unknown>, token?: string) => {
     const res = await fetch(`${Env.NEXT_PUBLIC_API_URL}${path}`, {
       method: 'POST',

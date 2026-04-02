@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { AddIcon, ChevronDownIcon, ChevronRightIcon, GroupIcon, NewChatIcon, OpenIcon } from '@/components/icons';
+import { AddIcon, ChevronDownIcon, GroupIcon, NewChatIcon, OpenIcon } from '@/components/icons';
 import { useChat } from '@/context/ChatContext';
 
 type ChatView = 'chat' | 'group' | 'scenario';
@@ -55,7 +55,7 @@ const mockHistory: HistorySection[] = [
   },
 ];
 
-const HistorySectionItem = (props: { section: HistorySection }) => {
+const HistorySectionItem = (props: { section: HistorySection; onSelect: (name: string, image: string) => void }) => {
   const [open, setOpen] = useState(true);
 
   return (
@@ -71,12 +71,13 @@ const HistorySectionItem = (props: { section: HistorySection }) => {
           {props.section.items.length}
           )
         </span>
-        {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
+        <span className={`transition-transform duration-200 ${open ? 'rotate-0' : '-rotate-90'}`}><ChevronDownIcon /></span>
       </button>
 
       {open && props.section.items.map(item => (
         <button
           key={item.id}
+          onClick={() => props.onSelect(item.name, item.image)}
           className="flex cursor-pointer items-center gap-2 rounded-xl px-2 py-2 text-left text-white hover:bg-black-40"
         >
           <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
@@ -93,7 +94,7 @@ const HistorySectionItem = (props: { section: HistorySection }) => {
 };
 
 export const ChatSideBar = () => {
-  const { activeView, setActiveView } = useChat();
+  const { activeView, setActiveView, setActiveChat } = useChat();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -101,7 +102,7 @@ export const ChatSideBar = () => {
 
   return (
     <>
-      {/* Mobile: floating bar at top */}
+      {/* Mobile: slide-in drawer */}
       <div className="sm:hidden">
         <button
           onClick={() => setMobileOpen(prev => !prev)}
@@ -110,22 +111,50 @@ export const ChatSideBar = () => {
           <OpenIcon />
         </button>
 
+        {/* Backdrop */}
         {mobileOpen && (
-          <div className="fixed top-14 right-0 left-0 z-40 mx-4 flex items-center justify-around rounded-xl bg-black-100 px-4 py-2 shadow-lg">
+          <button
+            type="button"
+            aria-label="Close sidebar"
+            className="fixed inset-0 z-40 cursor-default bg-black/50"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+
+        {/* Drawer */}
+        <div className={`fixed top-0 left-0 z-50 flex h-full w-72 flex-col overflow-y-auto bg-black-100 px-4 py-5 transition-transform duration-300 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="mb-6 flex w-fit cursor-pointer items-center justify-center rounded-lg p-2 text-white hover:bg-black-40"
+          >
+            <OpenIcon />
+          </button>
+
+          <nav className="flex flex-col gap-3">
             {navItems.map(item => (
               <button
                 key={item.view}
                 onClick={() => {
                   setActiveView(item.view);
+                  setActiveChat(null);
                   setMobileOpen(false);
                 }}
-                className={`rounded-lg p-2.5 transition-colors ${activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:text-white-75'}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
               >
                 {item.icon}
+                <span>{item.label}</span>
               </button>
             ))}
-          </div>
-        )}
+          </nav>
+
+          {hasHistory && (
+            <div className="mt-4 flex flex-col gap-3 border-t border-black-40 pt-4">
+              {mockHistory.map(section => (
+                <HistorySectionItem key={section.label} section={section} onSelect={(name, image) => setActiveChat({ name, image })} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Desktop: vertical sidebar */}
@@ -142,7 +171,10 @@ export const ChatSideBar = () => {
             {navItems.map(item => (
               <button
                 key={item.view}
-                onClick={() => setActiveView(item.view)}
+                onClick={() => {
+                  setActiveView(item.view);
+                  setActiveChat(null);
+                }}
                 className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
               >
                 {item.icon}
@@ -154,7 +186,7 @@ export const ChatSideBar = () => {
           {isOpen && hasHistory && (
             <div className="mt-4 flex flex-col gap-3 border-t border-black-40 pt-4">
               {mockHistory.map(section => (
-                <HistorySectionItem key={section.label} section={section} />
+                <HistorySectionItem key={section.label} section={section} onSelect={(name, image) => setActiveChat({ name, image })} />
               ))}
             </div>
           )}

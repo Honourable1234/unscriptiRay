@@ -61,7 +61,7 @@ export default async function RootLayout(props: {
 
   return (
     <html lang={locale} className={poppins.variable}>
-      <body className="font-poppins">
+      <body className="font-poppins" suppressHydrationWarning>
         <NextIntlClientProvider>
           <PostHogProvider>
             <div className="mx-auto max-w-screen-2xl">

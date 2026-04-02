@@ -21,6 +21,7 @@
   --color-success-100: #4e9f3d;
 
   --color-error-100: #8711c1;
+  --color-error-200: #da4c39;
 }
 @keyframes fadeIn {
   from {

@@ -9,13 +9,13 @@ import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
 import { BouncingDots } from '@/components/general/BouncingDots';
-import { useAuth } from '@/context/AuthContext';
-import { api } from '@/libs/api';
+
 import { Link } from '@/libs/I18nNavigation';
+import { supabase } from '@/libs/supabase';
 
 export default function SignInPage() {
   const router = useRouter();
-  const { setAuth } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,16 +26,14 @@ export default function SignInPage() {
     setError('');
     setIsLoading(true);
 
-    const res = await api.post('/auth/login', { email, password });
-    console.warn('[Backend /auth/login] response:', res);
+    const { data, error: supabaseError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (!res.success) {
-      setError(res.content?.message ?? 'Login failed');
+    if (supabaseError || !data.session) {
+      setError(supabaseError?.message ?? 'Login failed');
       setIsLoading(false);
       return;
     }
 
-    setAuth(true, res.content?.token ?? null);
     setIsLoading(false);
     router.push('/');
   };

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { InputField } from '@/components/auth/InputField';
 import { KeyIcon } from '@/components/icons';
-import { api } from '@/libs/api';
+import { supabase } from '@/libs/supabase';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -17,16 +17,16 @@ export default function ForgotPasswordPage() {
     setSuccess('');
     setIsLoading(true);
 
-    const res = await api.post('/auth/forgot-password', { email });
-    console.warn('[Backend /auth/forgot-password] response:', res);
+    const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email);
+    console.warn('[Supabase resetPasswordForEmail] error:', supabaseError);
 
-    if (!res.success) {
-      setError(res.content?.message ?? 'Request failed');
+    if (supabaseError) {
+      setError(supabaseError.message);
       setIsLoading(false);
       return;
     }
 
-    setSuccess('Check your email for a reset code.');
+    setSuccess('Check your email for a reset link.');
     setIsLoading(false);
   };
 
@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
           <KeyIcon />
         </div>
         <p className="mt-2.5 text-lg font-semibold text-white">Forgot your password?</p>
-        <p className="mt-3 text-sm font-medium text-white">A code will be sent to your email to help reset password</p>
+        <p className="mt-3 text-sm font-medium text-white">A link will be sent to your email to reset your password</p>
       </div>
       <InputField id="email" label="Email" placeholder="Enter Your Email" value={email} onChange={setEmail} />
       {error && <p className="text-xs text-red-400">{error}</p>}

@@ -5,8 +5,16 @@ import { useState } from 'react';
 import { CharacterCard } from './CharacterCard';
 import { CharacterModal } from './CharacterModal';
 
-export const CharacterGrid = (props: { characters: Character[] }) => {
+export const CharacterGrid = (props: { characters: Character[]; onCharacterClick?: (character: Character) => void }) => {
   const [selected, setSelected] = useState<Character | null>(null);
+
+  const handleClick = (character: Character) => {
+    if (props.onCharacterClick) {
+      props.onCharacterClick(character);
+    } else {
+      setSelected(character);
+    }
+  };
 
   return (
     <>
@@ -15,7 +23,7 @@ export const CharacterGrid = (props: { characters: Character[] }) => {
           <CharacterCard
             key={character.id}
             character={character}
-            onClick={() => setSelected(character)}
+            onClick={() => handleClick(character)}
           />
         ))}
       </div>

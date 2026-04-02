@@ -1,33 +1,43 @@
 'use client';
 
-import { createContext, use, useState } from 'react';
+import { createContext, use, useEffect, useState } from 'react';
+import { supabase } from '@/libs/supabase';
 
 type AuthContextValue = {
   isAuthenticated: boolean;
   isPremium: boolean;
   token: string | null;
-  setAuth: (isAuthenticated: boolean, token: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextValue>({
   isAuthenticated: false,
   isPremium: false,
   token: null,
-  setAuth: () => {},
 });
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // TODO: revert to false
   const [isPremium] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
-  const setAuth = (auth: boolean, t: string | null) => {
-    setIsAuthenticated(auth);
-    setToken(t);
-  };
+  useEffect(() => {
+    // Restore session on mount
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAuthenticated(!!data.session);
+      setToken(data.session?.access_token ?? null);
+    });
+
+    // Keep in sync with Supabase auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      setToken(session?.access_token ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   return (
-    <AuthContext value={{ isAuthenticated, isPremium, token, setAuth }}>
+    <AuthContext value={{ isAuthenticated, isPremium, token }}>
       {props.children}
     </AuthContext>
   );

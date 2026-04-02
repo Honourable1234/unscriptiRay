@@ -5,7 +5,7 @@ import { AllIcon, FilterIcon2, PictureIcon, VideoIcon } from '@/components/icons
 
 type Tab = 'All' | 'Images' | 'Videos';
 
-export const CharacterTabs = () => {
+export const MediaStyleTab = () => {
   const [tab, setTab] = useState<Tab>('All');
 
   return (

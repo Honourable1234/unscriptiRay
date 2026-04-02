@@ -3,8 +3,14 @@ import { FilterDropdown } from '@/components/explore/FilterDropdown';
 import { TagFilter } from '@/components/explore/TagFilter';
 import { SearchBar } from '@/components/general/SearchBar';
 import { characters } from '@/data/characters';
+import { api } from '@/libs/api';
 
-export default function ExplorePage() {
+export default async function ExplorePage() {
+  await Promise.all([
+    api.get('/explore/filters'),
+    api.get('/explore/characters'),
+  ]);
+
   return (
     <div>
       <h1 className="mt-2.5 mb-10 text-center text-xl font-bold text-white sm:text-2xl md:text-[32px]">
