@@ -1,22 +1,56 @@
 'use client';
 
 import type { Character } from '@/data/characters';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
-import { characters } from '@/data/characters';
+import { api } from '@/libs/api';
 import { SelectableCharacterCard } from './SelectableCharacterCard';
 import { SelectedCharacterBar } from './SelectedCharacterBar';
 
 const MAX = 10;
 
-export const NewScenarioView = () => {
+const mapCharacter = (c: Record<string, unknown>): Character => ({
+  id: c.id as string,
+  name: c.name as string,
+  age: c.age as number,
+  gender: c.gender as 'Male' | 'Female',
+  description: (c.short_bio ?? '') as string,
+  image: (c.image_url ?? '') as string,
+  likes: String(c.like_count ?? 0),
+  comments: String(c.total_chats ?? 0),
+  tags: (c.tags as string[]) ?? [],
+});
+
+export const NewScenarioView = (props: { preSelectedId?: string }) => {
   const [scenario, setScenario] = useState('');
   const [query, setQuery] = useState('');
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [selected, setSelected] = useState<Character[]>([]);
 
-  const filtered = characters
-    .slice(0, 12)
-    .filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
+  useEffect(() => {
+    api.get('/explore/characters').then((res) => {
+      const list: unknown = res?.content?.characters ?? res?.content ?? res?.data ?? res;
+      if (Array.isArray(list)) {
+        setCharacters(list.map(c => mapCharacter(c as Record<string, unknown>)));
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!props.preSelectedId) {
+      return;
+    }
+    api.get(`/characters/${props.preSelectedId}`).then((res) => {
+      const c = res?.content;
+      if (c) {
+        setSelected([mapCharacter(c as Record<string, unknown>)]);
+      }
+    });
+  }, [props.preSelectedId]);
+
+  const filtered = characters.filter(c =>
+    c.name.toLowerCase().includes(query.toLowerCase()),
+  );
 
   const toggle = (character: Character) => {
     setSelected(prev =>
@@ -47,7 +81,7 @@ export const NewScenarioView = () => {
       <div className="mt-6 flex flex-wrap gap-2">
         {filtered.map(character => (
           <SelectableCharacterCard
-            key={character.id}
+            key={String(character.id)}
             character={character}
             selected={!!selected.find(c => c.id === character.id)}
             onClick={() => toggle(character)}

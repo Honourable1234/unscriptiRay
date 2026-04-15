@@ -12,6 +12,14 @@ const baseConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   reactCompiler: process.env.NODE_ENV === 'production', // Keep the development environment fast
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'asset.buzzs.me',
+      },
+    ],
+  },
 };
 
 // Initialize the Next-Intl plugin

@@ -16,7 +16,7 @@ export const SelectableCharacterCard = (props: {
       props.selected ? 'ring-2 ring-primary-100 brightness-75' : ''
     }`}
   >
-    <Image src={props.character.image} alt={props.character.name} fill className="object-cover" />
+    <Image src={props.character.image} alt={props.character.name} fill sizes="(max-width: 640px) 100vw, 300px" className="object-cover" />
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
     {props.selected && (

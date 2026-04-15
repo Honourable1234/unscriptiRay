@@ -6,7 +6,7 @@ const MAX = 10;
 
 export const SelectedCharacterBar = (props: {
   selected: Character[];
-  onRemove: (id: number) => void;
+  onRemove: (id: string | number) => void;
   onCreate: () => void;
   createLabel?: string;
 }) => (
@@ -30,7 +30,7 @@ export const SelectedCharacterBar = (props: {
                 {props.selected.map(c => (
                   <div key={c.id} className="flex items-center gap-1.5 rounded-full border border-white-25 px-3 py-2">
                     <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
-                      <Image src={c.image} alt={c.name} fill className="object-cover" />
+                      <Image src={c.image} alt={c.name} fill sizes="24px" className="object-cover" />
                     </div>
                     <span className="text-xs whitespace-nowrap text-white">{c.name}</span>
                     <button

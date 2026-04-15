@@ -22,6 +22,7 @@ const mainOptions = [
 export const GenerateOptionsGrid = (props: {
   selected: SelectedOptions;
   onToggle: (key: keyof SelectedOptions) => void;
+  starCharacter?: { id: string; name: string; image: string } | null;
 }) => {
   return (
     <div className="mx-auto flex w-full max-w-184 flex-col gap-3">
@@ -35,6 +36,9 @@ export const GenerateOptionsGrid = (props: {
             icon={opt.icon}
             isSelected={props.selected[opt.key]}
             onClick={() => props.onToggle(opt.key)}
+            selectedImage={opt.key === 'star' ? props.starCharacter?.image : undefined}
+            selectedName={opt.key === 'star' ? props.starCharacter?.name : undefined}
+            onDeselect={opt.key === 'star' ? () => props.onToggle('star') : undefined}
           />
         ))}
       </div>

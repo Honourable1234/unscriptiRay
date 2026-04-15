@@ -22,7 +22,9 @@ export const FilterDropdown = (props: {
           {props.label}
           :
         </span>
-        <span className="text-white">{selectedValue}</span>
+        <span className={selectedValue ? 'text-white' : 'text-white-50'}>
+          {selectedValue || 'Select'}
+        </span>
         <span className={`${isOpen ? 'rotate-180' : ''}`}>
           <ChevronDownIcon />
         </span>

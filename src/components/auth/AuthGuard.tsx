@@ -6,19 +6,19 @@ import { useAuth } from '@/context/AuthContext';
 const PUBLIC_PATHS = ['/'];
 
 export const AuthGuard = (props: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
   const isPublic = PUBLIC_PATHS.some(p => pathname === p || pathname.endsWith(p));
 
   useEffect(() => {
-    if (!isAuthenticated && !isPublic) {
+    if (!authLoading && !isAuthenticated && !isPublic) {
       router.replace('/');
     }
-  }, [isAuthenticated, isPublic, router]);
+  }, [authLoading, isAuthenticated, isPublic, router]);
 
-  if (!isAuthenticated && !isPublic) {
+  if (authLoading || (!isAuthenticated && !isPublic)) {
     return null;
   }
 

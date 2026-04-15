@@ -8,7 +8,7 @@ import { Divider } from '@/components/auth/Divider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
-// import { api } from '@/libs/api';
+import { api } from '@/libs/api';
 import { supabase } from '@/libs/supabase';
 
 export default function SignUpPage() {
@@ -30,11 +30,13 @@ export default function SignUpPage() {
 
     setIsLoading(true);
 
+    console.warn('[SignUp] Calling supabase.auth.signUp for:', email);
     const { data, error: supabaseError } = await supabase.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
+    console.warn('[SignUp] Result — user:', data.user?.id, 'session:', !!data.session, 'error:', supabaseError?.message);
 
     if (supabaseError || !data.user) {
       setError(supabaseError?.message ?? 'Sign up failed');
@@ -43,10 +45,19 @@ export default function SignUpPage() {
     }
 
     if (!data.session) {
+      console.warn('[SignUp] Email confirmation required — no session returned');
       setSuccess('Check your email to confirm your account.');
       setIsLoading(false);
       return;
     }
+
+    console.warn('[SignUp] Session returned immediately — calling backend /auth/register');
+    const res = await api.post(
+      '/auth/register',
+      { id: data.user.id, email: data.user.email, password: '' },
+      data.session.access_token,
+    );
+    console.warn('[SignUp] Backend /auth/register response:', res);
     setIsLoading(false);
     router.push('/sign-in');
   };
@@ -54,7 +65,7 @@ export default function SignUpPage() {
   return (
     <div className="animate-[fadeIn_0.5s_ease-in-out] space-y-6 sm:space-y-7 md:space-y-8">
       <AuthTitle text="Create your account" />
-      <GoogleButton text="Sign up" />
+      <GoogleButton text="Sign up" redirectPath="/auth/google-register" />
       <Divider text="Continue with email" />
       <InputField id="email" label="Email" placeholder="Enter Your Email" value={email} onChange={setEmail} />
       <InputField id="password" label="Password" isPassword value={password} onChange={setPassword} />

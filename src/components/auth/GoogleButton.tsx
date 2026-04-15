@@ -2,13 +2,17 @@
 
 import { useState } from 'react';
 import { GoogleIcon, SpinnerIcon } from '@/components/icons';
+import { supabase } from '@/libs/supabase';
 
-export const GoogleButton = (props: { text: string }) => {
+export const GoogleButton = (props: { text: string; redirectPath?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 3000);
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}${props.redirectPath ?? '/'}` },
+    });
   };
 
   return (

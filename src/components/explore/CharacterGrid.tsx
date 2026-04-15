@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CharacterCard } from './CharacterCard';
 import { CharacterModal } from './CharacterModal';
 
-export const CharacterGrid = (props: { characters: Character[]; onCharacterClick?: (character: Character) => void }) => {
+export const CharacterGrid = (props: { characters: Character[]; onCharacterClick?: (character: Character) => void; showLike?: boolean }) => {
   const [selected, setSelected] = useState<Character | null>(null);
 
   const handleClick = (character: Character) => {
@@ -19,11 +19,13 @@ export const CharacterGrid = (props: { characters: Character[]; onCharacterClick
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        {props.characters.map(character => (
+        {props.characters.map((character, i) => (
           <CharacterCard
-            key={character.id}
+            key={String(character.id)}
             character={character}
             onClick={() => handleClick(character)}
+            showLike={props.showLike}
+            priority={i < 4}
           />
         ))}
       </div>
