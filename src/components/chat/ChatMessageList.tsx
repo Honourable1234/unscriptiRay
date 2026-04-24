@@ -2,9 +2,11 @@
 
 import type { Message } from './types';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
+import { useAuth } from '@/context/AuthContext';
 import { useChat } from '@/context/ChatContext';
+import { api } from '@/libs/api';
 
 const groupByDate = (messages: Message[]) => {
   const map: Record<string, Message[]> = {};
@@ -23,8 +25,11 @@ export const ChatMessageList = (props: {
   characterImage: string;
   backgroundImage?: string;
 }) => {
-  const { isTyping } = useChat();
+  const { isTyping, activeChat, setMessages, nextCursor, setNextCursor, setHasMoreMessages } = useChat();
+  const { token } = useAuth();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const grouped = groupByDate(props.messages);
 
   useEffect(() => {
@@ -34,8 +39,45 @@ export const ChatMessageList = (props: {
     return () => cancelAnimationFrame(id);
   }, [props.messages, isTyping]);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    const handleScroll = () => {
+      if (el.scrollTop > 60 || loadingMore || !nextCursor || !activeChat) {
+        return;
+      }
+      setLoadingMore(true);
+      const prevHeight = el.scrollHeight;
+      api.get(`/chat/${activeChat.chatroomId}/messages?cursor=${nextCursor}`, token ?? undefined).then((msgRes) => {
+        const items: unknown = msgRes?.content?.messages ?? msgRes?.messages ?? msgRes?.content?.items ?? msgRes?.content ?? msgRes?.data;
+        if (Array.isArray(items)) {
+          const mapped: Message[] = [...(items as Record<string, unknown>[])].reverse().map((m, i) => {
+            const ts = m.timestamp ? new Date(m.timestamp as number) : null;
+            return {
+              id: i,
+              text: (m.text ?? m.content ?? m.message) as string | undefined,
+              sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
+              time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+              date: ts ? (ts.toDateString() === new Date().toDateString() ? 'Today' : ts.toLocaleDateString([], { month: 'short', day: 'numeric' })) : 'Today',
+            };
+          });
+          setMessages(prev => [...mapped, ...prev]);
+          setNextCursor((msgRes?.content?.nextCursor as string) ?? null);
+          setHasMoreMessages(!!(msgRes?.content?.nextCursor));
+          requestAnimationFrame(() => {
+            el.scrollTop = el.scrollHeight - prevHeight;
+          });
+        }
+      }).finally(() => setLoadingMore(false));
+    };
+    el.addEventListener('scroll', handleScroll);
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, [nextCursor, loadingMore, activeChat, token]);
+
   return (
-    <div className="relative flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div ref={scrollRef} className="relative flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {props.backgroundImage && (
         <>
           <Image src={props.backgroundImage} alt="" fill sizes="(max-width: 640px) 100vw, calc(100vw - 500px)" className="object-cover" />

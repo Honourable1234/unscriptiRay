@@ -25,7 +25,6 @@ export default function NewPasswordPage() {
     setIsLoading(true);
 
     const { error: supabaseError } = await supabase.auth.updateUser({ password });
-    console.warn('[Supabase updateUser] error:', supabaseError);
 
     if (supabaseError) {
       setError(supabaseError.message);

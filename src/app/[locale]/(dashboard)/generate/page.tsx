@@ -68,6 +68,10 @@ export default function GeneratePage() {
         selected={selected}
         onToggle={handleToggle}
         starCharacter={starCharacter}
+        onStarSelect={(character) => {
+          setStarCharacter(character);
+          setSelected(prev => ({ ...prev, star: true }));
+        }}
       />
 
       <GenerateControls

@@ -19,11 +19,15 @@ type ChatContextValue = {
   activeChat: ActiveChat;
   setActiveChat: (chat: ActiveChat) => void;
   messages: Message[];
-  setMessages: (messages: Message[]) => void;
+  setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void;
   isTyping: boolean;
   setIsTyping: (typing: boolean) => void;
   chatListVersion: number;
   bumpChatList: () => void;
+  nextCursor: string | null;
+  setNextCursor: (cursor: string | null) => void;
+  hasMoreMessages: boolean;
+  setHasMoreMessages: (has: boolean) => void;
 };
 
 const ChatContext = createContext<ChatContextValue>({
@@ -37,6 +41,10 @@ const ChatContext = createContext<ChatContextValue>({
   setIsTyping: () => {},
   chatListVersion: 0,
   bumpChatList: () => {},
+  nextCursor: null,
+  setNextCursor: () => {},
+  hasMoreMessages: false,
+  setHasMoreMessages: () => {},
 });
 
 export const ChatProvider = (props: { children: React.ReactNode }) => {
@@ -45,10 +53,12 @@ export const ChatProvider = (props: { children: React.ReactNode }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [chatListVersion, setChatListVersion] = useState(0);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const bumpChatList = () => setChatListVersion(v => v + 1);
 
   return (
-    <ChatContext value={{ activeView, setActiveView, activeChat, setActiveChat, messages, setMessages, isTyping, setIsTyping, chatListVersion, bumpChatList }}>
+    <ChatContext value={{ activeView, setActiveView, activeChat, setActiveChat, messages, setMessages, isTyping, setIsTyping, chatListVersion, bumpChatList, nextCursor, setNextCursor, hasMoreMessages, setHasMoreMessages }}>
       {props.children}
     </ChatContext>
   );

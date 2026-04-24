@@ -113,7 +113,11 @@ export const ChatRightPanel = (props: {
 
         <div className="mt-6 flex gap-2 px-4">
           <button
-            onClick={() => activeChat?.characterId && router.push(`/character/${activeChat.characterId}`)}
+            onClick={() => {
+              if (activeChat?.characterId) {
+                router.push(`/character/${activeChat.characterId}`);
+              }
+            }}
             className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-primary-100 px-1 py-2.5 text-xs font-semibold text-primary-100 sm:px-3"
           >
             <MediaIcon />

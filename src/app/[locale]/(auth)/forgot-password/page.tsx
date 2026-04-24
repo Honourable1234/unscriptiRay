@@ -18,7 +18,6 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email);
-    console.warn('[Supabase resetPasswordForEmail] error:', supabaseError);
 
     if (supabaseError) {
       setError(supabaseError.message);

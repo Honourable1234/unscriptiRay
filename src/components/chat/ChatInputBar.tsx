@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AiIcon, AttachIcon, MicIcon, SendIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useChat } from '@/context/ChatContext';
+import { useChatWebSocket } from '@/hooks/useChatWebSocket';
 import { api } from '@/libs/api';
 
 export const ChatInputBar = () => {
@@ -11,49 +12,17 @@ export const ChatInputBar = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const { token } = useAuth();
-  const { activeChat, messages, setMessages, setIsTyping } = useChat();
+  const { activeChat } = useChat();
+  const { send } = useChatWebSocket();
 
   const sendMessage = async () => {
     const text = input.trim();
     if (!text || !activeChat) {
       return;
     }
-
     setInput('');
     setSuggestions([]);
-
-    const userMsg = {
-      id: Date.now(),
-      text,
-      sender: 'user' as const,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      date: 'Today',
-    };
-    setMessages([...messages, userMsg]);
-    setIsTyping(true);
-
-    try {
-      const res = await api.post(
-        `/chat/${activeChat.chatroomId}/messages`,
-        { message: text },
-        token ?? undefined,
-      );
-      console.warn('[ChatInputBar] send message response:', res);
-
-      const reply = res?.content?.message ?? res?.content?.reply ?? res?.content?.text ?? res?.content;
-      if (reply && typeof reply === 'string') {
-        const characterMsg = {
-          id: Date.now() + 1,
-          text: reply,
-          sender: 'character' as const,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          date: 'Today',
-        };
-        setMessages([...messages, userMsg, characterMsg]);
-      }
-    } finally {
-      setIsTyping(false);
-    }
+    await send(text);
   };
 
   const fetchSuggestions = async () => {
@@ -67,7 +36,6 @@ export const ChatInputBar = () => {
         {},
         token ?? undefined,
       );
-      console.warn('[ChatInputBar] suggestions response:', res);
       const items = res?.content?.suggestions ?? res?.content?.items ?? res?.content;
       if (Array.isArray(items)) {
         setSuggestions(items as string[]);
@@ -100,9 +68,9 @@ export const ChatInputBar = () => {
             ? (
                 <span className="text-xs text-white-50">Getting suggestions…</span>
               )
-            : suggestions.map((s, i) => (
+            : suggestions.map(s => (
                 <button
-                  key={i}
+                  key={s}
                   onClick={() => {
                     setInput(s);
                     setSuggestions([]);

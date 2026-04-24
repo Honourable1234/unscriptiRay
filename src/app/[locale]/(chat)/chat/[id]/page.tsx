@@ -24,7 +24,7 @@ const formatDate = (dateStr: string) => {
 };
 
 export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
-  const { activeChat, setActiveChat, setMessages, bumpChatList } = useChat();
+  const { activeChat, setActiveChat, setMessages, setNextCursor, setHasMoreMessages, bumpChatList } = useChat();
   const { token, authLoading } = useAuth();
   const router = useRouter();
 
@@ -38,7 +38,6 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
 
     props.params.then(({ id }) => {
       api.post('/chat/start', { character_id: id }, token ?? undefined).then((res) => {
-        console.warn('[ChatIdPage] /chat/start response:', res);
         const c = res?.content;
         if (!c?.chatroom_id) {
           router.replace('/chat');
@@ -67,17 +66,21 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
 
         if (!c.is_new) {
           api.get(`/chat/${c.chatroom_id}/messages`, token ?? undefined).then((msgRes) => {
-            console.warn('[ChatIdPage] /chat/messages response:', msgRes);
-            const items: unknown = msgRes?.content?.items ?? msgRes?.content ?? msgRes?.data;
+            const items: unknown = msgRes?.content?.messages ?? msgRes?.messages ?? msgRes?.content?.items ?? msgRes?.content ?? msgRes?.data;
             if (Array.isArray(items)) {
-              const mapped: Message[] = (items as Record<string, unknown>[]).map((m, i) => ({
-                id: typeof m.id === 'number' ? m.id : i,
-                text: (m.content ?? m.text ?? m.message) as string | undefined,
-                sender: (m.sender_type === 'user' || m.role === 'user') ? 'user' : 'character',
-                time: m.created_at ? formatTime(m.created_at as string) : '',
-                date: m.created_at ? formatDate(m.created_at as string) : 'Today',
-              }));
+              const mapped: Message[] = [...(items as Record<string, unknown>[])].reverse().map((m, i) => {
+                const ts = m.timestamp ? new Date(m.timestamp as number) : null;
+                return {
+                  id: i,
+                  text: (m.text ?? m.content ?? m.message) as string | undefined,
+                  sender: m.sender_type === 'user' ? 'user' : 'character',
+                  time: ts ? formatTime(ts.toISOString()) : '',
+                  date: ts ? formatDate(ts.toISOString()) : 'Today',
+                };
+              });
               setMessages(mapped);
+              setNextCursor((msgRes?.content?.nextCursor as string) ?? null);
+              setHasMoreMessages(!!(msgRes?.content?.nextCursor));
             }
           });
         }

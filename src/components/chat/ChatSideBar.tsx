@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
 
 const ChatHistoryList = (props: { onSelect: () => void }) => {
   const { token } = useAuth();
-  const { chatListVersion, setActiveChat, setMessages } = useChat();
+  const { chatListVersion, setActiveChat, setMessages, setNextCursor, setHasMoreMessages } = useChat();
   const router = useRouter();
   const [open, setOpen] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
@@ -43,7 +43,6 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
       return;
     }
     api.get('/chat/list?page=1', token).then((res) => {
-      console.warn('[ChatSideBar] /chat/list response:', res);
       const items = res?.content?.items;
       const pagination = res?.content?.pagination;
       if (Array.isArray(items)) {
@@ -105,16 +104,20 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
                 });
                 setMessages([]);
                 api.get(`/chat/${room.id}/messages`, token ?? undefined).then((res) => {
-                  console.warn('[ChatSideBar] /chat/messages response:', res);
-                  const items = res?.content?.items ?? res?.content ?? res?.data;
+                  const items = res?.content?.messages ?? res?.messages ?? res?.content?.items ?? res?.content ?? res?.data;
                   if (Array.isArray(items)) {
-                    setMessages((items as Record<string, unknown>[]).map((m, i) => ({
-                      id: typeof m.id === 'number' ? m.id : i,
-                      text: (m.content ?? m.text ?? m.message) as string | undefined,
-                      sender: (m.sender_type === 'user' || m.role === 'user') ? 'user' as const : 'character' as const,
-                      time: m.created_at ? new Date(m.created_at as string).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-                      date: 'Today',
-                    })));
+                    setMessages([...(items as Record<string, unknown>[])].reverse().map((m, i) => {
+                      const ts = m.timestamp ? new Date(m.timestamp as number) : null;
+                      return {
+                        id: i,
+                        text: (m.text ?? m.content ?? m.message) as string | undefined,
+                        sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
+                        time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+                        date: ts ? (ts.toDateString() === new Date().toDateString() ? 'Today' : ts.toLocaleDateString([], { month: 'short', day: 'numeric' })) : 'Today',
+                      };
+                    }));
+                    setNextCursor((res?.content?.nextCursor as string) ?? null);
+                    setHasMoreMessages(!!(res?.content?.nextCursor));
                   }
                 });
                 router.push('/chat');
@@ -149,7 +152,8 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
 };
 
 export const ChatSideBar = () => {
-  const { activeView, setActiveView, setActiveChat } = useChat();
+  const { activeView, setActiveView, activeChat, setActiveChat } = useChat();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -189,8 +193,9 @@ export const ChatSideBar = () => {
                   setActiveView(item.view);
                   setActiveChat(null);
                   setMobileOpen(false);
+                  router.push('/chat');
                 }}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${!activeChat && activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
               >
                 {item.icon}
                 <span>{item.label}</span>
@@ -221,8 +226,9 @@ export const ChatSideBar = () => {
                 onClick={() => {
                   setActiveView(item.view);
                   setActiveChat(null);
+                  router.push('/chat');
                 }}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${!activeChat && activeView === item.view ? 'bg-success-100/20 text-success-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
               >
                 {item.icon}
                 {isOpen && <span>{item.label}</span>}
