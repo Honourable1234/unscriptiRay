@@ -1,0 +1,36 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss';
+
+@theme {
+  --font-poppins: var(--font-poppins);
+
+  --color-black-100: #050506;
+  --color-black-80: #111114;
+  --color-black-60: #1c1c1e;
+  --color-black-40: #28282b;
+  --color-black-20: #606061;
+
+  --color-white-75: #ababaf;
+  --color-white-25: #50515a;
+  --color-white-50: #74757c;
+
+  --color-primary-100: #3977da;
+  --color-primary-200: #2472fc;
+
+  --color-success-100: #4e9f3d;
+
+  --color-premium-100: #8711c1;
+  --color-error-200: #da4c39;
+}
+@layer base {
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

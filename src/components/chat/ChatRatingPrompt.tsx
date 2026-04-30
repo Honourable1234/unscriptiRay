@@ -1,0 +1,57 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { CloseIcon, StarIcon } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
+import { useChatNavigation } from '@/context/ChatContext';
+import { api } from '@/libs/api';
+
+export const ChatRatingPrompt = (props: { onDone: () => void }) => {
+  const t = useTranslations('ChatRatingPrompt');
+  const { token } = useAuth();
+  const { activeChat } = useChatNavigation();
+  const [hovered, setHovered] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+
+  const submit = (rating: number) => {
+    if (!activeChat || submitting) {
+      return;
+    }
+    setSubmitting(true);
+    api.post(`/chat/${activeChat.chatroomId}/rate`, { rating }, token ?? undefined)
+      .then(() => {
+        props.onDone();
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
+
+  return (
+    <div className="mx-4 mb-2 flex items-center justify-between rounded-xl border border-black-40 bg-black-80 px-4 py-3">
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-medium text-white">{t('question')}</span>
+        <div className="flex gap-1" onMouseLeave={() => setHovered(0)}>
+          {[1, 2, 3, 4, 5].map(n => (
+            <button
+              key={n}
+              onClick={() => submit(n)}
+              onMouseEnter={() => setHovered(n)}
+              disabled={submitting}
+              className="cursor-pointer text-primary-100 transition-transform hover:scale-110 disabled:opacity-50"
+            >
+              <StarIcon filled={n <= hovered} />
+            </button>
+          ))}
+        </div>
+      </div>
+      <button
+        onClick={props.onDone}
+        className="cursor-pointer text-white-50 hover:text-white"
+      >
+        <CloseIcon />
+      </button>
+    </div>
+  );
+};
