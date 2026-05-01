@@ -44,7 +44,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [isPremium] = useState(false);
+  const [isPremium] = useState(true);
 
   const isAuthenticated = !!user;
 

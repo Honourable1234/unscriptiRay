@@ -3,9 +3,11 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { Poppins } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { routing } from '@/libs/I18nRouting';
 import '@/styles/global.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -67,6 +69,7 @@ export default async function RootLayout(props: {
             <div className="mx-auto max-w-screen-2xl">
               {props.children}
             </div>
+            <ToastContainer position="bottom-right" theme="dark" />
           </PostHogProvider>
         </NextIntlClientProvider>
       </body>

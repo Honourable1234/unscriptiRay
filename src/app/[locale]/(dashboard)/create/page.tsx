@@ -103,7 +103,10 @@ function CreatePageContent() {
     <div className="flex min-h-full flex-col justify-between gap-8">
       <h1 className="mt-2.5 text-center text-xl font-bold text-white sm:text-2xl md:text-[32px]">
         {t('title')}
-        <span className="text-primary-100"> {t('title_highlight')}</span>
+        <span className="text-primary-100">
+          {' '}
+          {t('title_highlight')}
+        </span>
       </h1>
 
       <CreateStepper step={step} />

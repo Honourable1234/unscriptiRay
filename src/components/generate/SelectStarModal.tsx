@@ -1,8 +1,8 @@
 'use client';
 
+import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import type { Character } from '@/data/characters';
 import { CloseIcon, SearchIcon } from '@/components/icons';
 import { api } from '@/libs/api';
 import { mapCharacter } from '@/utils/mapCharacter';
@@ -52,7 +52,9 @@ export const SelectStarModal = (props: {
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       onClick={props.onClose}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') props.onClose();
+        if (e.key === 'Escape') {
+          props.onClose();
+        }
       }}
     >
       <div

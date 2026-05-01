@@ -325,5 +325,9 @@
     "tags": "Tags ({count}/{max})",
     "no_tags": "No tags set",
     "add_tag": "Add tag..."
+  },
+  "EditStyle": {
+    "select_image": "Image",
+    "select_visual": "visual"
   }
 }

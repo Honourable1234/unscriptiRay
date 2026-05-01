@@ -66,7 +66,6 @@ export const GenerateOptionsGrid = (props: {
             />
           ))}
         </div>
-
         {/* Creative Input — separate full-width card */}
         <GenerateOptionCardWide
           label={t('creative_input')}

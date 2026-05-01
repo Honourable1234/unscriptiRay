@@ -3,11 +3,15 @@
 import type { SceneActionKey } from '@/components/generate/GenerateSceneActions';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { generatePlaceholders } from '@/components/generate/generatePlaceholders';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon, SpinnerIcon } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
+import { useGenerateService } from '@/services/generateService';
+
+type Asset = { id: string; url: string; type: string };
 
 export default function GenerateScenePage() {
   const router = useRouter();
@@ -15,7 +19,33 @@ export default function GenerateScenePage() {
   const [activeId, setActiveId] = useState(params.id);
   const active = generatePlaceholders.find(p => p.id === activeId) ?? generatePlaceholders[0]!;
   const [modal, setModal] = useState<SceneActionKey | null>(null);
+  const [asset, setAsset] = useState<Asset | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { token } = useAuth();
+  const { getGeneratedAsset } = useGenerateService();
 
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    const fetchDetails = async () => {
+      setIsLoading(true);
+      try {
+        const res = await getGeneratedAsset(params.id) as {
+          success: boolean;
+          content: Asset;
+        };
+        if (res.success) {
+          setAsset(res.content);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDetails();
+  }, [params.id, token]);
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black">
       {/* Close */}
@@ -28,9 +58,23 @@ export default function GenerateScenePage() {
 
       {/* Main image */}
       <div className="flex flex-1 items-center justify-center px-2">
-        <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
-          <Image src={active.src} alt="Generated scene" fill className="object-cover" sizes="512px" />
-        </div>
+        {isLoading
+          ? (
+              <span className="animate-spin text-white-50">
+                <SpinnerIcon />
+              </span>
+            )
+          : (
+              <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
+                <Image
+                  src={asset?.url ?? active.src}
+                  alt="Generated scene"
+                  fill
+                  className="object-cover"
+                  sizes="512px"
+                />
+              </div>
+            )}
       </div>
 
       {/* Actions */}
