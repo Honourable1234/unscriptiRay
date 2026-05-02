@@ -39,14 +39,16 @@ export const CharacterCard = (props: { character: Character; onClick?: () => voi
       tabIndex={0}
       onClick={props.onClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') props.onClick?.();
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
       }}
     >
       {props.character.image && (
         <Image src={props.character.image} alt={props.character.name} fill sizes="(max-width: 640px) 100vw, 300px" priority={props.priority} className="object-cover" />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
       <div className="absolute right-0 bottom-0 left-0 space-y-2 p-2.5">
         <div className="flex items-baseline gap-2">

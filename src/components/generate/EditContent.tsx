@@ -1,9 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import { SelectStarIcon, VisualIcon } from '@/components/icons';
+import { useGenerateService } from '@/services/generateService';
+import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
+import { SelectStarModal } from './SelectStarModal';
+import { SelectVisualModal } from './SelectVisualModal';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-10', boxH: 'h-12' },
@@ -21,34 +25,85 @@ const CheckMark = () => (
   </div>
 );
 
-export const EditContent = () => {
-  const t = useTranslations('EditContent');
-  const tGrid = useTranslations('GenerateOptionsGrid');
+const modelOptions = [
+  { value: 'Spark', description: 'Fast and balanced edits' },
+  { value: 'Pro', description: 'High-fidelity detailed edits' },
+];
+
+type PickedItem = { id: string; name: string };
+
+export const EditContent = (props: { assetId: string; onSuccess?: () => void }) => {
+  const { editImage, pollGenerationStatus } = useGenerateService();
+  const [isGenerating, setIsGenerating] = useState(false);
   const [model, setModel] = useState('Spark');
   const [orientation, setOrientation] = useState('16:9');
   const [modelOpen, setModelOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
+  const [starCharacter, setStarCharacter] = useState<PickedItem | null>(null);
+  const [visual, setVisual] = useState<PickedItem | null>(null);
+  const [starModalOpen, setStarModalOpen] = useState(false);
+  const [visualModalOpen, setVisualModalOpen] = useState(false);
+  const stopPollRef = useRef<(() => void) | null>(null);
 
-  const modelOptions: { value: string; description: string }[] = [
-    { value: 'Spark', description: t('spark_desc') },
-    { value: 'Pro', description: t('pro_desc') },
-  ];
+  useEffect(() => {
+    return () => {
+      stopPollRef.current?.();
+    };
+  }, []);
+
+  const handleGenerate = async () => {
+    stopPollRef.current?.();
+    setIsGenerating(true);
+    try {
+      const res = await editImage({
+        asset_id: props.assetId,
+        model: model.toLowerCase(),
+        orientation,
+        visual: visual?.name.toLowerCase(),
+      });
+      toast.info('Edit started, processing...');
+      stopPollRef.current = pollGenerationStatus(
+        res.content.generation_id,
+        () => {
+          setIsGenerating(false);
+          toast.success('Edit complete!');
+          props.onSuccess?.();
+        },
+        (errorMsg) => {
+          setIsGenerating(false);
+          toast.error(errorMsg);
+        },
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Edit failed.';
+      toast.error(message);
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
       {/* Cards */}
       <div className="grid grid-cols-2 gap-3">
         <GenerateOptionCard
-          label={tGrid('select_star')}
-          sublabel={tGrid('required')}
+          label="Select Star"
+          sublabel="(Required)"
           icon={<SelectStarIcon />}
           height="200px"
+          isSelected={!!starCharacter}
+          selectedName={starCharacter?.name}
+          onClick={() => setStarModalOpen(true)}
+          onDeselect={() => setStarCharacter(null)}
         />
         <GenerateOptionCard
-          label={t('visual')}
-          sublabel={tGrid('required')}
+          label="Visual"
+          sublabel="(Required)"
           icon={<VisualIcon />}
           height="200px"
+          isSelected={!!visual}
+          selectedName={visual?.name}
+          onClick={() => setVisualModalOpen(true)}
+          onDeselect={() => setVisual(null)}
         />
       </div>
 
@@ -60,7 +115,7 @@ export const EditContent = () => {
             onClick={() => setModelOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            {t('model_label')}
+            Model:
             <span className="font-bold text-white">{model}</span>
           </button>
           {modelOpen && (
@@ -91,7 +146,7 @@ export const EditContent = () => {
             onClick={() => setOrientationOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            {t('orientation_label')}
+            Orientation:
             <span className="font-bold text-white">{orientation}</span>
           </button>
           {orientationOpen && (
@@ -114,6 +169,36 @@ export const EditContent = () => {
           )}
         </div>
       </div>
+
+      <GenerateButton
+        label={isGenerating ? 'Editing...' : 'Edit Scene'}
+        coins={10}
+        onClick={handleGenerate}
+        isLoading={isGenerating || !props.assetId}
+        py="py-2"
+        px="px-4"
+        textSize="text-xs"
+      />
+
+      {starModalOpen && (
+        <SelectStarModal
+          onSelect={(character) => {
+            setStarCharacter({ id: character.id, name: character.name });
+            setStarModalOpen(false);
+          }}
+          onClose={() => setStarModalOpen(false)}
+        />
+      )}
+
+      {visualModalOpen && (
+        <SelectVisualModal
+          onSelect={(v) => {
+            setVisual(v);
+            setVisualModalOpen(false);
+          }}
+          onClose={() => setVisualModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

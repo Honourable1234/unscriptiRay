@@ -1,7 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
@@ -23,7 +23,7 @@ type SceneData = { id: number; sourceImageId: string | null; motion: string | nu
 export const AnimatedStylePresent = (props: {
   initialCharacter?: { id: string; name: string; image: string } | null;
 }) => {
-  const { generateVideo } = useGenerateService();
+  const { generateVideo, pollGenerationStatus } = useGenerateService();
   const [isGenerating, setIsGenerating] = useState(false);
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
@@ -44,6 +44,13 @@ export const AnimatedStylePresent = (props: {
     mood: false,
     creative: false,
   });
+  const stopPollRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      stopPollRef.current?.();
+    };
+  }, []);
 
   const activeScene = scenes.find(s => s.id === activeSceneId) ?? scenes[0]!;
 
@@ -61,12 +68,13 @@ export const AnimatedStylePresent = (props: {
   };
 
   const handleGenerate = async () => {
+    stopPollRef.current?.();
     setIsGenerating(true);
     try {
       const characterIds = starCharacter ? [starCharacter.id] : [];
-      await generateVideo({
+      const res = await generateVideo({
         character_ids: characterIds,
-        mode: 'style_present',
+        mode: 'style_preset',
         orientation,
         quality: quality === 'Balanced' ? 'balance' : 'ultra',
         duration: Number(duration.replace('s', '')),
@@ -76,12 +84,22 @@ export const AnimatedStylePresent = (props: {
           voice_type: audio.voiceType.toLowerCase(),
         }),
       });
-      toast.success('Scene generation started!');
+      toast.info('Generation started, processing...');
+      stopPollRef.current = pollGenerationStatus(
+        res.content.generation_id,
+        () => {
+          setIsGenerating(false);
+          toast.success('Scene ready!');
+        },
+        (errorMsg) => {
+          setIsGenerating(false);
+          toast.error(errorMsg);
+        },
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Generation failed.';
       const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
       toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
-    } finally {
       setIsGenerating(false);
     }
   };
@@ -126,7 +144,7 @@ export const AnimatedStylePresent = (props: {
         onAudioToggle={() => setAudioOpen(true)}
       />
       <GenerateButton
-        label="Generate Scene"
+        label={isGenerating ? 'Generating...' : 'Generate Scene'}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}

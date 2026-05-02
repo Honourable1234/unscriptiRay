@@ -5,7 +5,6 @@ import type { GeneratedAssetsResponse } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { GenerateEmptyState } from '@/components/generate/GenerateEmptyState';
 import { GenerateResultGrid } from '@/components/generate/GenerateResultGrid';
 import { GenerateTypeToggle } from '@/components/generate/GenerateTypeToggle';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
@@ -65,8 +64,6 @@ export default function GeneratePage() {
       }
     : null;
 
-  const hasResults = filteredAssets !== null && (filteredAssets.images.length > 0 || filteredAssets.videos.length > 0);
-
   const modeComponent = activeType === 'still'
     ? mode === 'edit_style'
       ? <StillEditStyle />
@@ -98,9 +95,7 @@ export default function GeneratePage() {
       <MediaStyleTab tab={mediaTab} onTabChange={setMediaTab} />
       {isLoading
         ? <div className="flex justify-center py-12"><span className="text-sm text-white/50">Loading...</span></div>
-        : hasResults && filteredAssets
-          ? <GenerateResultGrid assets={filteredAssets} />
-          : <GenerateEmptyState />}
+        : <GenerateResultGrid assets={filteredAssets} />}
     </div>
   );
 }

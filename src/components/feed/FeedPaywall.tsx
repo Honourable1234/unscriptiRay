@@ -12,10 +12,10 @@ const features = [
 
 export const FeedPaywall = () => {
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-black-80 shadow-2xl">
+    <div className="absolute inset-0 z-20 flex items-center justify-center px-4 ">
+      <div className="w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-black-80 shadow-2xl">
         {/* Header */}
-        <div className="bg-linear-to-r from-premium-100 to-primary-200 px-6 py-5 text-center">
+        <div className="bg-linear-to-r from-[#F483B9] to-[#ED4E9D] px-6 py-5 text-center">
           <h2 className="text-xl font-extrabold tracking-wide text-white uppercase italic">
             Free Feed
             <br />
@@ -24,37 +24,43 @@ export const FeedPaywall = () => {
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5">
-          <p className="mb-4 text-center text-sm text-white/80">
+        <div className="bg-linear-to-t from-[#100E0F] from-2%  to-[#572232] to-98% px-6 py-5">
+          <p className="mb-8 text-center text-sm text-white ">
             You must upgrade to premium to get an unlimited feed
           </p>
 
-          <div className="mb-5 text-center text-xs font-semibold tracking-widest text-primary-100">
-            ✦ Premium Features ✦
+          <div className="relative mt-3 w-full border border-[#654851]">
+            <div className="absolute -top-0.5 left-1/2  -translate-1/2 bg-[#572232] px-3 py-0.5 text-center text-xs font-semibold tracking-widest text-white">
+              ✦ Premium Features ✦
+            </div>
           </div>
 
-          <div className="mb-6 flex flex-col gap-3">
+          <div className="mb-6 flex flex-col gap-6 pt-8">
             {features.map(f => (
               <div key={f.label} className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5 text-white">
-                  <span className="text-primary-100">{f.icon}</span>
-                  <span className="text-sm">{f.label}</span>
+                  <div className="rounded-lg bg-[#361e28] px-2.5 py-0.5 text-lg text-[#EC4899]">
+                    {' '}
+                    {/* {f.icon} */}
+                    +
+                  </div>
+                  <span className="text-base">{f.label}</span>
                 </div>
                 {f.action && (
-                  <button className="cursor-pointer rounded-lg bg-primary-100 px-3 py-1 text-xs font-semibold text-white hover:opacity-90">
+                  <button className="cursor-pointer rounded-full border border-[#7B3A59] bg-[#462232] px-3 py-1.5 text-xs  text-[#F9A9D4] hover:opacity-90">
                     {f.action}
                   </button>
                 )}
               </div>
             ))}
 
-            <div className="flex items-center gap-2.5 text-white/60">
-              <span className="ml-0.5 text-lg">+</span>
-              <span className="text-sm">& Much More</span>
+            <div className="flex items-center gap-2.5 text-white">
+              <div className="rounded-lg bg-[#361e28] px-2.5 py-0.5 text-lg text-[#EC4899]">+</div>
+              <span className="text-base">& Much More</span>
             </div>
           </div>
 
-          <button className="w-full cursor-pointer rounded-xl bg-linear-to-r from-premium-100 to-primary-200 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
+          <button className="w-full cursor-pointer rounded-xl bg-[#EF54A1] py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
             ♡ Click Here To Upgrade Now ♡
           </button>
         </div>

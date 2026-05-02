@@ -7,45 +7,53 @@ import { useEffect, useState } from 'react';
 import { generatePlaceholders } from '@/components/generate/generatePlaceholders';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
-import { CloseIcon, SpinnerIcon } from '@/components/icons';
+import { CloseIcon, SpinnerIcon, VideoIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
 
-type Asset = { id: string; url: string; type: string };
+type Asset = { id: string; url: string; type: string; width: number; height: number; created_at: string };
+
+type ThumbnailItem = { id: string; url: string; type: string };
+
+const placeholderThumbnails: ThumbnailItem[] = generatePlaceholders.map(p => ({
+  id: p.id,
+  url: p.src,
+  type: 'image',
+}));
 
 export default function GenerateScenePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const [activeId, setActiveId] = useState(params.id);
-  const active = generatePlaceholders.find(p => p.id === activeId) ?? generatePlaceholders[0]!;
-  const [modal, setModal] = useState<SceneActionKey | null>(null);
-  const [asset, setAsset] = useState<Asset | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const { token } = useAuth();
-  const { getGeneratedAsset } = useGenerateService();
+  const { getGeneratedAssets } = useGenerateService();
+  const [activeId, setActiveId] = useState(params.id);
+  const [modal, setModal] = useState<SceneActionKey | null>(null);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [isLoading, setIsLoading] = useState(!!token);
 
   useEffect(() => {
     if (!token) {
       return;
     }
-    const fetchDetails = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getGeneratedAsset(params.id) as {
-          success: boolean;
-          content: Asset;
-        };
+    getGeneratedAssets({ limit: 30, sort: 'newest' })
+      .then((res) => {
         if (res.success) {
-          setAsset(res.content);
+          setAssets([...res.content.images, ...res.content.videos]);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchDetails();
-  }, [params.id, token]);
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  }, [token]);
+
+  const activeAsset = assets.find(a => a.id === activeId) ?? null;
+  const fallbackSrc = generatePlaceholders.find(p => p.id === activeId)?.src ?? generatePlaceholders[0]!.src;
+  const displaySrc = activeAsset?.url ?? fallbackSrc;
+  const isVideo = activeAsset?.type === 'video';
+
+  const thumbnails: ThumbnailItem[] = assets.length > 0
+    ? assets.map(a => ({ id: a.id, url: a.url, type: a.type }))
+    : placeholderThumbnails;
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black">
       {/* Close */}
@@ -56,7 +64,7 @@ export default function GenerateScenePage() {
         <CloseIcon />
       </button>
 
-      {/* Main image */}
+      {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-2">
         {isLoading
           ? (
@@ -64,17 +72,28 @@ export default function GenerateScenePage() {
                 <SpinnerIcon />
               </span>
             )
-          : (
-              <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
-                <Image
-                  src={asset?.url ?? active.src}
-                  alt="Generated scene"
-                  fill
-                  className="object-cover"
-                  sizes="512px"
-                />
-              </div>
-            )}
+          : isVideo
+            ? (
+                <video
+                  src={displaySrc}
+                  controls
+                  playsInline
+                  className="h-full max-h-123 w-full max-w-105 rounded-lg object-cover"
+                >
+                  <track kind="captions" />
+                </video>
+              )
+            : (
+                <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
+                  <Image
+                    src={displaySrc}
+                    alt="Generated scene"
+                    fill
+                    className="object-cover"
+                    sizes="512px"
+                  />
+                </div>
+              )}
       </div>
 
       {/* Actions */}
@@ -87,13 +106,21 @@ export default function GenerateScenePage() {
       {/* Thumbnails — scrollable row on mobile, column top-right on sm+ */}
       <div className="absolute top-4 right-0 left-0 overflow-x-auto [scrollbar-width:none] sm:right-4 sm:left-auto sm:overflow-x-visible [&::-webkit-scrollbar]:hidden">
         <div className="flex gap-2 px-4 sm:flex-col sm:px-0">
-          {generatePlaceholders.map(item => (
+          {thumbnails.map(item => (
             <button
               key={item.id}
               onClick={() => setActiveId(item.id)}
-              className={`relative h-39 w-31 shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 transition-colors ${active.id === item.id ? 'border-primary-100' : 'border-transparent'}`}
+              className={`relative h-39 w-31 shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 transition-colors ${activeId === item.id ? 'border-primary-100' : 'border-transparent'}`}
             >
-              <Image src={item.src} alt="Thumbnail" fill className="object-cover" sizes="124px" />
+              {item.type === 'video'
+                ? (
+                    <div className="flex h-full w-full items-center justify-center bg-black-60 text-white-50">
+                      <VideoIcon />
+                    </div>
+                  )
+                : (
+                    <Image src={item.url} alt="Thumbnail" fill className="object-cover" sizes="124px" />
+                  )}
             </button>
           ))}
         </div>
@@ -101,7 +128,22 @@ export default function GenerateScenePage() {
 
       {/* Modal */}
       {modal && (
-        <GenerateSceneModal action={modal} onClose={() => setModal(null)} imageSrc={active.src} imageName={active.name} />
+        <GenerateSceneModal
+          action={modal}
+          onClose={() => setModal(null)}
+          imageSrc={displaySrc}
+          imageName={activeAsset ? `Generated ${activeAsset.type}` : 'Sample'}
+          assetId={activeAsset?.id ?? ''}
+          onSuccess={() => {
+            getGeneratedAssets({ limit: 30, sort: 'newest' })
+              .then((res) => {
+                if (res.success) {
+                  setAssets([...res.content.images, ...res.content.videos]);
+                }
+              })
+              .catch(() => {});
+          }}
+        />
       )}
     </div>
   );

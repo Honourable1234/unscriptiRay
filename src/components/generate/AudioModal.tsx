@@ -82,7 +82,7 @@ export const AudioModal = (props: {
       {voiceOpen && (
         <VoiceModal
           selected={voiceType}
-          onSelect={setVoiceType}
+          onSelect={v => setVoiceType(v.shortName)}
           onClose={() => setVoiceOpen(false)}
         />
       )}

@@ -1,7 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
@@ -16,8 +16,15 @@ import { useGenerateService } from '@/services/generateService';
 type SceneData = { id: number; sourceImageId: string | null; motion: string | null };
 
 export const AnimatedImageToVideo = () => {
-  const { generateVideo } = useGenerateService();
+  const { generateVideo, pollGenerationStatus } = useGenerateService();
   const [isGenerating, setIsGenerating] = useState(false);
+  const stopPollRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      stopPollRef.current?.();
+    };
+  }, []);
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
@@ -39,9 +46,10 @@ export const AnimatedImageToVideo = () => {
   };
 
   const handleGenerate = async () => {
+    stopPollRef.current?.();
     setIsGenerating(true);
     try {
-      await generateVideo({
+      const res = await generateVideo({
         character_ids: [],
         mode: 'image_to_video',
         orientation,
@@ -53,12 +61,22 @@ export const AnimatedImageToVideo = () => {
           voice_type: audio.voiceType.toLowerCase(),
         }),
       });
-      toast.success('Scene generation started!');
+      toast.info('Generation started, processing...');
+      stopPollRef.current = pollGenerationStatus(
+        res.content.generation_id,
+        () => {
+          setIsGenerating(false);
+          toast.success('Scene ready!');
+        },
+        (errorMsg) => {
+          setIsGenerating(false);
+          toast.error(errorMsg);
+        },
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Generation failed.';
       const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
       toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
-    } finally {
       setIsGenerating(false);
     }
   };
@@ -118,7 +136,7 @@ export const AnimatedImageToVideo = () => {
         onAudioToggle={() => setAudioOpen(true)}
       />
       <GenerateButton
-        label="Generate Scene"
+        label={isGenerating ? 'Generating...' : 'Generate Scene'}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}

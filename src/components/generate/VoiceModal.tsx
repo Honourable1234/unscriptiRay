@@ -8,9 +8,11 @@ type Voice = { localName: string; shortName: string; gender: 'Female' | 'Male'; 
 
 type ApiVoice = { localName: string; shortName: string; gender: string; sampleUrl: string };
 
+export type SelectedVoice = { shortName: string; localName: string; sampleUrl: string };
+
 export const VoiceModal = (props: {
   selected: string;
-  onSelect: (voice: string) => void;
+  onSelect: (voice: SelectedVoice) => void;
   onClose: () => void;
 }) => {
   const { getVoices } = useVoices();
@@ -81,7 +83,7 @@ export const VoiceModal = (props: {
                   <button
                     key={v.shortName}
                     onClick={() => {
-                      props.onSelect(v.shortName);
+                      props.onSelect({ shortName: v.shortName, localName: v.localName, sampleUrl: v.sampleUrl });
                     }}
                     className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors ${props.selected === v.shortName ? 'border-primary-100' : 'border-black-40 bg-black-100 hover:border-primary-100'}`}
                   >

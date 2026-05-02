@@ -26,3 +26,5 @@ BACKEND UPDATES/FIX
    Frontend is blocked on correct payload shape until backend documents each mode's expected request.
 
 4. make me a premiuem user and unlimited coin for testing
+
+5. Add descriptions to all Swagger endpoint definitions — currently most endpoints have no summary or description, making it hard to understand expected behavior, required fields, and error codes without trial and error. Every endpoint should document: what it does, required vs optional fields, valid enum values, and all possible error codes with their meaning.

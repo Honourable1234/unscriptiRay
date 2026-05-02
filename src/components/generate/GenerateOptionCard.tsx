@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon, PlayIcon } from '@/components/icons';
 
 export const GenerateOptionCard = (props: {
   label: string;
@@ -10,6 +10,7 @@ export const GenerateOptionCard = (props: {
   isSelected?: boolean;
   onClick?: () => void;
   onDeselect?: () => void;
+  onPlay?: () => void;
   selectedImage?: string;
   selectedName?: string;
   width?: string;
@@ -33,6 +34,46 @@ export const GenerateOptionCard = (props: {
           <span className="absolute right-0 bottom-2 left-0 px-2 text-center text-xs font-semibold text-white drop-shadow">
             {props.selectedName}
           </span>
+        )}
+      </div>
+    );
+  }
+
+  if (props.isSelected && props.selectedName) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        style={{ width: props.width, height: props.height }}
+        className="relative m-auto flex h-56 w-full cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-primary-100 bg-black-100 transition-colors hover:bg-black-60"
+        onClick={props.onClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            props.onClick?.();
+          }
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            (props.onDeselect ?? props.onClick)?.();
+          }}
+          className="absolute top-2 right-2 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+        >
+          <CloseIcon />
+        </button>
+        <span className="text-primary-100">{props.icon}</span>
+        <span className="px-2 text-center text-sm font-semibold text-white">{props.selectedName}</span>
+        {props.onPlay && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onPlay?.();
+            }}
+            className="mt-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary-800 text-white transition-colors hover:bg-primary-100"
+          >
+            <PlayIcon />
+          </button>
         )}
       </div>
     );

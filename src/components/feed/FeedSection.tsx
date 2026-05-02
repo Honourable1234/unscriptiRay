@@ -8,10 +8,8 @@ import { FeedLimitError, useFeedService } from '@/services/useFeedService';
 import { FeedCard } from './FeedCard';
 import { FeedPaywall } from './FeedPaywall';
 
-const FREE_LIMIT = 5;
-
 export const FeedSection = () => {
-  const { isPremium, token } = useAuth();
+  const { token } = useAuth();
   const { getDiscoverVideos } = useFeedService();
   const [items, setItems] = useState<DiscoverItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,9 +51,6 @@ export const FeedSection = () => {
   }, [token]);
 
   useEffect(() => {
-    if (!isPremium) {
-      return;
-    }
     const el = sentinelRef.current;
     if (!el) {
       return;
@@ -70,9 +65,9 @@ export const FeedSection = () => {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isPremium, hasMore, nextCursor, seed]);
+  }, [hasMore, nextCursor, seed]);
 
-  const visibleItems = isPremium ? items : items.slice(0, FREE_LIMIT);
+  const visibleItems = items;
   const lastItem = visibleItems[visibleItems.length - 1];
   const paywallBg = lastItem?.character.image_url ?? null;
 
@@ -90,7 +85,7 @@ export const FeedSection = () => {
         <FeedCard key={item.id} item={item} index={i} />
       ))}
 
-      {(!isPremium || limitReached) && (
+      {limitReached && (
         <div className="relative h-full w-full shrink-0 snap-start snap-always overflow-hidden">
           {paywallBg && (
             <Image src={paywallBg} alt="background" fill className="scale-110 object-cover" />
@@ -100,7 +95,7 @@ export const FeedSection = () => {
         </div>
       )}
 
-      {isPremium && hasMore && (
+      {hasMore && (
         <div ref={sentinelRef} className="flex h-16 items-center justify-center">
           <p className="text-xs text-white/30">Loading more...</p>
         </div>

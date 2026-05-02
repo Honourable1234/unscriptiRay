@@ -1,56 +1,101 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { ActionIcon, CaptureIcon, EmojiIcon, SelectStarIcon } from '@/components/icons';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useGenerateService } from '@/services/generateService';
+import { GenerateButton } from './GenerateButton';
 import { GenerateControls } from './GenerateControls';
-import { GenerateOptionCard } from './GenerateOptionCard';
-import { GenerateOptionCardWide } from './GenerateOptionCardWide';
+import { GenerateOptionsGrid } from './GenerateOptionsGrid';
 
 type Selected = Record<'star' | 'action' | 'setting' | 'mood' | 'creative', boolean>;
 
-export const RemixContent = () => {
-  const t = useTranslations('GenerateOptionsGrid');
+export const RemixContent = (props: { onSuccess?: () => void }) => {
+  const { generateImage, pollGenerationStatus } = useGenerateService();
+  const [isGenerating, setIsGenerating] = useState(false);
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
   const [selected, setSelected] = useState<Selected>({ star: false, action: false, setting: false, mood: false, creative: false });
+  const [starCharacter, setStarCharacter] = useState<{ id: string; name: string; image: string } | null>(null);
+  const [optionValues, setOptionValues] = useState<{ action: string | null; setting: string | null; mood: string | null }>({ action: null, setting: null, mood: null });
+  const stopPollRef = useRef<(() => void) | null>(null);
 
-  const options: { key: keyof Selected; label: string; sublabel: string; icon: React.ReactNode }[] = [
-    { key: 'star', label: t('select_star'), sublabel: t('required'), icon: <SelectStarIcon /> },
-    { key: 'action', label: t('action'), sublabel: t('optional'), icon: <ActionIcon /> },
-    { key: 'setting', label: t('setting'), sublabel: t('optional'), icon: <CaptureIcon /> },
-    { key: 'mood', label: t('mood'), sublabel: t('optional'), icon: <EmojiIcon /> },
-  ];
+  useEffect(() => {
+    return () => {
+      stopPollRef.current?.();
+    };
+  }, []);
+
   const toggle = (key: keyof Selected) => setSelected(prev => ({ ...prev, [key]: !prev[key] }));
+
+  const handleStarSelect = (character: { id: string; name: string; image: string }) => {
+    setStarCharacter(character);
+    setSelected(prev => ({ ...prev, star: true }));
+  };
+
+  const handleOptionSelect = (key: 'action' | 'setting' | 'mood', value: string | null) => {
+    setOptionValues(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleGenerate = async () => {
+    if (!starCharacter) {
+      toast.error('Please select a star first.');
+      return;
+    }
+    stopPollRef.current?.();
+    setIsGenerating(true);
+    try {
+      const res = await generateImage({
+        character_ids: [starCharacter.id],
+        action: optionValues.action ?? undefined,
+        setting: optionValues.setting ?? undefined,
+        mood: optionValues.mood ?? undefined,
+        visual: visual.toLowerCase(),
+        orientation,
+        quality: 'balance',
+      });
+      toast.info('Generation started, processing...');
+      stopPollRef.current = pollGenerationStatus(
+        res.content.generation_id,
+        () => {
+          setIsGenerating(false);
+          toast.success('Scene ready!');
+          props.onSuccess?.();
+        },
+        (errorMsg) => {
+          setIsGenerating(false);
+          toast.error(errorMsg);
+        },
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Generation failed.';
+      toast.error(message);
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {options.map(opt => (
-          <GenerateOptionCard
-            key={opt.key}
-            label={opt.label}
-            sublabel={opt.sublabel}
-            icon={opt.icon}
-            isSelected={selected[opt.key]}
-            height="152px"
-            onClick={() => toggle(opt.key)}
-          />
-        ))}
-      </div>
-      <GenerateOptionCardWide
-        label={t('creative_input')}
-        sublabel={t('creator_tier')}
-        icon={<CaptureIcon />}
-        isSelected={selected.creative}
-        height="135px"
-        onClick={() => toggle('creative')}
+      <GenerateOptionsGrid
+        selected={selected}
+        onToggle={toggle}
+        onOptionSelect={handleOptionSelect}
+        starCharacter={starCharacter}
+        onStarSelect={handleStarSelect}
       />
       <GenerateControls
         visual={visual}
         orientation={orientation}
         onVisualChange={setVisual}
         onOrientationChange={setOrientation}
+      />
+      <GenerateButton
+        label={isGenerating ? 'Generating...' : 'Remix Scene'}
+        coins={10}
+        onClick={handleGenerate}
+        isLoading={isGenerating}
+        py="py-2"
+        px="px-4"
+        textSize="text-xs"
       />
     </div>
   );
