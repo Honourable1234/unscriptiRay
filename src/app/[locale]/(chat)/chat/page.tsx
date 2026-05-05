@@ -10,11 +10,11 @@ import { CharacterGrid } from '@/components/explore/CharacterGrid';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { SearchBar } from '@/components/general/SearchBar';
 import { useChatNavigation } from '@/context/ChatContext';
-import { useExploreService } from '@/services/useExploreService';
+import { createExploreService } from '@/services/useExploreService';
 
 const ChatView = () => {
   const router = useRouter();
-  const { getCharacters } = useExploreService();
+  const { getCharacters } = createExploreService();
   const [query, setQuery] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);
 

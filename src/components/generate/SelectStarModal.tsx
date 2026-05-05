@@ -4,7 +4,7 @@ import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { CloseIcon, SearchIcon } from '@/components/icons';
-import { useExploreService } from '@/services/useExploreService';
+import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { SelectCard } from './SelectCard';
 
@@ -13,7 +13,7 @@ export const SelectStarModal = (props: {
   onClose: () => void;
 }) => {
   const t = useTranslations('SelectStarModal');
-  const { getCharacters } = useExploreService();
+  const { getCharacters } = createExploreService();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');

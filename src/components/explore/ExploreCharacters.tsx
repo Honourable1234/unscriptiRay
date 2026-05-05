@@ -3,7 +3,7 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { useExploreService } from '@/services/useExploreService';
+import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { CharacterGrid } from './CharacterGrid';
 
@@ -22,7 +22,7 @@ const LIMIT_OPTIONS = [5, 10, 15, 20];
 
 export const ExploreCharacters = (props: { filters?: ActiveFilters }) => {
   const t = useTranslations('ExploreCharacters');
-  const { getCharacters } = useExploreService();
+  const { getCharacters } = createExploreService();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

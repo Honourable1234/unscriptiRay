@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
-import { useExploreService } from '@/services/useExploreService';
+import { createExploreService } from '@/services/useExploreService';
 import { ExploreCharacters } from './ExploreCharacters';
 import { FilterDropdown } from './FilterDropdown';
 import { TagFilter } from './TagFilter';
@@ -35,7 +35,7 @@ const toLabel = (item: Record<string, unknown>): string =>
 
 export const ExploreSection = () => {
   const t = useTranslations('ExploreSection');
-  const { getFilters } = useExploreService();
+  const { getFilters } = createExploreService();
   const [filters, setFilters] = useState<Filters | null>(null);
   const [rawQuery, setRawQuery] = useState('');
   const [active, setActive] = useState<ActiveFilters>({

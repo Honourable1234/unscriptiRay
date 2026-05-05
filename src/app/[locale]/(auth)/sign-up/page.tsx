@@ -10,12 +10,12 @@ import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
 import { supabase } from '@/libs/supabase';
-import { useAuthService } from '@/services/useAuthService';
+import { createAuthService } from '@/services/useAuthService';
 
 export default function SignUpPage() {
   const t = useTranslations('SignUpPage');
   const router = useRouter();
-  const { register } = useAuthService();
+  const { register } = createAuthService();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

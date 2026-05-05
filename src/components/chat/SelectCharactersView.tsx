@@ -4,7 +4,7 @@ import type { Character } from '@/data/characters';
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
 import { useCharacterService } from '@/services/useCharacterService';
-import { useExploreService } from '@/services/useExploreService';
+import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { SelectableCharacterCard } from './SelectableCharacterCard';
 import { SelectedCharacterBar } from './SelectedCharacterBar';
@@ -17,7 +17,7 @@ export const SelectCharactersView = (props: {
   extraField: React.ReactNode;
   createLabel?: string;
 }) => {
-  const { getCharacters } = useExploreService();
+  const { getCharacters } = createExploreService();
   const { getCharacter } = useCharacterService();
   const [query, setQuery] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);

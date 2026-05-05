@@ -13,7 +13,7 @@ type ExploreCharactersParams = {
   limit?: number;
 };
 
-export const useExploreService = () => {
+export const createExploreService = () => {
   const getFilters = () => api.get('/explore/filters');
 
   const getCharacters = (params?: ExploreCharactersParams) => {

@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { supabase } from '@/libs/supabase';
-import { useAuthService } from '@/services/useAuthService';
+import { createAuthService } from '@/services/useAuthService';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const { register } = useAuthService();
+  const { register } = createAuthService();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
