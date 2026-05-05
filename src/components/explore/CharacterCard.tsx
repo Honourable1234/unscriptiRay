@@ -4,20 +4,19 @@ import type { Character } from '@/data/characters';
 import Image from 'next/image';
 import { useState } from 'react';
 import { HeartIcon, HeartIconFilled } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 
 export const CharacterCard = (props: { character: Character; onClick?: () => void; showLike?: boolean; priority?: boolean }) => {
-  const { token } = useAuth();
+  const { likeCharacter, unlikeCharacter } = useCharacterService();
   const [likes, setLikes] = useState(Number(props.character.likes) || 0);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(props.character.is_liked ?? false);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (liked) {
       setLiked(false);
       setLikes(n => n - 1);
-      api.delete(`/characters/${props.character.id}/like`, token ?? undefined)
+      unlikeCharacter(String(props.character.id))
         .catch(() => {
           setLiked(true);
           setLikes(n => n + 1);
@@ -25,7 +24,7 @@ export const CharacterCard = (props: { character: Character; onClick?: () => voi
     } else {
       setLiked(true);
       setLikes(n => n + 1);
-      api.post(`/characters/${props.character.id}/like`, {}, token ?? undefined)
+      likeCharacter(String(props.character.id))
         .catch(() => {
           setLiked(false);
           setLikes(n => n - 1);
@@ -39,13 +38,17 @@ export const CharacterCard = (props: { character: Character; onClick?: () => voi
       role="button"
       tabIndex={0}
       onClick={props.onClick}
-      onKeyDown={props.onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
+      }}
     >
       {props.character.image && (
         <Image src={props.character.image} alt={props.character.name} fill sizes="(max-width: 640px) 100vw, 300px" priority={props.priority} className="object-cover" />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
       <div className="absolute right-0 bottom-0 left-0 space-y-2 p-2.5">
         <div className="flex items-baseline gap-2">

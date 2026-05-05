@@ -1,8 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useCreate } from '@/context/CreateContext';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 import { CharacterDropdown } from './CharacterDropdown';
 import { eyeColorMap, hairColorMap, skinToneMap } from './colorMaps';
 import { CreateStyleCard } from './CreateStyleCard';
@@ -23,20 +24,21 @@ type AppearanceOptions = {
 
 type Size = 'default' | 'hair';
 
-const appearanceFields: { key: keyof AppearanceOptions; label: string; color?: string; size?: Size; colorLookup?: Record<string, string>; hideLabel?: boolean }[] = [
-  { key: 'ethnic_influence', label: 'Ethnic Influence' },
-  { key: 'eye_color', label: 'Eye Color', colorLookup: eyeColorMap, size: 'hair', hideLabel: true },
-  { key: 'eye_intensity', label: 'Eye Intensity' },
-  { key: 'facial_shape', label: 'Facial Shape' },
-  { key: 'figure_type', label: 'Figure Type' },
-  { key: 'hair_color', label: 'Hair Color', colorLookup: hairColorMap, size: 'hair', hideLabel: true },
-  { key: 'hair_style', label: 'Hair Style' },
-  { key: 'hip_profile', label: 'Hip Profile' },
-  { key: 'bust_profile', label: 'Bust Profile' },
-  { key: 'skin_tone', label: 'Skin Tone', colorLookup: skinToneMap, size: 'hair', hideLabel: true },
-];
-
 export const CreateStep1 = (props: { onValidChange?: (valid: boolean) => void }) => {
+  const t = useTranslations('CreateStep1');
+  const appearanceFields: { key: keyof AppearanceOptions; label: string; color?: string; size?: Size; colorLookup?: Record<string, string>; hideLabel?: boolean }[] = [
+    { key: 'ethnic_influence', label: t('ethnic_influence') },
+    { key: 'eye_color', label: t('eye_color'), colorLookup: eyeColorMap, size: 'hair', hideLabel: true },
+    { key: 'eye_intensity', label: t('eye_intensity') },
+    { key: 'facial_shape', label: t('facial_shape') },
+    { key: 'figure_type', label: t('figure_type') },
+    { key: 'hair_color', label: t('hair_color'), colorLookup: hairColorMap, size: 'hair', hideLabel: true },
+    { key: 'hair_style', label: t('hair_style') },
+    { key: 'hip_profile', label: t('hip_profile') },
+    { key: 'bust_profile', label: t('bust_profile') },
+    { key: 'skin_tone', label: t('skin_tone'), colorLookup: skinToneMap, size: 'hair', hideLabel: true },
+  ];
+  const { getCreationOptions } = useCharacterService();
   const { data, setStyle, setAppearance: setAppearanceCtx } = useCreate();
   const [styles, setStyles] = useState<string[]>([]);
   const [appearance, setAppearance] = useState<AppearanceOptions>({
@@ -59,10 +61,10 @@ export const CreateStep1 = (props: { onValidChange?: (valid: boolean) => void })
   useEffect(() => {
     const allFilled = !!data.style && appearanceFields.every(f => !!data.appearance[f.key]);
     props.onValidChange?.(allFilled);
-  }, [data.appearance, data.style]);
+  }, [data.appearance, data.style, props.onValidChange]);
 
   useEffect(() => {
-    api.get('/characters/creation-options').then((res) => {
+    getCreationOptions().then((res) => {
       const content = res?.content ?? res;
       setStyles(content?.styles ?? []);
       const a = content?.appearance ?? {};

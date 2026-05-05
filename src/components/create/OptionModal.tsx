@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 import { CreateModal } from './CreateModal';
@@ -8,8 +9,6 @@ import { OptionButton } from './OptionButton';
 
 type RawItem = Record<string, unknown>;
 type CachedItem = { key: string; label: string; locked?: boolean };
-
-const cache: Record<string, CachedItem[]> = {};
 
 export const OptionModal = (props: {
   title: string;
@@ -21,14 +20,16 @@ export const OptionModal = (props: {
   onSelect: (value: string) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('OptionModal');
   const { token } = useAuth();
+  const cache = useRef<Record<string, CachedItem[]>>({});
   const cacheKey = `${props.endpoint}:${props.responseKey ?? ''}`;
-  const [items, setItems] = useState<CachedItem[]>(cache[cacheKey] ?? []);
-  const [loading, setLoading] = useState(!cache[cacheKey]);
+  const [items, setItems] = useState<CachedItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const labelKey = props.labelKey ?? 'name';
 
   useEffect(() => {
-    if (cache[cacheKey]) {
+    if (cache.current[cacheKey]) {
       return;
     }
     api.get(props.endpoint, token ?? undefined).then((res: unknown) => {
@@ -49,7 +50,7 @@ export const OptionModal = (props: {
             locked,
           };
         })];
-        cache[cacheKey] = fetched;
+        cache.current[cacheKey] = fetched;
         setItems(fetched);
       }
       setLoading(false);
@@ -60,7 +61,7 @@ export const OptionModal = (props: {
     <CreateModal title={props.title} onClose={props.onClose}>
       <div className="scrollbar-none flex max-h-136 flex-wrap gap-2 overflow-y-auto">
         {loading
-          ? <span className="text-sm text-white-50">Loading...</span>
+          ? <span className="text-sm text-white-50">{t('loading')}</span>
           : items.map(item => (
               <OptionButton
                 key={item.key}

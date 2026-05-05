@@ -1,8 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
-import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
@@ -10,7 +8,6 @@ import { BellIcon, CoinIcon, UpgradeIcon } from '../icons';
 
 export const NavBar = (props: { className?: string }) => {
   const { isAuthenticated, isPremium, authLoading, user } = useAuth();
-  const [upgradeLoading, setUpgradeLoading] = useState(false);
 
   return (
     <div className={props.className}>
@@ -42,15 +39,10 @@ export const NavBar = (props: { className?: string }) => {
             </div>
             {!isPremium && (
               <button
-                className="hidden cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 px-3 py-2 text-xs font-semibold text-white sm:flex"
-                disabled={upgradeLoading}
-                onClick={() => {
-                  setUpgradeLoading(true);
-                  setTimeout(() => setUpgradeLoading(false), 3000);
-                }}
+                className="hidden cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 px-3 py-2 text-xs font-semibold text-white sm:flex"
               >
                 <UpgradeIcon />
-                {upgradeLoading ? <BouncingDots /> : <span>Upgrade</span>}
+                <span>Upgrade</span>
               </button>
             )}
             <BellIcon />

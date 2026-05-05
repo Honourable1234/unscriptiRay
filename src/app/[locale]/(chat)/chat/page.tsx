@@ -2,22 +2,24 @@
 
 import type { Character } from '@/data/characters';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { ChatRoom } from '@/components/chat/ChatRoom';
 import { NewGroupView } from '@/components/chat/NewGroupView';
 import { NewScenarioView } from '@/components/chat/NewScenarioView';
 import { CharacterGrid } from '@/components/explore/CharacterGrid';
+import { BouncingDots } from '@/components/general/BouncingDots';
 import { SearchBar } from '@/components/general/SearchBar';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatNavigation } from '@/context/ChatContext';
+import { useExploreService } from '@/services/useExploreService';
 
 const ChatView = () => {
   const router = useRouter();
+  const { getCharacters } = useExploreService();
   const [query, setQuery] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);
 
   useEffect(() => {
-    api.get('/explore/characters').then((res) => {
+    getCharacters().then((res) => {
       const list: unknown = res?.content?.characters ?? res?.content ?? res?.data ?? res;
       if (Array.isArray(list)) {
         setCharacters((list as Record<string, unknown>[]).map(c => ({
@@ -55,8 +57,8 @@ const ChatView = () => {
   );
 };
 
-export default function ChatPage() {
-  const { activeView, activeChat } = useChat();
+const ChatViewSelector = () => {
+  const { activeView, activeChat } = useChatNavigation();
   const searchParams = useSearchParams();
   const viewParam = searchParams.get('view');
   const characterId = searchParams.get('characterId') ?? undefined;
@@ -74,4 +76,12 @@ export default function ChatPage() {
   }
 
   return <ChatView />;
+};
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<BouncingDots />}>
+      <ChatViewSelector />
+    </Suspense>
+  );
 }

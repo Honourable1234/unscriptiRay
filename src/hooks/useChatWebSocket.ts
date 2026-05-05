@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import type { Message } from '@/components/chat/types';
+import { useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { Env } from '@/libs/Env';
 import { supabase } from '@/libs/supabase';
+import { useChatService } from '@/services/useChatService';
 
 type WsChunkEvent = { type: 'chunk'; data: string };
 type WsCompleteEvent = { type: 'complete'; data: string };
@@ -37,7 +38,9 @@ const waitForOpen = (ws: WebSocket): Promise<void> =>
 /** Manages a persistent WebSocket connection for streaming chat responses. */
 export const useChatWebSocket = () => {
   const { token, user } = useAuth();
-  const { activeChat, setMessages, setIsTyping } = useChat();
+  const { activeChat } = useChatNavigation();
+  const { setMessages, setIsTyping } = useChatMessages();
+  const { startChat } = useChatService();
   const wsRef = useRef<WebSocket | null>(null);
 
   // Close the socket when the token changes (e.g. sign-out) so ensureOpen reconnects fresh.
@@ -50,7 +53,7 @@ export const useChatWebSocket = () => {
     };
   }, [token]);
 
-  const ensureOpen = useCallback(async (): Promise<WebSocket> => {
+  const ensureOpen = async (): Promise<WebSocket> => {
     const wsUrl = Env.NEXT_PUBLIC_WS_URL?.replace(/\/+$/, '');
     if (!wsUrl) {
       throw new Error('no_ws_url');
@@ -70,9 +73,9 @@ export const useChatWebSocket = () => {
     wsRef.current = ws;
     await waitForOpen(ws);
     return ws;
-  }, []);
+  };
 
-  const send = useCallback(async (content: string): Promise<void> => {
+  const send = async (content: string): Promise<void> => {
     if (!activeChat || !user || !token) {
       return;
     }
@@ -84,7 +87,7 @@ export const useChatWebSocket = () => {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       date: 'Today',
     };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev: Message[]) => [...prev, userMsg]);
     setIsTyping(true);
 
     const streamingId = Date.now() + 1;
@@ -117,10 +120,10 @@ export const useChatWebSocket = () => {
 
         if (msg.type === 'chunk') {
           setIsTyping(false);
-          setMessages((prev) => {
-            const hasStreaming = prev.some(m => m.id === streamingId);
+          setMessages((prev: Message[]) => {
+            const hasStreaming = prev.some((m: Message) => m.id === streamingId);
             if (hasStreaming) {
-              return prev.map(m =>
+              return prev.map((m: Message) =>
                 m.id === streamingId ? { ...m, text: (m.text ?? '') + msg.data } : m,
               );
             }
@@ -136,8 +139,8 @@ export const useChatWebSocket = () => {
 
         if (msg.type === 'complete') {
           setIsTyping(false);
-          setMessages(prev =>
-            prev.map(m => m.id === streamingId ? { ...m, text: msg.data } : m),
+          setMessages((prev: Message[]) =>
+            prev.map((m: Message) => m.id === streamingId ? { ...m, text: msg.data } : m),
           );
         }
 
@@ -147,7 +150,7 @@ export const useChatWebSocket = () => {
         ) {
           if (!retried) {
             retried = true;
-            api.post('/chat/start', { character_id: activeChat.characterId }, token)
+            startChat(activeChat.characterId)
               .then(() => doSend())
               .catch(() => setIsTyping(false));
           } else {
@@ -166,7 +169,7 @@ export const useChatWebSocket = () => {
     } catch {
       setIsTyping(false);
     }
-  }, [activeChat, user, token, ensureOpen, setMessages, setIsTyping]);
+  };
 
   return { send };
 };

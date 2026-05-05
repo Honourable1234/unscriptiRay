@@ -2,10 +2,10 @@
 
 import { ChatSideBar } from '@/components/chat/ChatSideBar';
 import { NavBar } from '@/components/dashboard/NavBar';
-import { useChat } from '@/context/ChatContext';
+import { useChatNavigation } from '@/context/ChatContext';
 
 export const ChatTemplate = (props: { children: React.ReactNode }) => {
-  const { activeChat } = useChat();
+  const { activeChat } = useChatNavigation();
 
   return (
     <div className="flex h-screen overflow-hidden bg-black-80">

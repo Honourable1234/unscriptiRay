@@ -3,11 +3,15 @@ import Image from 'next/image';
 export const CreateStyleCard = (props: { style: string; onClick?: () => void; selected?: boolean }) => {
   return (
     <div
-      className={`relative h-69 cursor-pointer overflow-hidden rounded-2xl rounded-xl transition-all ${props.selected ? 'ring-2 ring-primary-100' : ''}`}
+      className={`relative h-69 cursor-pointer overflow-hidden rounded-2xl transition-all ${props.selected ? 'ring-2 ring-primary-100' : ''}`}
       role="button"
       tabIndex={0}
       onClick={props.onClick}
-      onKeyDown={props.onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
+      }}
     >
       <Image
         src={`/Create/${props.style}.png`}

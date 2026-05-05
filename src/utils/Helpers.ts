@@ -4,6 +4,9 @@ import { routing } from '@/libs/I18nRouting';
  * Resolves the public base URL of the application.
  */
 export const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
   return 'http://localhost:3000';
 };
 

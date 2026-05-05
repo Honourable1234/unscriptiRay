@@ -1,16 +1,9 @@
 'use client';
 
+import type { WebSettings } from '@/services/useChatService';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { api } from '@/libs/api';
-
-type WebSettings = {
-  allow_character_messages: boolean;
-  background_display: boolean;
-  language: string;
-  lust_level: string;
-  response_length: string;
-};
+import { useChatService } from '@/services/useChatService';
 
 const LUST_LEVELS = ['friendly', 'moderate', 'explicit'];
 const RESPONSE_LENGTHS = ['short', 'medium', 'long'];
@@ -44,61 +37,65 @@ const SelectRow = (props: { label: string; value: string; options: string[]; onC
 );
 
 export const ChatSettingsPanel = (props: { chatroomId: string }) => {
-  const { token } = useAuth();
+  const t = useTranslations('ChatSettingsPanel');
+  const { getSettings, updateSettings } = useChatService();
   const [settings, setSettings] = useState<WebSettings | null>(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    api.get(`/chat/${props.chatroomId}/settings`, token ?? undefined).then((res) => {
+    getSettings(props.chatroomId).then((res) => {
       const ws = res?.content?.web_settings as WebSettings | undefined;
       if (ws) {
         setSettings(ws);
       }
-    });
-  }, [props.chatroomId, token]);
+    }).catch(() => setError(true));
+  }, [props.chatroomId]);
 
   const patch = (update: Partial<WebSettings>) => {
     if (saving) {
       return;
     }
+    const prev = settings;
     const next = { ...settings, ...update } as WebSettings;
     setSettings(next);
     setSaving(true);
-    api.patch(`/chat/${props.chatroomId}/settings`, { web_settings: next }, token ?? undefined)
+    updateSettings(props.chatroomId, next)
+      .catch(() => setSettings(prev))
       .finally(() => setSaving(false));
   };
 
   if (!settings) {
-    return <div className="px-4 py-3 text-sm text-white-50">Loading…</div>;
+    return <div className="px-4 py-3 text-sm text-white-50">{error ? t('error') : t('loading')}</div>;
   }
 
   return (
     <div className="flex flex-col divide-y divide-black-40">
-      {saving && <div className="px-4 py-1 text-right text-xs text-white-50">Saving…</div>}
+      {saving && <div className="px-4 py-1 text-right text-xs text-white-50">{t('saving')}</div>}
       <ToggleRow
-        label="Allow character messages"
+        label={t('allow_messages')}
         value={settings.allow_character_messages}
         onChange={v => patch({ allow_character_messages: v })}
       />
       <ToggleRow
-        label="Background display"
+        label={t('background_display')}
         value={settings.background_display}
         onChange={v => patch({ background_display: v })}
       />
       <SelectRow
-        label="Lust level"
+        label={t('lust_level')}
         value={settings.lust_level}
         options={LUST_LEVELS}
         onChange={v => patch({ lust_level: v })}
       />
       <SelectRow
-        label="Response length"
+        label={t('response_length')}
         value={settings.response_length}
         options={RESPONSE_LENGTHS}
         onChange={v => patch({ response_length: v })}
       />
       <SelectRow
-        label="Language"
+        label={t('language')}
         value={settings.language}
         options={LANGUAGES}
         onChange={v => patch({ language: v })}

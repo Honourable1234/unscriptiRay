@@ -1,6 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
 
 const PUBLIC_PATHS = ['/'];
@@ -9,8 +10,7 @@ export const AuthGuard = (props: { children: React.ReactNode }) => {
   const { isAuthenticated, authLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
-
-  const isPublic = PUBLIC_PATHS.some(p => pathname === p || pathname.endsWith(p));
+  const isPublic = PUBLIC_PATHS.includes(pathname);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated && !isPublic) {
@@ -18,7 +18,15 @@ export const AuthGuard = (props: { children: React.ReactNode }) => {
     }
   }, [authLoading, isAuthenticated, isPublic, router]);
 
-  if (authLoading || (!isAuthenticated && !isPublic)) {
+  if (authLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <BouncingDots />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated && !isPublic) {
     return null;
   }
 

@@ -1,23 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { OpenIcon, TrashIcon } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { useChatService } from '@/services/useChatService';
 import { ChatInputBar } from './ChatInputBar';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatRatingPrompt } from './ChatRatingPrompt';
 import { ChatRightPanel } from './ChatRightPanel';
 
 export const ChatRoom = () => {
-  const { activeChat, messages, setMessages } = useChat();
-  const { token } = useAuth();
+  const t = useTranslations('ChatRoom');
+  const { activeChat } = useChatNavigation();
+  const { messages, setMessages } = useChatMessages();
+  const { clearMessages } = useChatService();
   const [rightOpen, setRightOpen] = useState(true);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [lastRatedAtCount, setLastRatedAtCount] = useState(0);
 
-  const characterResponseCount = messages.filter(m => m.sender === 'character').length;
+  const seenCharacterIds = useRef(new Set<number>());
+  const [characterResponseCount, setCharacterResponseCount] = useState(0);
+
+  useEffect(() => {
+    if (messages.length === 0) {
+      seenCharacterIds.current.clear();
+      setCharacterResponseCount(0);
+      return;
+    }
+    let added = 0;
+    for (const m of messages) {
+      if (m.sender === 'character' && !seenCharacterIds.current.has(m.id as number)) {
+        seenCharacterIds.current.add(m.id as number);
+        added++;
+      }
+    }
+    if (added > 0) {
+      setCharacterResponseCount(prev => prev + added);
+    }
+  }, [messages]);
+
   const ratingCycle = Math.floor(characterResponseCount / 10);
   const lastRatedCycle = Math.floor(lastRatedAtCount / 10);
   const showRatingPrompt = characterResponseCount > 0 && ratingCycle > lastRatedCycle;
@@ -30,10 +52,14 @@ export const ChatRoom = () => {
     if (!activeChat) {
       return;
     }
-    api.delete(`/chat/${activeChat.chatroomId}/messages`, token ?? undefined).then(() => {
-      setMessages([]);
-    });
-    setShowClearConfirm(false);
+    clearMessages(activeChat.chatroomId)
+      .then(() => {
+        setMessages([]);
+        setShowClearConfirm(false);
+      })
+      .catch(() => {
+        setShowClearConfirm(false);
+      });
   };
 
   if (!activeChat) {
@@ -57,19 +83,19 @@ export const ChatRoom = () => {
         {/* Clear confirmation */}
         {showClearConfirm && (
           <div className="flex flex-shrink-0 items-center justify-between border-b border-black-40 bg-black-80 px-4 py-3">
-            <span className="text-sm text-white">Clear all messages?</span>
+            <span className="text-sm text-white">{t('clear_confirm')}</span>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowClearConfirm(false)}
                 className="cursor-pointer rounded-lg border border-black-40 px-3 py-1.5 text-xs text-white-75 hover:text-white"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleClearConfirm}
                 className="cursor-pointer rounded-lg bg-red-500/80 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-500"
               >
-                Clear
+                {t('clear')}
               </button>
             </div>
           </div>

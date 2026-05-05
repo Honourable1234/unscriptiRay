@@ -10,7 +10,11 @@ export const SelectCard = (props: { character: Character; onClick?: () => void; 
       role="button"
       tabIndex={0}
       onClick={props.onClick}
-      onKeyDown={props.onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
+      }}
     >
       {props.character.image && (
         <Image src={props.character.image} alt={props.character.name} fill sizes="200px" priority={props.priority} className="object-cover" />

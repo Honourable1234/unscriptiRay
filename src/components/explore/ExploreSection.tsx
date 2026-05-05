@@ -1,8 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
-import { api } from '@/libs/api';
+import { useExploreService } from '@/services/useExploreService';
 import { ExploreCharacters } from './ExploreCharacters';
 import { FilterDropdown } from './FilterDropdown';
 import { TagFilter } from './TagFilter';
@@ -33,7 +34,10 @@ const toLabel = (item: Record<string, unknown>): string =>
   (item.label ?? item.name ?? item.tag ?? item.value ?? '') as string;
 
 export const ExploreSection = () => {
+  const t = useTranslations('ExploreSection');
+  const { getFilters } = useExploreService();
   const [filters, setFilters] = useState<Filters | null>(null);
+  const [rawQuery, setRawQuery] = useState('');
   const [active, setActive] = useState<ActiveFilters>({
     q: '',
     identity: 'All',
@@ -44,10 +48,15 @@ export const ExploreSection = () => {
     sort: 'All',
     tags: ['All'],
   });
+
+  useEffect(() => {
+    const id = setTimeout(() => setActive(prev => ({ ...prev, q: rawQuery })), 300);
+    return () => clearTimeout(id);
+  }, [rawQuery]);
   const [selectedAgeLabel, setSelectedAgeLabel] = useState('All');
 
   useEffect(() => {
-    api.get('/explore/filters').then((res) => {
+    getFilters().then((res) => {
       const c = res?.content;
       if (c) {
         setFilters(c as Filters);
@@ -75,38 +84,38 @@ export const ExploreSection = () => {
   return (
     <>
       <SearchBar
-        onChange={q => setActive(prev => ({ ...prev, q }))}
-        onSearch={q => setActive(prev => ({ ...prev, q }))}
+        onChange={setRawQuery}
+        onSearch={setRawQuery}
       />
       {filters && (
         <>
           <div className="mt-3 hidden flex-wrap items-start gap-2 md:flex">
             <FilterDropdown
-              label="Identity"
+              label={t('filter_identity')}
               value={active.identity}
               options={['All', ...filters.identities]}
               onChange={v => setActive(prev => ({ ...prev, identity: v }))}
             />
             <FilterDropdown
-              label="Visual Style"
+              label={t('filter_style')}
               value={active.style}
               options={['All', ...filters.styles]}
               onChange={v => setActive(prev => ({ ...prev, style: v }))}
             />
             <FilterDropdown
-              label="Age Range"
+              label={t('filter_age')}
               value={selectedAgeLabel}
               options={ageRangeOptions}
               onChange={handleAgeChange}
             />
             <FilterDropdown
-              label="Vibe"
+              label={t('filter_vibe')}
               value={active.vibe}
               options={['All', ...filters.vibes]}
               onChange={v => setActive(prev => ({ ...prev, vibe: v }))}
             />
             <FilterDropdown
-              label="Sort"
+              label={t('filter_sort')}
               value={active.sort}
               options={['All', ...filters.sort_options]}
               onChange={v => setActive(prev => ({ ...prev, sort: v }))}

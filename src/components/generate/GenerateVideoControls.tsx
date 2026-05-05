@@ -1,12 +1,8 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SpeechIcon, StackedCoinIcon } from '@/components/icons';
-
-const qualityOptions: { value: string; label: string; description: string; coins?: number }[] = [
-  { value: 'Balanced', label: 'Balance (480p)', description: 'Best for outfits, backgrounds and effects' },
-  { value: 'Ultra', label: 'Ultra (1080p)', description: 'Optimized for NSFW and anatomical detail', coins: 100 },
-];
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-10', boxH: 'h-12' },
@@ -34,9 +30,15 @@ export const GenerateVideoControls = (props: {
   onDurationChange: (v: string) => void;
   onAudioToggle: () => void;
 }) => {
+  const t = useTranslations('GenerateVideoControls');
   const [qualityOpen, setQualityOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
   const [durationOpen, setDurationOpen] = useState(false);
+
+  const qualityOptions: { value: string; label: string; description: string; coins?: number }[] = [
+    { value: 'Balanced', label: t('balanced_label'), description: t('balanced_desc') },
+    { value: 'Ultra', label: t('ultra_label'), description: t('ultra_desc'), coins: 100 },
+  ];
 
   return (
     <div className="justify-between sm:flex">
@@ -46,7 +48,7 @@ export const GenerateVideoControls = (props: {
             onClick={() => setQualityOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Quality Level:
+            {t('quality_label')}
             <span className="font-bold text-white">{props.quality}</span>
           </button>
           {qualityOpen && (
@@ -88,7 +90,7 @@ export const GenerateVideoControls = (props: {
             onClick={() => setOrientationOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Orientation:
+            {t('orientation_label')}
             <span className="font-bold text-white">{props.orientation}</span>
           </button>
           {orientationOpen && (
@@ -115,7 +117,7 @@ export const GenerateVideoControls = (props: {
             onClick={() => setDurationOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Duration:
+            {t('duration_label')}
             <span className="font-bold text-white">{props.duration}</span>
           </button>
           {durationOpen && (
@@ -157,7 +159,7 @@ export const GenerateVideoControls = (props: {
         className={`flex cursor-pointer items-center gap-1 rounded-xl border px-3 py-3 text-sm font-medium transition-colors ${props.audio ? 'border-primary-100 bg-primary-100/10 text-primary-100' : 'border-black-40 bg-black-100 text-white-50 hover:border-primary-100'}`}
       >
         <SpeechIcon />
-        Audio
+        {t('audio')}
       </button>
     </div>
   );

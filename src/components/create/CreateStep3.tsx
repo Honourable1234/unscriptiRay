@@ -1,21 +1,13 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { useCreate } from '@/context/CreateContext';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 import { CreateAccordionField } from './CreateAccordionField';
 import { CreateTagsField } from './CreateTagsField';
 
 type Step3Key = 'backstory' | 'customPhysical' | 'customFaceDetails' | 'greeting' | 'personalityDetails';
-
-const fields: { key: Step3Key; title: string; placeholder: string }[] = [
-  { key: 'backstory', title: 'Backstory', placeholder: 'No Backstory set' },
-  { key: 'customPhysical', title: 'Custom Physical', placeholder: 'No custom physical set' },
-  { key: 'customFaceDetails', title: 'Custom Face Details', placeholder: 'No custom face details set' },
-  { key: 'greeting', title: 'Greeting', placeholder: 'No greeting set' },
-  { key: 'personalityDetails', title: 'Personality Details', placeholder: 'No personality details set' },
-];
 
 const setters: Record<Step3Key, keyof ReturnType<typeof useCreate>> = {
   backstory: 'setBackstory',
@@ -34,19 +26,28 @@ type EnrichContent = {
 };
 
 export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void }) => {
+  const t = useTranslations('CreateStep3');
   const ctx = useCreate();
-  const { token } = useAuth();
+  const { aiEnrich } = useCharacterService();
   const [enrichLoading, setEnrichLoading] = useState(false);
+
+  const fields: { key: Step3Key; title: string; placeholder: string }[] = [
+    { key: 'backstory', title: t('backstory'), placeholder: t('backstory_placeholder') },
+    { key: 'customPhysical', title: t('custom_physical'), placeholder: t('custom_physical_placeholder') },
+    { key: 'customFaceDetails', title: t('custom_face'), placeholder: t('custom_face_placeholder') },
+    { key: 'greeting', title: t('greeting'), placeholder: t('greeting_placeholder') },
+    { key: 'personalityDetails', title: t('personality_details'), placeholder: t('personality_details_placeholder') },
+  ];
 
   useEffect(() => {
     const allFilled = fields.every(f => !!ctx.data[f.key]?.trim());
     const hasTags = (ctx.data.tags ?? []).length > 0;
     props.onValidChange?.(allFilled && hasTags);
-  }, [ctx.data.backstory, ctx.data.customPhysical, ctx.data.customFaceDetails, ctx.data.greeting, ctx.data.personalityDetails, ctx.data.tags]);
+  }, [ctx.data.backstory, ctx.data.customPhysical, ctx.data.customFaceDetails, ctx.data.greeting, ctx.data.personalityDetails, ctx.data.tags, props.onValidChange]);
 
   const handleEnrich = () => {
     setEnrichLoading(true);
-    api.post('/characters/ai-enrich', {
+    aiEnrich({
       name: ctx.data.name,
       style: ctx.data.style ?? '',
       appearance: ctx.data.appearance,
@@ -54,7 +55,7 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
       relationship_dynamic: ctx.data.relationship,
       kinks: ctx.data.kinks ? [ctx.data.kinks] : [],
       hobby: ctx.data.socialRole,
-    }, token ?? undefined).then((res: unknown) => {
+    }).then((res: unknown) => {
       const content = (res as { content?: EnrichContent })?.content;
       if (content) {
         if (content.backstory) {
@@ -74,14 +75,16 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
         }
       }
       setEnrichLoading(false);
+    }).catch(() => {
+      setEnrichLoading(false);
     });
   };
 
   return (
     <div className="flex flex-col gap-3">
       <CreateAccordionField
-        title="AI Enrichment (Autocomplete)"
-        subtitle="Use AI to fill in the gaps and create a deeper character"
+        title={t('ai_enrichment')}
+        subtitle={t('ai_subtitle')}
         expandable={false}
         loading={enrichLoading}
         onClick={handleEnrich}

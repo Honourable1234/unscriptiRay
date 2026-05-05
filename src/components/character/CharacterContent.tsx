@@ -1,11 +1,12 @@
 'use client';
 
 import type { Character } from '@/data/characters';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
 import { useAuth } from '@/context/AuthContext';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 import { CharacterHeader } from './CharacterHeader';
 import { CharacterMediaGrid } from './CharacterMediaGrid';
 import { CharacterUnlockButton } from './CharacterUnlockButton';
@@ -14,11 +15,16 @@ type Tab = 'All' | 'Images' | 'Videos';
 type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean };
 
 export const CharacterContent = (props: { id: string }) => {
-  const { isPremium, token } = useAuth();
+  const t = useTranslations('CharacterContent');
+  const { isPremium } = useAuth();
+  const { getCharacter, getCharacterMedia } = useCharacterService();
   const [character, setCharacter] = useState<Character | null>(null);
   const [allMedia, setAllMedia] = useState<MediaItem[]>([]);
+  const [imageCount, setImageCount] = useState(0);
+  const [videoCount, setVideoCount] = useState(0);
   const [tab, setTab] = useState<Tab>('All');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const handleUnlocked = () => setReloadKey(k => k + 1);
 
@@ -26,7 +32,7 @@ export const CharacterContent = (props: { id: string }) => {
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
     setLoading(true);
 
-    const characterReq = api.get(`/characters/${props.id}`).then((res) => {
+    const characterReq = getCharacter(props.id).then((res) => {
       const c = res?.content;
       if (c) {
         setCharacter({
@@ -66,11 +72,11 @@ export const CharacterContent = (props: { id: string }) => {
       }).filter((m): m is MediaItem => m !== null);
     };
 
-    const imagesReq = api.get(`/characters/${props.id}/media?type=images`, token ?? undefined).then((res) => {
+    const imagesReq = getCharacterMedia(props.id, 'images').then((res) => {
       return parseMedia(res?.content?.items ?? res?.content ?? res?.data ?? res, 'image');
     });
 
-    const videosReq = api.get(`/characters/${props.id}/media?type=videos`, token ?? undefined).then((res) => {
+    const videosReq = getCharacterMedia(props.id, 'videos').then((res) => {
       return parseMedia(res?.content?.items ?? res?.content ?? res?.data ?? res, 'video');
     });
 
@@ -82,10 +88,14 @@ export const CharacterContent = (props: { id: string }) => {
         ...vids.filter(m => m.locked),
       ];
       setAllMedia(sorted);
+      setImageCount(imgs.length);
+      setVideoCount(vids.length);
     });
 
-    Promise.all([characterReq, mediaReq]).finally(() => setLoading(false));
-  }, [props.id, token, reloadKey]);
+    Promise.all([characterReq, mediaReq])
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [props.id, reloadKey]);
 
   if (loading) {
     return (
@@ -95,8 +105,12 @@ export const CharacterContent = (props: { id: string }) => {
     );
   }
 
-  if (!character) {
-    return null;
+  if (error || !character) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <p className="text-sm text-white-50">{t('error')}</p>
+      </div>
+    );
   }
 
   const filtered = allMedia.filter((m) => {
@@ -111,7 +125,7 @@ export const CharacterContent = (props: { id: string }) => {
 
   return (
     <div className="w-full py-2.5">
-      <CharacterHeader character={character} />
+      <CharacterHeader character={character} imageCount={imageCount} videoCount={videoCount} />
       {!isPremium && <CharacterUnlockButton character={character} onUnlocked={handleUnlocked} />}
       <MediaStyleTab tab={tab} onTabChange={setTab} />
       <CharacterMediaGrid name={character.name} media={filtered} isPremium={isPremium} />

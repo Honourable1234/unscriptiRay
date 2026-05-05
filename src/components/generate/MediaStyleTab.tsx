@@ -6,7 +6,7 @@ type Tab = 'All' | 'Images' | 'Videos';
 
 export const MediaStyleTab = (props: { tab: Tab; onTabChange: (tab: Tab) => void }) => {
   return (
-    <div className="mb-4 flex items-center justify-between pb-2">
+    <div className="mt-6 mb-4 flex items-center justify-between pb-2">
       <div className="flex gap-4">
         {(['All', 'Images', 'Videos'] as Tab[]).map(t => (
           <button
@@ -21,7 +21,7 @@ export const MediaStyleTab = (props: { tab: Tab; onTabChange: (tab: Tab) => void
           </button>
         ))}
       </div>
-      <button className="hidden cursor-pointer items-center gap-1 text-sm text-white sm:flex">
+      <button className="hidden cursor-pointer items-center gap-1 text-sm text-white">
         <FilterIcon2 />
         Filter
       </button>

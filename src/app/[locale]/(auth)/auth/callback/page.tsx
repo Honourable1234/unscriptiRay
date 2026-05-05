@@ -3,21 +3,18 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
-import { api } from '@/libs/api';
 import { supabase } from '@/libs/supabase';
+import { useAuthService } from '@/services/useAuthService';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const { register } = useAuthService();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         subscription.unsubscribe();
-        await api.post(
-          '/auth/register',
-          { id: session.user.id, email: session.user.email, password: '' },
-          session.access_token,
-        );
+        await register(session.user.id, session.user.email, session.access_token);
         const provider = session.user.app_metadata.provider;
         router.push(provider === 'email' ? '/sign-in' : '/');
         return;

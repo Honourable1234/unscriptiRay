@@ -1,58 +1,45 @@
 'use client';
 
 import type { SceneActionKey } from './GenerateSceneActions';
+import { useTranslations } from 'next-intl';
 import { CloseIcon } from '@/components/icons';
 import { EditContent } from './EditContent';
 import { EnhanceContent } from './EnhanceContent';
-import { GenerateButton } from './GenerateButton';
 import { RemixContent } from './RemixContent';
 import { SpeechContent } from './SpeechContent';
 import { VideoContent } from './VideoContent';
-
-const titleMap: Record<SceneActionKey, string> = {
-  Remix: 'Remix',
-  Video: 'Image to Video',
-  Edit: 'Edit image',
-  Speech: 'Lipsync video',
-  Enhance: 'Enhance image',
-  More: 'More',
-};
-
-const buttonLabelMap: Record<SceneActionKey, string> = {
-  Remix: 'Generate Image',
-  Video: 'Generate Animation',
-  Edit: 'Edit Image',
-  Speech: 'Generate Audio',
-  Enhance: 'Enhance',
-  More: 'Generate',
-};
-
-const coinsMap: Record<SceneActionKey, number> = {
-  Remix: 10,
-  Video: 100,
-  Edit: 10,
-  Speech: 10,
-  Enhance: 10,
-  More: 10,
-};
 
 export const GenerateSceneModal = (props: {
   action: SceneActionKey;
   onClose: () => void;
   imageSrc?: string;
   imageName?: string;
+  assetId?: string;
+  onSuccess?: () => void;
 }) => {
+  const t = useTranslations('GenerateSceneModal');
+  const assetId = props.assetId ?? '';
+
+  const titleMap: Record<SceneActionKey, string> = {
+    Remix: t('title_remix'),
+    Video: t('title_video'),
+    Edit: t('title_edit'),
+    Speech: t('title_speech'),
+    Enhance: t('title_enhance'),
+    More: t('title_more'),
+  };
+
   const contentMap: Record<SceneActionKey, React.ReactNode> = {
-    Remix: <RemixContent />,
-    Video: <VideoContent />,
-    Edit: <EditContent />,
-    Speech: <SpeechContent />,
-    Enhance: <EnhanceContent imageSrc={props.imageSrc ?? ''} imageName={props.imageName} />,
+    Remix: <RemixContent onSuccess={props.onSuccess} />,
+    Video: <VideoContent assetId={assetId} onSuccess={props.onSuccess} />,
+    Edit: <EditContent assetId={assetId} onSuccess={props.onSuccess} />,
+    Speech: <SpeechContent assetId={assetId} onSuccess={props.onSuccess} />,
+    Enhance: <EnhanceContent imageSrc={props.imageSrc ?? ''} imageName={props.imageName} assetId={assetId} onSuccess={props.onSuccess} />,
     More: <div />,
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="fixed inset-0 z-60 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div className="my-auto w-full max-w-160 rounded-2xl border border-white-25 bg-black-80 px-4 py-6 md:px-7.5">
         {/* Header */}
         <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
@@ -62,13 +49,8 @@ export const GenerateSceneModal = (props: {
           </button>
         </div>
 
-        {/* Content — unique per action */}
+        {/* Content — each action owns its own generate button */}
         {contentMap[props.action]}
-
-        {/* Generate button */}
-        <div className="mt-6">
-          <GenerateButton label={buttonLabelMap[props.action]} coins={coinsMap[props.action]} py="py-2" px="px-4" textSize="text-xs" onClick={() => {}} />
-        </div>
       </div>
     </div>
   );

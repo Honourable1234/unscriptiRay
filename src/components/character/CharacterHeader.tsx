@@ -1,6 +1,7 @@
 'use client';
 
 import type { Character } from '@/data/characters';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { AddIcon, CaptureIcon, ChatIcon2, FemaleIcon, GroupIcon, MaleIcon } from '@/components/icons';
@@ -9,7 +10,8 @@ import { CharacterDescription } from './CharacterDescription';
 import { CharacterStats } from './CharacterStats';
 import { CharacterTags } from './CharacterTags';
 
-export const CharacterHeader = (props: { character: Character }) => {
+export const CharacterHeader = (props: { character: Character; imageCount?: number; videoCount?: number }) => {
+  const t = useTranslations('CharacterHeader');
   const router = useRouter();
 
   const handleChat = () => {
@@ -45,13 +47,13 @@ export const CharacterHeader = (props: { character: Character }) => {
             <span className="font-medium text-white-75">{props.character.age}</span>
             {props.character.gender === 'Male' ? <MaleIcon /> : <FemaleIcon />}
           </div>
-          <CharacterStats character={props.character} />
+          <CharacterStats character={props.character} imageCount={props.imageCount} videoCount={props.videoCount} />
           <CharacterTags character={props.character} />
           <CharacterDescription character={props.character} />
           <div className="mb-4 flex w-full flex-wrap gap-3">
-            <CharacterActionButton text="Chat" icon={<ChatIcon2 />} className="w-full max-w-42 flex-1 bg-primary-100" onClick={handleChat} />
-            <CharacterActionButton text="Create a new group" icon={<GroupIcon />} className="w-full max-w-52 flex-1 border border-black-20" onClick={handleGroup} />
-            <CharacterActionButton text="Generate" icon={<CaptureIcon />} className="w-full max-w-42 flex-1 border border-black-20" onClick={handleGenerate} />
+            <CharacterActionButton text={t('chat')} icon={<ChatIcon2 />} className="w-full max-w-42 flex-1 bg-primary-100" onClick={handleChat} />
+            <CharacterActionButton text={t('new_group')} icon={<GroupIcon />} className="w-full max-w-52 flex-1 border border-black-20" onClick={handleGroup} />
+            <CharacterActionButton text={t('generate')} icon={<CaptureIcon />} className="w-full max-w-42 flex-1 border border-black-20" onClick={handleGenerate} />
           </div>
         </div>
       </div>
@@ -60,7 +62,7 @@ export const CharacterHeader = (props: { character: Character }) => {
         onClick={handleScenario}
       >
         <AddIcon />
-        New Scenario
+        {t('new_scenario')}
       </button>
     </div>
   );

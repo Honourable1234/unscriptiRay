@@ -1,11 +1,13 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { useCreate } from '@/context/CreateContext';
 import { CharacterInfo } from './CharacterInfo';
 import { CreateField } from './CreateField';
 
 export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void }) => {
+  const t = useTranslations('CreateStep2');
   const { data, setName, setAge } = useCreate();
 
   const handleName = (value: string) => {
@@ -26,10 +28,10 @@ export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void })
     <div className="space-y-8">
       <div className="flex flex-wrap justify-center gap-3">
         <div className="min-w-80 flex-1">
-          <CreateField label="Character Name" value={data.name} onChange={handleName} />
+          <CreateField label={t('character_name')} value={data.name} onChange={handleName} />
         </div>
         <div className="min-w-80 flex-1">
-          <CreateField label="Character Age" value={data.age} onChange={handleAge} type="number" />
+          <CreateField label={t('character_age')} value={data.age} onChange={handleAge} type="number" />
         </div>
       </div>
       <CharacterInfo />

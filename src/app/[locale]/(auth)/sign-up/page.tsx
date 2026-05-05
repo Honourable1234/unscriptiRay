@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
@@ -8,11 +9,13 @@ import { Divider } from '@/components/auth/Divider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
-import { api } from '@/libs/api';
 import { supabase } from '@/libs/supabase';
+import { useAuthService } from '@/services/useAuthService';
 
 export default function SignUpPage() {
+  const t = useTranslations('SignUpPage');
   const router = useRouter();
+  const { register } = useAuthService();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,7 +27,12 @@ export default function SignUpPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('passwords_mismatch'));
+      return;
+    }
+
+    if (password.length < 8) {
+      setError(t('password_too_short'));
       return;
     }
 
@@ -36,39 +44,35 @@ export default function SignUpPage() {
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
     if (supabaseError || !data.user) {
-      setError(supabaseError?.message ?? 'Sign up failed');
+      setError(supabaseError?.message ?? t('sign_up_failed'));
       setIsLoading(false);
       return;
     }
 
     if (!data.session) {
-      setSuccess('Check your email to confirm your account.');
+      setSuccess(t('check_email'));
       setIsLoading(false);
       return;
     }
 
-    await api.post(
-      '/auth/register',
-      { id: data.user.id, email: data.user.email, password: '' },
-      data.session.access_token,
-    );
+    await register(data.user.id, data.user.email, data.session.access_token);
     setIsLoading(false);
     router.push('/sign-in');
   };
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-in-out] space-y-6 sm:space-y-7 md:space-y-8">
-      <AuthTitle text="Create your account" />
-      <GoogleButton text="Sign up" redirectPath="/auth/google-register" />
-      <Divider text="Continue with email" />
-      <InputField id="email" label="Email" placeholder="Enter Your Email" value={email} onChange={setEmail} />
-      <InputField id="password" label="Password" isPassword value={password} onChange={setPassword} />
-      <InputField id="confirm-password" label="Confirm Password" isPassword value={confirmPassword} onChange={setConfirmPassword} />
+      <AuthTitle text={t('title')} />
+      <GoogleButton text={t('google_button')} redirectPath="/auth/google-register" />
+      <Divider text={t('divider')} />
+      <InputField id="email" label={t('email_label')} placeholder={t('email_placeholder')} value={email} onChange={setEmail} />
+      <InputField id="password" label={t('password_label')} isPassword value={password} onChange={setPassword} />
+      <InputField id="confirm-password" label={t('confirm_password_label')} isPassword value={confirmPassword} onChange={setConfirmPassword} />
       {error && <p className="text-xs text-red-400">{error}</p>}
       {success && <p className="text-xs text-primary-100">{success}</p>}
       <div>
-        <AuthButton text="Sign Up" isLoading={isLoading} onClick={handleSubmit} />
-        <AuthLink text="Have an account?" linkText="Sign In" href="/sign-in" />
+        <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
+        <AuthLink text={t('have_account')} linkText={t('sign_in_link')} href="/sign-in" />
       </div>
     </div>
   );

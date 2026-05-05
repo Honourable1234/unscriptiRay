@@ -6,8 +6,8 @@ import { useEffect } from 'react';
 import { ChatRoom } from '@/components/chat/ChatRoom';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { useChatService } from '@/services/useChatService';
 
 const formatTime = (dateStr: string) => {
   const d = new Date(dateStr);
@@ -24,8 +24,10 @@ const formatDate = (dateStr: string) => {
 };
 
 export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
-  const { activeChat, setActiveChat, setMessages, setNextCursor, setHasMoreMessages, bumpChatList } = useChat();
-  const { token, authLoading } = useAuth();
+  const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
+  const { setMessages, setNextCursor, setHasMoreMessages } = useChatMessages();
+  const { authLoading } = useAuth();
+  const { startChat, getMessages } = useChatService();
   const router = useRouter();
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
     setMessages([]);
 
     props.params.then(({ id }) => {
-      api.post('/chat/start', { character_id: id }, token ?? undefined).then((res) => {
+      startChat(id).then((res) => {
         const c = res?.content;
         if (!c?.chatroom_id) {
           router.replace('/chat');
@@ -65,7 +67,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
         }
 
         if (!c.is_new) {
-          api.get(`/chat/${c.chatroom_id}/messages`, token ?? undefined).then((msgRes) => {
+          getMessages(c.chatroom_id as string).then((msgRes) => {
             const items: unknown = msgRes?.content?.messages ?? msgRes?.messages ?? msgRes?.content?.items ?? msgRes?.content ?? msgRes?.data;
             if (Array.isArray(items)) {
               const mapped: Message[] = [...(items as Record<string, unknown>[])].reverse().map((m, i) => {
@@ -88,7 +90,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
         router.replace('/chat');
       });
     });
-  }, [authLoading]);
+  }, [authLoading, router, setActiveChat, setMessages, setNextCursor, setHasMoreMessages, bumpChatList]);
 
   if (!activeChat) {
     return (

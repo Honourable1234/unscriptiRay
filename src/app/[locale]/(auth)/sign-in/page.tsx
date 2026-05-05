@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
@@ -9,11 +10,11 @@ import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
 import { BouncingDots } from '@/components/general/BouncingDots';
-
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
 
 export default function SignInPage() {
+  const t = useTranslations('SignInPage');
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ export default function SignInPage() {
     const { data, error: supabaseError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (supabaseError || !data.session) {
-      setError(supabaseError?.message ?? 'Login failed');
+      setError(supabaseError?.message ?? t('login_failed'));
       setIsLoading(false);
       return;
     }
@@ -40,11 +41,11 @@ export default function SignInPage() {
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-in-out] space-y-6 sm:space-y-7 md:space-y-8">
-      <AuthTitle text="Sign in" />
-      <GoogleButton text="Log in" />
-      <Divider text="Continue with email" />
-      <InputField id="email" label="Email" placeholder="Enter Your Email" value={email} onChange={setEmail} />
-      <InputField id="password" label="Password" isPassword value={password} onChange={setPassword} />
+      <AuthTitle text={t('title')} />
+      <GoogleButton text={t('google_button')} />
+      <Divider text={t('divider')} />
+      <InputField id="email" label={t('email_label')} placeholder={t('email_placeholder')} value={email} onChange={setEmail} />
+      <InputField id="password" label={t('password_label')} isPassword value={password} onChange={setPassword} />
       {error && <p className="text-xs text-red-400">{error}</p>}
       <p className="text-right">
         <Link
@@ -52,12 +53,12 @@ export default function SignInPage() {
           onClick={() => setForgotLoading(true)}
           className={`inline-flex items-center text-xs font-medium text-white ${forgotLoading ? 'pointer-events-none' : ''}`}
         >
-          {forgotLoading ? <BouncingDots /> : 'Forgot password?'}
+          {forgotLoading ? <BouncingDots /> : t('forgot_password')}
         </Link>
       </p>
       <div>
-        <AuthButton text="Log In" isLoading={isLoading} onClick={handleSubmit} />
-        <AuthLink text="No account?" linkText="Sign Up" href="/sign-up" />
+        <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
+        <AuthLink text={t('no_account')} linkText={t('sign_up_link')} href="/sign-up" />
       </div>
     </div>
   );

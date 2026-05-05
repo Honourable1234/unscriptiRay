@@ -7,7 +7,7 @@ export const AuthTemplate = (props: {
     <div className="flex min-h-screen flex-col items-center justify-between bg-black-80">
       <header className=" flex h-15 w-full items-center justify-center bg-black-100 md:h-25">
         <div className="relative h-full w-15 md:w-25.5">
-          <Image src="/General/Unscripti-logo.png" fill alt="Unscripti Logo" className="h-full object-contain" />
+          <Image src="/General/Unscripti-logo.png" fill alt="Unscripti Logo" sizes="(max-width: 768px) 60px, 102px" className="h-full object-contain" />
         </div>
       </header>
       <div className="flex w-full items-center justify-center p-3 sm:p-4">
@@ -16,7 +16,11 @@ export const AuthTemplate = (props: {
         </div>
       </div>
       <footer className="flex h-15 w-full items-center justify-center bg-black-100 md:h-25">
-        <p className="text-sm font-semibold text-white">Copyright© 2026. Unscripti AI</p>
+        <p className="text-sm font-semibold text-white">
+          Copyright©
+          {new Date().getFullYear()}
+          . Unscripti AI
+        </p>
       </footer>
     </div>
   );

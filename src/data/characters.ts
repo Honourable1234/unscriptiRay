@@ -8,4 +8,5 @@ export type Character = {
   likes: string;
   comments: string;
   tags: string[];
+  is_liked?: boolean;
 };

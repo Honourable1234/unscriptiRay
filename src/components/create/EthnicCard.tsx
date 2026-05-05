@@ -23,7 +23,11 @@ export const EthnicCard = (props: {
       role="button"
       tabIndex={0}
       onClick={props.onClick}
-      onKeyDown={props.onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
+      }}
     >
       {props.selected && (
         <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100">

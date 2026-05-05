@@ -1,4 +1,5 @@
 'use client';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { FilterIcon, SearchIcon } from '@/components/icons';
 
@@ -7,6 +8,7 @@ export const SearchBar = (props: {
   onChange?: (value: string) => void;
   hideFilter?: boolean;
 }) => {
+  const t = useTranslations('SearchBar');
   const [value, setValue] = useState('');
 
   return (
@@ -18,7 +20,7 @@ export const SearchBar = (props: {
         <input
           type="text"
           value={value}
-          placeholder="Search"
+          placeholder={t('placeholder')}
           onChange={(e) => {
             setValue(e.target.value);
             props.onChange?.(e.target.value);

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
@@ -8,6 +9,7 @@ import { PadlockIcon } from '@/components/icons';
 import { supabase } from '@/libs/supabase';
 
 export default function NewPasswordPage() {
+  const t = useTranslations('NewPasswordPage');
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,7 +20,12 @@ export default function NewPasswordPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('passwords_mismatch'));
+      return;
+    }
+
+    if (password.length < 8) {
+      setError(t('password_too_short'));
       return;
     }
 
@@ -42,13 +49,13 @@ export default function NewPasswordPage() {
         <div className="w-fit rounded-[10px] bg-black-40 p-2.5">
           <PadlockIcon />
         </div>
-        <p className="mt-2.5 text-lg font-semibold text-white">New Password</p>
-        <p className="mt-3 text-sm font-medium text-white">Please enter your new password</p>
+        <p className="mt-2.5 text-lg font-semibold text-white">{t('title')}</p>
+        <p className="mt-3 text-sm font-medium text-white">{t('subtitle')}</p>
       </div>
-      <InputField id="password" label="New Password" isPassword value={password} onChange={setPassword} />
-      <InputField id="confirm-password" label="Confirm Password" isPassword value={confirmPassword} onChange={setConfirmPassword} />
+      <InputField id="password" label={t('new_password_label')} isPassword value={password} onChange={setPassword} />
+      <InputField id="confirm-password" label={t('confirm_password_label')} isPassword value={confirmPassword} onChange={setConfirmPassword} />
       {error && <p className="text-xs text-red-400">{error}</p>}
-      <AuthButton text="Submit" isLoading={isLoading} onClick={handleSubmit} />
+      <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
     </div>
   );
 }

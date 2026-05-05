@@ -1,19 +1,20 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AiIcon, AttachIcon, MicIcon, SendIcon } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
+import { useChatNavigation } from '@/context/ChatContext';
 import { useChatWebSocket } from '@/hooks/useChatWebSocket';
-import { api } from '@/libs/api';
+import { useChatService } from '@/services/useChatService';
 
 export const ChatInputBar = () => {
+  const t = useTranslations('ChatInputBar');
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-  const { token } = useAuth();
-  const { activeChat } = useChat();
+  const { activeChat } = useChatNavigation();
   const { send } = useChatWebSocket();
+  const { getSuggestions } = useChatService();
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -31,11 +32,7 @@ export const ChatInputBar = () => {
     }
     setLoadingSuggestions(true);
     try {
-      const res = await api.post(
-        `/chat/${activeChat.chatroomId}/suggestions`,
-        {},
-        token ?? undefined,
-      );
+      const res = await getSuggestions(activeChat.chatroomId);
       const items = res?.content?.suggestions ?? res?.content?.items ?? res?.content;
       if (Array.isArray(items)) {
         setSuggestions(items as string[]);
@@ -66,7 +63,7 @@ export const ChatInputBar = () => {
         <div className="flex flex-wrap gap-2 px-4 pb-2">
           {loadingSuggestions
             ? (
-                <span className="text-xs text-white-50">Getting suggestions…</span>
+                <span className="text-xs text-white-50">{t('getting_suggestions')}</span>
               )
             : suggestions.map(s => (
                 <button
@@ -93,7 +90,7 @@ export const ChatInputBar = () => {
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Send a message..."
+            placeholder={t('placeholder')}
             className="flex-1 bg-transparent text-sm text-white placeholder-white-75 focus:outline-none"
           />
           <button

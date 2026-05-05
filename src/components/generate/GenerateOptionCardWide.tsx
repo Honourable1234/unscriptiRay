@@ -25,7 +25,7 @@ export const GenerateOptionCardWide = (props: {
             <svg width="0" height="0" className="absolute">
               <defs>
                 <linearGradient id="upgrade-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="var(--color-error-100)" />
+                  <stop offset="0%" stopColor="var(--color-premium-100)" />
                   <stop offset="100%" stopColor="var(--color-primary-200)" />
                 </linearGradient>
               </defs>

@@ -1,7 +1,7 @@
 import type { Character } from '@/data/characters';
 import { HeartIcon, PictureIcon, VideoIcon } from '@/components/icons';
 
-export const CharacterStats = (props: { character: Character }) => (
+export const CharacterStats = (props: { character: Character; imageCount?: number; videoCount?: number }) => (
   <div className="flex items-center gap-4 text-xs text-white">
     <div className="flex items-center gap-1">
       <HeartIcon />
@@ -9,11 +9,11 @@ export const CharacterStats = (props: { character: Character }) => (
     </div>
     <div className="flex items-center gap-1">
       <PictureIcon />
-      <span>31</span>
+      <span>{props.imageCount ?? 0}</span>
     </div>
     <div className="flex items-center gap-1">
       <VideoIcon />
-      <span>12</span>
+      <span>{props.videoCount ?? 0}</span>
     </div>
   </div>
 );

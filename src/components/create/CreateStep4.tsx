@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
 import { CloseIcon, EditIcon, PlayIcon } from '@/components/icons';
@@ -43,11 +44,6 @@ export type CreatedCharacter = {
 
 type Tab = 'appearance' | 'personality';
 
-const tabs: { label: string; value: Tab }[] = [
-  { label: 'Appearance', value: 'appearance' },
-  { label: 'Personality', value: 'personality' },
-];
-
 function lookupColor(map: Record<string, string>, name?: string): string {
   if (!name) {
     return '#1a1f2e';
@@ -62,15 +58,21 @@ function isLightColor(hex: string): boolean {
   return (r * 299 + g * 587 + b * 114) / 1000 > 128;
 }
 
-export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
+export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsChange?: (tags: string[]) => void }) => {
+  const t = useTranslations('CreateStep4');
   const [tab, setTab] = useState<Tab>('appearance');
   const [tags, setTags] = useState<string[]>(props.character?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
 
+  const tabs: { label: string; value: Tab }[] = [
+    { label: t('tab_appearance'), value: 'appearance' },
+    { label: t('tab_personality'), value: 'personality' },
+  ];
+
   if (!props.character) {
     return (
       <div className="flex h-64 items-center justify-center rounded-2xl border border-white-25/30">
-        <p className="text-sm text-white-50">No character data available.</p>
+        <p className="text-sm text-white-50">{t('no_character')}</p>
       </div>
     );
   }
@@ -84,35 +86,35 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
   const kinkValue = Array.isArray(c.kinks) ? c.kinks[0] : c.kinks;
 
   const appearanceAttrs: { label: string; value?: string | number }[] = [
-    { label: 'Voice', value: voiceValue },
-    { label: 'Ethnic', value: a.ethnic_influence },
-    { label: 'Facial Shape', value: a.facial_shape },
-    { label: 'Hair Style', value: a.hair_style },
-    { label: 'Eye Intensity', value: a.eye_intensity },
-    { label: 'Figure Type', value: a.figure_type },
-    { label: 'Bust', value: a.bust_profile },
-    { label: 'Hip', value: a.hip_profile },
+    { label: t('voice'), value: voiceValue },
+    { label: t('ethnic'), value: a.ethnic_influence },
+    { label: t('facial_shape'), value: a.facial_shape },
+    { label: t('hair_style'), value: a.hair_style },
+    { label: t('eye_intensity'), value: a.eye_intensity },
+    { label: t('figure_type'), value: a.figure_type },
+    { label: t('bust'), value: a.bust_profile },
+    { label: t('hip'), value: a.hip_profile },
   ];
 
   const personalityGrid: { label: string; value?: string }[] = [
-    { label: 'Personality', value: c.personality_archetype },
-    { label: 'Relationship', value: c.relationship_dynamic },
-    { label: 'Kinks & Comforts', value: kinkValue },
-    { label: 'Social Role', value: c.hobby },
+    { label: t('personality_attr'), value: c.personality_archetype },
+    { label: t('relationship'), value: c.relationship_dynamic },
+    { label: t('kinks_comforts'), value: kinkValue },
+    { label: t('social_role'), value: c.hobby },
   ];
 
   const personalityAccordion: { label: string; value?: string }[] = [
-    { label: 'Backstory', value: c.backstory },
-    { label: 'Physical', value: c.custom_physical_prompt },
-    { label: 'Face Details', value: c.custom_face_prompt },
-    { label: 'Greeting', value: c.greeting_message },
-    { label: 'Personality Details', value: c.personality_details },
+    { label: t('backstory'), value: c.backstory },
+    { label: t('physical'), value: c.custom_physical_prompt },
+    { label: t('face_details'), value: c.custom_face_prompt },
+    { label: t('greeting'), value: c.greeting_message },
+    { label: t('personality_details'), value: c.personality_details },
   ];
 
   const colorTabs: { key: string; label: string; value?: string; map: Record<string, string> }[] = [
-    { key: 'hair_color', label: 'Hair Color', value: a.hair_color, map: hairColorMap },
-    { key: 'eye_color', label: 'Eye Color', value: a.eye_color, map: eyeColorMap },
-    { key: 'skin_tone', label: 'Skin Tone', value: a.skin_tone, map: skinToneMap },
+    { key: 'hair_color', label: t('hair_color'), value: a.hair_color, map: hairColorMap },
+    { key: 'eye_color', label: t('eye_color'), value: a.eye_color, map: eyeColorMap },
+    { key: 'skin_tone', label: t('skin_tone'), value: a.skin_tone, map: skinToneMap },
   ];
 
   return (
@@ -134,7 +136,7 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
       <div className="flex flex-wrap items-start justify-center gap-6">
         {/* Left: image — always visible */}
         <div className="flex max-w-87 min-w-60 flex-1 flex-col gap-2">
-          <p className="mb-6 text-center text-white">Preview Character</p>
+          <p className="mb-6 text-center text-white">{t('preview')}</p>
           <div className="relative h-121 w-full overflow-hidden rounded-2xl">
             <Image
               src={imageUrl}
@@ -144,7 +146,7 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
             />
             {isGenerating && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 px-8">
-                <p className="text-sm font-semibold text-white">Generate Process</p>
+                <p className="text-sm font-semibold text-white">{t('generate_process')}</p>
                 <div className="h-4 w-full max-w-49 overflow-hidden rounded-full bg-white">
                   <div className="h-full w-[45%] rounded-full bg-primary-100" />
                 </div>
@@ -217,16 +219,22 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
           )}
 
           <div className="flex flex-col gap-2">
-            <span className="text-sm text-white-75">
-              Tags (
-              {tags.length}
-              /10)
-            </span>
+            <span className="text-sm text-white-75">{t('tags', { count: tags.length })}</span>
             <div className="flex flex-wrap items-center gap-2 rounded-xl border border-white-25/30 px-3 py-2.5">
               {tags.map(tag => (
                 <span key={tag} className="flex items-center gap-1 rounded-md bg-primary-100/20 px-2 py-1 text-xs text-primary-100">
                   {tag}
-                  <button type="button" onClick={() => setTags(tags.filter(t => t !== tag))} className="cursor-pointer hover:text-white"><CloseIcon /></button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = tags.filter(t => t !== tag);
+                      setTags(next);
+                      props.onTagsChange?.(next);
+                    }}
+                    className="cursor-pointer hover:text-white"
+                  >
+                    <CloseIcon />
+                  </button>
                 </span>
               ))}
               {tags.length < 10 && (
@@ -241,11 +249,13 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
                     e.preventDefault();
                     const v = tagInput.trim();
                     if (v && !tags.includes(v)) {
-                      setTags([...tags, v]);
+                      const next = [...tags, v];
+                      setTags(next);
+                      props.onTagsChange?.(next);
                     }
                     setTagInput('');
                   }}
-                  placeholder="Add tag..."
+                  placeholder={t('tag_placeholder')}
                   className="min-w-20 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white-25"
                 />
               )}
@@ -256,7 +266,7 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null }) => {
             type="button"
             className="w-full cursor-pointer rounded-xl bg-primary-100 py-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Meet Your Companion
+            {t('meet_companion')}
           </button>
         </div>
       </div>

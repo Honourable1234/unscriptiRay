@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { InputField } from '@/components/auth/InputField';
@@ -7,6 +8,7 @@ import { KeyIcon } from '@/components/icons';
 import { supabase } from '@/libs/supabase';
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations('ForgotPasswordPage');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -17,7 +19,9 @@ export default function ForgotPasswordPage() {
     setSuccess('');
     setIsLoading(true);
 
-    const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email);
+    const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/new-password`,
+    });
 
     if (supabaseError) {
       setError(supabaseError.message);
@@ -25,7 +29,7 @@ export default function ForgotPasswordPage() {
       return;
     }
 
-    setSuccess('Check your email for a reset link.');
+    setSuccess(t('check_email'));
     setIsLoading(false);
   };
 
@@ -35,13 +39,13 @@ export default function ForgotPasswordPage() {
         <div className="w-fit rounded-[10px] bg-black-40 p-2.5">
           <KeyIcon />
         </div>
-        <p className="mt-2.5 text-lg font-semibold text-white">Forgot your password?</p>
-        <p className="mt-3 text-sm font-medium text-white">A link will be sent to your email to reset your password</p>
+        <p className="mt-2.5 text-lg font-semibold text-white">{t('title')}</p>
+        <p className="mt-3 text-sm font-medium text-white">{t('subtitle')}</p>
       </div>
-      <InputField id="email" label="Email" placeholder="Enter Your Email" value={email} onChange={setEmail} />
+      <InputField id="email" label={t('email_label')} placeholder={t('email_placeholder')} value={email} onChange={setEmail} />
       {error && <p className="text-xs text-red-400">{error}</p>}
       {success && <p className="text-xs text-green-400">{success}</p>}
-      <AuthButton text="Submit" isLoading={isLoading} onClick={handleSubmit} />
+      <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { BouncingDots } from '@/components/general/BouncingDots';
 import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, UpgradeIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
@@ -13,8 +12,8 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: 'Create', href: '/create', icon: <ExploreIcon /> },
-  { label: 'Explore', href: '/', icon: <CreateIcon /> },
+  { label: 'Create', href: '/create', icon: <CreateIcon /> },
+  { label: 'Explore', href: '/', icon: <ExploreIcon /> },
   { label: 'Chat', href: '/chat', icon: <ChatIcon /> },
   { label: 'Generate', href: '/generate', icon: <GenerateIcon /> },
   { label: 'My AI', href: '/my-ai', icon: <MyAIIcon /> },
@@ -23,7 +22,6 @@ const navItems: NavItem[] = [
 
 export const SideBar = () => {
   const { isAuthenticated, isPremium } = useAuth();
-  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -81,15 +79,10 @@ export const SideBar = () => {
             isAuthenticated
               ? (
                   <button
-                    className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white"
-                    disabled={upgradeLoading}
-                    onClick={() => {
-                      setUpgradeLoading(true);
-                      setTimeout(() => setUpgradeLoading(false), 3000);
-                    }}
+                    className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white"
                   >
                     <UpgradeIcon />
-                    {upgradeLoading ? <BouncingDots /> : <span>Upgrade</span>}
+                    <span>Upgrade</span>
                   </button>
                 )
               : (
@@ -132,15 +125,10 @@ export const SideBar = () => {
           isAuthenticated
             ? (
                 <button
-                  className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-error-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}
-                  disabled={upgradeLoading}
-                  onClick={() => {
-                    setUpgradeLoading(true);
-                    setTimeout(() => setUpgradeLoading(false), 3000);
-                  }}
+                  className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}
                 >
                   <UpgradeIcon />
-                  {isOpen && (upgradeLoading ? <BouncingDots /> : <span>Upgrade</span>)}
+                  {isOpen && <span>Upgrade</span>}
                 </button>
               )
             : (

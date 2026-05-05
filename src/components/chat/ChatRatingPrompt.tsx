@@ -1,14 +1,15 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { CloseIcon, StarIcon } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatNavigation } from '@/context/ChatContext';
+import { useChatService } from '@/services/useChatService';
 
 export const ChatRatingPrompt = (props: { onDone: () => void }) => {
-  const { token } = useAuth();
-  const { activeChat } = useChat();
+  const t = useTranslations('ChatRatingPrompt');
+  const { activeChat } = useChatNavigation();
+  const { rateChat } = useChatService();
   const [hovered, setHovered] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
@@ -17,17 +18,19 @@ export const ChatRatingPrompt = (props: { onDone: () => void }) => {
       return;
     }
     setSubmitting(true);
-    api.post(`/chat/${activeChat.chatroomId}/rate`, { rating }, token ?? undefined)
+    rateChat(activeChat.chatroomId, rating)
+      .then(() => {
+        props.onDone();
+      })
       .finally(() => {
         setSubmitting(false);
-        props.onDone();
       });
   };
 
   return (
     <div className="mx-4 mb-2 flex items-center justify-between rounded-xl border border-black-40 bg-black-80 px-4 py-3">
       <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-white">How is the conversation going?</span>
+        <span className="text-sm font-medium text-white">{t('question')}</span>
         <div className="flex gap-1" onMouseLeave={() => setHovered(0)}>
           {[1, 2, 3, 4, 5].map(n => (
             <button

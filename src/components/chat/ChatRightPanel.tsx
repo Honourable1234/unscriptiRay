@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -15,9 +16,8 @@ import {
   SettingsIcon,
   VoiceIcon,
 } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatNavigation } from '@/context/ChatContext';
+import { useCharacterService } from '@/services/useCharacterService';
 import { ChatMemoryPanel } from './ChatMemoryPanel';
 import { ChatSettingsPanel } from './ChatSettingsPanel';
 
@@ -26,8 +26,9 @@ export const ChatRightPanel = (props: {
   image: string;
   onClose: () => void;
 }) => {
-  const { activeChat } = useChat();
-  const { token } = useAuth();
+  const t = useTranslations('ChatRightPanel');
+  const { activeChat } = useChatNavigation();
+  const { getCharacter, getCharacterMedia } = useCharacterService();
   const router = useRouter();
   const [imgIndex, setImgIndex] = useState(0);
   const [images, setImages] = useState<string[]>([]);
@@ -42,14 +43,14 @@ export const ChatRightPanel = (props: {
       return;
     }
 
-    api.get(`/characters/${activeChat.characterId}`).then((res) => {
+    getCharacter(activeChat.characterId).then((res) => {
       const c = res?.content;
       if (c?.age) {
         setAge(c.age as number);
       }
-    });
+    }).catch(() => {});
 
-    api.get(`/characters/${activeChat.characterId}/media?type=images`, token ?? undefined).then((res) => {
+    getCharacterMedia(activeChat.characterId, 'images').then((res) => {
       const items: unknown = res?.content?.items;
       if (Array.isArray(items)) {
         const urls = (items as Record<string, unknown>[])
@@ -59,8 +60,8 @@ export const ChatRightPanel = (props: {
           setImages(urls);
         }
       }
-    });
-  }, [activeChat?.characterId, token]);
+    }).catch(() => {});
+  }, [activeChat?.characterId]);
 
   const displayImages = images.length > 0 ? images : [props.image];
   const prev = () => setImgIndex(i => (i - 1 + displayImages.length) % displayImages.length);
@@ -121,11 +122,11 @@ export const ChatRightPanel = (props: {
             className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-primary-100 px-1 py-2.5 text-xs font-semibold text-primary-100 sm:px-3"
           >
             <MediaIcon />
-            View Media
+            {t('view_media')}
           </button>
           <button className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white sm:px-3">
             <PhoneIcon />
-            Call Me
+            {t('call_me')}
           </button>
         </div>
 
@@ -134,7 +135,7 @@ export const ChatRightPanel = (props: {
           <button className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40">
             <span className="flex items-center gap-2">
               <ModelIcon />
-              Model
+              {t('model')}
             </span>
             <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
           </button>
@@ -143,7 +144,7 @@ export const ChatRightPanel = (props: {
           <button className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40">
             <span className="flex items-center gap-2">
               <VoiceIcon />
-              Voice
+              {t('voice')}
             </span>
             <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
           </button>
@@ -155,7 +156,7 @@ export const ChatRightPanel = (props: {
           >
             <span className="flex items-center gap-2">
               <MemoryIcon />
-              Memory
+              {t('memory')}
             </span>
             <span className={`transition-transform duration-200 ${memoryOpen ? 'rotate-0' : '-rotate-90'}`}>
               <ChevronDownIcon />
@@ -172,7 +173,7 @@ export const ChatRightPanel = (props: {
           >
             <span className="flex items-center gap-2">
               <SettingsIcon />
-              Settings
+              {t('settings')}
             </span>
             <span className={`transition-transform duration-200 ${settingsOpen ? 'rotate-0' : '-rotate-90'}`}>
               <ChevronDownIcon />

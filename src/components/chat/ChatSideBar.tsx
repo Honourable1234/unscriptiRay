@@ -1,12 +1,13 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AddIcon, ChevronDownIcon, GroupIcon, NewChatIcon, OpenIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
-import { useChat } from '@/context/ChatContext';
-import { api } from '@/libs/api';
+import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { useChatService } from '@/services/useChatService';
 
 type ChatView = 'chat' | 'group' | 'scenario';
 
@@ -22,15 +23,12 @@ type ChatRoom = {
   character: { id: string; name: string; image_url: string };
 };
 
-const navItems: NavItem[] = [
-  { label: 'New Chat', icon: <NewChatIcon />, view: 'chat' },
-  { label: 'New Group', icon: <GroupIcon />, view: 'group' },
-  { label: 'New Scenario', icon: <AddIcon />, view: 'scenario' },
-];
-
 const ChatHistoryList = (props: { onSelect: () => void }) => {
+  const t = useTranslations('ChatSideBar');
   const { token } = useAuth();
-  const { chatListVersion, setActiveChat, setMessages, setNextCursor, setHasMoreMessages } = useChat();
+  const { chatListVersion, setActiveChat } = useChatNavigation();
+  const { setMessages, setNextCursor, setHasMoreMessages } = useChatMessages();
+  const { getChatList, getMessages } = useChatService();
   const router = useRouter();
   const [open, setOpen] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
@@ -42,7 +40,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
     if (!token) {
       return;
     }
-    api.get('/chat/list?page=1', token).then((res) => {
+    getChatList(1).then((res) => {
       const items = res?.content?.items;
       const pagination = res?.content?.pagination;
       if (Array.isArray(items)) {
@@ -60,7 +58,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
     }
     const nextPage = page + 1;
     setLoadingMore(true);
-    api.get(`/chat/list?page=${nextPage}`, token).then((res) => {
+    getChatList(nextPage).then((res) => {
       const items = res?.content?.items;
       if (Array.isArray(items)) {
         setRooms(prev => [...prev, ...(items as ChatRoom[])]);
@@ -79,11 +77,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
         onClick={() => setOpen(prev => !prev)}
         className="flex cursor-pointer items-center justify-between rounded-lg px-2 py-1 text-xs font-semibold text-white-75 hover:text-white"
       >
-        <span>
-          Your Chats (
-          {rooms.length}
-          )
-        </span>
+        <span>{t('your_chats', { count: rooms.length })}</span>
         <span className={`transition-transform duration-200 ${open ? 'rotate-0' : '-rotate-90'}`}>
           <ChevronDownIcon />
         </span>
@@ -103,7 +97,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
                   greetingMessage: '',
                 });
                 setMessages([]);
-                api.get(`/chat/${room.id}/messages`, token ?? undefined).then((res) => {
+                getMessages(room.id).then((res) => {
                   const items = res?.content?.messages ?? res?.messages ?? res?.content?.items ?? res?.content ?? res?.data;
                   if (Array.isArray(items)) {
                     setMessages([...(items as Record<string, unknown>[])].reverse().map((m, i) => {
@@ -119,9 +113,12 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
                     setNextCursor((res?.content?.nextCursor as string) ?? null);
                     setHasMoreMessages(!!(res?.content?.nextCursor));
                   }
+                  router.push('/chat');
+                  props.onSelect();
+                }).catch(() => {
+                  router.push('/chat');
+                  props.onSelect();
                 });
-                router.push('/chat');
-                props.onSelect();
               }}
               className="flex cursor-pointer items-center gap-2 rounded-xl px-2 py-2 text-left text-white hover:bg-black-40"
             >
@@ -142,7 +139,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
               disabled={loadingMore}
               className="mt-1 cursor-pointer rounded-lg px-2 py-1.5 text-xs text-white-75 hover:text-white disabled:opacity-50"
             >
-              {loadingMore ? 'Loading...' : 'Load more'}
+              {loadingMore ? t('loading_more') : t('load_more')}
             </button>
           )}
         </>
@@ -152,10 +149,17 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
 };
 
 export const ChatSideBar = () => {
-  const { activeView, setActiveView, activeChat, setActiveChat } = useChat();
+  const t = useTranslations('ChatSideBar');
+  const { activeView, setActiveView, activeChat, setActiveChat } = useChatNavigation();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems: NavItem[] = [
+    { label: t('new_chat'), icon: <NewChatIcon />, view: 'chat' },
+    { label: t('new_group'), icon: <GroupIcon />, view: 'group' },
+    { label: t('new_scenario'), icon: <AddIcon />, view: 'scenario' },
+  ];
 
   return (
     <>
@@ -171,7 +175,7 @@ export const ChatSideBar = () => {
         {mobileOpen && (
           <button
             type="button"
-            aria-label="Close sidebar"
+            aria-label={t('close_sidebar')}
             className="fixed inset-0 z-40 cursor-default bg-black/50"
             onClick={() => setMobileOpen(false)}
           />

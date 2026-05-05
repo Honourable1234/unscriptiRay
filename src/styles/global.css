@@ -17,27 +17,14 @@
 
   --color-primary-100: #3977da;
   --color-primary-200: #2472fc;
+  --color-primary-800: #6092e1;
 
   --color-success-100: #4e9f3d;
 
-  --color-error-100: #8711c1;
+  --color-premium-100: #8711c1;
   --color-error-200: #da4c39;
 }
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @layer base {
-  body {
-    animation: fadeIn 0.5s ease-in-out;
-  }
 }
 
 @layer utilities {

@@ -1,11 +1,13 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useCreate } from '@/context/CreateContext';
 import { CharacterInfoCard } from './CharacterInfoCard';
 import { OptionModal } from './OptionModal';
 
 export const CharacterInfo = () => {
+  const t = useTranslations('CharacterInfo');
   const { data, setVoice, setPersonality, setRelationship, setKinks } = useCreate();
 
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -15,25 +17,25 @@ export const CharacterInfo = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="mb-4 text-center text-lg font-medium text-white">Character Info</h3>
+      <h3 className="mb-4 text-center text-lg font-medium text-white">{t('heading')}</h3>
       <div className="flex flex-wrap justify-between gap-3">
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title="Voice" value={data.voice} onClick={() => setVoiceOpen(true)} />
+          <CharacterInfoCard title={t('voice')} value={data.voice} onClick={() => setVoiceOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title="Personality Archetype" value={data.personality} iconColor="#4e9f3d" onClick={() => setPersonalityOpen(true)} />
+          <CharacterInfoCard title={t('personality')} value={data.personality} iconColor="#4e9f3d" onClick={() => setPersonalityOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title="Relationship Dynamic" value={data.relationship} iconColor="#4e9f3d" onClick={() => setRelationshipOpen(true)} />
+          <CharacterInfoCard title={t('relationship')} value={data.relationship} iconColor="#4e9f3d" onClick={() => setRelationshipOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title="Kinks & Comforts" value={data.kinks} iconColor="#4e9f3d" onClick={() => setKinksOpen(true)} />
+          <CharacterInfoCard title={t('kinks')} value={data.kinks} iconColor="#4e9f3d" onClick={() => setKinksOpen(true)} />
         </div>
       </div>
 
       {voiceOpen && (
         <OptionModal
-          title="Select Voice"
+          title={t('select_voice')}
           endpoint="/voice/list"
           labelKey="localName"
           selected={data.voice}
@@ -43,7 +45,7 @@ export const CharacterInfo = () => {
       )}
       {personalityOpen && (
         <OptionModal
-          title="Select Personality"
+          title={t('select_personality')}
           endpoint="/characters/creation-options"
           responseKey="personality_archetypes"
           topItem={{ label: 'Custom', locked: true }}
@@ -54,7 +56,7 @@ export const CharacterInfo = () => {
       )}
       {relationshipOpen && (
         <OptionModal
-          title="Select Relationship"
+          title={t('select_relationship')}
           endpoint="/characters/creation-options"
           responseKey="relationship_dynamics"
           topItem={{ label: 'Custom', locked: true }}
@@ -65,7 +67,7 @@ export const CharacterInfo = () => {
       )}
       {kinksOpen && (
         <OptionModal
-          title="Select Kinks"
+          title={t('select_kinks')}
           endpoint="/characters/creation-options"
           responseKey="kinks"
           topItem={{ label: 'Custom', locked: true }}

@@ -37,27 +37,26 @@ const AuthContext = createContext<AuthContextValue>({
 
 const fetchUserData = async (accessToken: string): Promise<UserData | null> => {
   const res = await api.get('/users/me', accessToken);
-  return res?.content ?? null;
+  const userData = res?.content ?? null;
+  // TODO: remove coin override when real balances are available for testing
+  if (userData) {
+    userData.coin_balance = 999999;
+  }
+  return userData;
 };
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [isPremium] = useState(false);
+  const [isPremium] = useState(true);
 
   const isAuthenticated = !!user;
 
-  const updateUser = (userData: UserData | null) => {
-    setUser(userData);
-    // TODO: remove override when premium accounts are available for testing
-    // setIsPremium(
-    //   userData?.subscription_status !== undefined
-    //   && userData.subscription_status !== 'free',
-    // );
-  };
-
   useEffect(() => {
+    // TODO: remove setIsPremium override when premium accounts are available for testing
+    const updateUser = (userData: UserData | null) => setUser(userData);
+
     supabase.auth.getSession().then(async ({ data }) => {
       setToken(data.session?.access_token ?? null);
       if (data.session) {

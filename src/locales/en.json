@@ -1,5 +1,330 @@
 {
+  "_comment": "i18n coverage is in progress. Auth section done; remaining sections pending.",
   "LocaleSwitcher": {
     "change_language": "Change language"
+  },
+  "SignInPage": {
+    "title": "Sign in",
+    "google_button": "Log in",
+    "divider": "Continue with email",
+    "email_label": "Email",
+    "email_placeholder": "Enter your email",
+    "password_label": "Password",
+    "forgot_password": "Forgot password?",
+    "submit": "Log in",
+    "no_account": "No account?",
+    "sign_up_link": "Sign up",
+    "login_failed": "Login failed"
+  },
+  "SignUpPage": {
+    "title": "Create your account",
+    "google_button": "Sign up",
+    "divider": "Continue with email",
+    "email_label": "Email",
+    "email_placeholder": "Enter your email",
+    "password_label": "Password",
+    "confirm_password_label": "Confirm password",
+    "submit": "Sign up",
+    "have_account": "Have an account?",
+    "sign_in_link": "Sign in",
+    "passwords_mismatch": "Passwords do not match",
+    "password_too_short": "Password must be at least 8 characters",
+    "sign_up_failed": "Sign up failed",
+    "check_email": "Check your email to confirm your account."
+  },
+  "ForgotPasswordPage": {
+    "title": "Forgot your password?",
+    "subtitle": "A link will be sent to your email to reset your password",
+    "email_label": "Email",
+    "email_placeholder": "Enter your email",
+    "submit": "Submit",
+    "check_email": "Check your email for a reset link."
+  },
+  "NewPasswordPage": {
+    "title": "New password",
+    "subtitle": "Please enter your new password",
+    "new_password_label": "New password",
+    "confirm_password_label": "Confirm password",
+    "submit": "Submit",
+    "passwords_mismatch": "Passwords do not match",
+    "password_too_short": "Password must be at least 8 characters"
+  },
+  "GoogleButton": {
+    "with_google": "with Google"
+  },
+  "ExplorePage": {
+    "title": "Explore your",
+    "title_highlight": "Fantasies"
+  },
+  "ExploreSection": {
+    "filter_identity": "Identity",
+    "filter_style": "Visual style",
+    "filter_age": "Age range",
+    "filter_vibe": "Vibe",
+    "filter_sort": "Sort"
+  },
+  "ExploreCharacters": {
+    "loading": "Please wait while we fetch media...",
+    "error": "Failed to load characters.",
+    "per_page": "Per page:",
+    "loading_more": "Loading...",
+    "load_more": "Load more"
+  },
+  "CharacterModal": {
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "profile": "Profile",
+    "more_tags": "+{count} more",
+    "want_more": "Want to see more?",
+    "view_content": "View content",
+    "generate": "Generate",
+    "chat": "Chat"
+  },
+  "SearchBar": {
+    "placeholder": "Search"
+  },
+  "CharacterHeader": {
+    "chat": "Chat",
+    "new_group": "Create a new group",
+    "generate": "Generate",
+    "new_scenario": "New scenario"
+  },
+  "CharacterContent": {
+    "error": "Failed to load character."
+  },
+  "CharacterUnlockButton": {
+    "unlock": "Unlock {name} — 50 coins",
+    "purchase_failed": "Purchase failed",
+    "error": "Something went wrong"
+  },
+  "CharacterMediaGrid": {
+    "secrets_locked": "Secrets locked",
+    "tap_to_reveal": "Tap to reveal"
+  },
+  "ChatRoom": {
+    "clear_confirm": "Clear all messages?",
+    "cancel": "Cancel",
+    "clear": "Clear"
+  },
+  "ChatInputBar": {
+    "getting_suggestions": "Getting suggestions…",
+    "placeholder": "Send a message..."
+  },
+  "ChatSideBar": {
+    "new_chat": "New chat",
+    "new_group": "New group",
+    "new_scenario": "New scenario",
+    "your_chats": "Your chats ({count})",
+    "loading_more": "Loading...",
+    "load_more": "Load more",
+    "close_sidebar": "Close sidebar"
+  },
+  "ChatRightPanel": {
+    "view_media": "View media",
+    "call_me": "Call me",
+    "model": "Model",
+    "voice": "Voice",
+    "memory": "Memory",
+    "settings": "Settings"
+  },
+  "ChatRatingPrompt": {
+    "question": "How is the conversation going?"
+  },
+  "ChatSettingsPanel": {
+    "loading": "Loading…",
+    "error": "Failed to load settings.",
+    "saving": "Saving…",
+    "allow_messages": "Allow character messages",
+    "background_display": "Background display",
+    "lust_level": "Lust level",
+    "response_length": "Response length",
+    "language": "Language"
+  },
+  "NewGroupView": {
+    "heading": "Who do you want to add to the group?",
+    "group_name_label": "Give your group a name",
+    "group_name_placeholder": "MyGroup"
+  },
+  "NewScenarioView": {
+    "heading": "Which character do you want in this scenario?",
+    "create_label": "Create scenario",
+    "placeholder": "Enter your scenario here..."
+  },
+  "SelectedCharacterBar": {
+    "selected_list": "Selected character list ({count}/{max})",
+    "no_selection": "You haven't selected any characters yet",
+    "coming_soon": "Coming soon",
+    "create_group": "Create group"
+  },
+  "GeneratePage": {
+    "title": "Build Your",
+    "title_highlight": "Fantasy Scene"
+  },
+  "GenerateOptionsGrid": {
+    "select_star": "Select Star",
+    "required": "(Required)",
+    "optional": "(Optional)",
+    "action": "Action",
+    "setting": "Setting",
+    "mood": "Mood",
+    "creative_input": "Creative Input (Advanced)",
+    "creator_tier": "Creator Tier Exclusive"
+  },
+  "GenerateTypeToggle": {
+    "still_images": "Still Images",
+    "animated_scenes": "Animated Scenes",
+    "mode": "mode",
+    "style_preset": "Style Present"
+  },
+  "GenerateControls": {
+    "visual_label": "Visual:",
+    "orientation_label": "Orientation:",
+    "cinematic_desc": "High-quality results with strong prompt accuracy",
+    "realistic_desc": "Ultra-realistic visuals with enhanced lighting",
+    "anime_desc": "Stylised anime aesthetic with vivid colours"
+  },
+  "GenerateButton": {
+    "generate_image": "Generate Image"
+  },
+  "GenerateEmptyState": {
+    "no_characters": "You haven't created any characters",
+    "create_now": "Create your character now"
+  },
+  "SelectStarModal": {
+    "title": "Select Star",
+    "search_placeholder": "Search characters...",
+    "loading": "Loading characters...",
+    "no_results": "No characters found."
+  },
+  "GenerateSceneModal": {
+    "title_remix": "Remix",
+    "title_video": "Image to Video",
+    "title_edit": "Edit image",
+    "title_speech": "Lipsync video",
+    "title_enhance": "Enhance image",
+    "title_more": "More",
+    "button_remix": "Generate Image",
+    "button_video": "Generate Animation",
+    "button_edit": "Edit Image",
+    "button_speech": "Generate Audio",
+    "button_enhance": "Enhance",
+    "button_more": "Generate"
+  },
+  "GenerateVideoControls": {
+    "quality_label": "Quality Level:",
+    "orientation_label": "Orientation:",
+    "duration_label": "Duration:",
+    "audio": "Audio",
+    "balanced_label": "Balance (480p)",
+    "balanced_desc": "Best for outfits, backgrounds and effects",
+    "ultra_label": "Ultra (1080p)",
+    "ultra_desc": "Optimized for NSFW and anatomical detail"
+  },
+  "VideoContent": {
+    "motion": "Motion"
+  },
+  "EditContent": {
+    "visual": "Visual",
+    "model_label": "Model:",
+    "orientation_label": "Orientation:",
+    "spark_desc": "Fast and efficient editing",
+    "pro_desc": "High quality, detailed edits"
+  },
+  "SpeechContent": {
+    "aurora_sublabel": "(Character default)",
+    "scene_label": "Scene",
+    "audio_script": "Audio Script"
+  },
+  "EnhanceContent": {
+    "description": "Enhancing will make your image sharper and improve its resolution"
+  },
+  "CreatePage": {
+    "title": "Create a",
+    "title_highlight": "Companion",
+    "prev": "Prev",
+    "next": "Next",
+    "generate": "Generate"
+  },
+  "CreateStep1": {
+    "ethnic_influence": "Ethnic Influence",
+    "eye_color": "Eye Color",
+    "eye_intensity": "Eye Intensity",
+    "facial_shape": "Facial Shape",
+    "figure_type": "Figure Type",
+    "hair_color": "Hair Color",
+    "hair_style": "Hair Style",
+    "hip_profile": "Hip Profile",
+    "bust_profile": "Bust Profile",
+    "skin_tone": "Skin Tone"
+  },
+  "CreateStep2": {
+    "character_name": "Character Name",
+    "character_age": "Character Age"
+  },
+  "CharacterInfo": {
+    "heading": "Character Info",
+    "voice": "Voice",
+    "personality": "Personality Archetype",
+    "relationship": "Relationship Dynamic",
+    "kinks": "Kinks & Comforts",
+    "select_voice": "Select Voice",
+    "select_personality": "Select Personality",
+    "select_relationship": "Select Relationship",
+    "select_kinks": "Select Kinks"
+  },
+  "CharacterInfoCard": {
+    "select": "Select {title}"
+  },
+  "CreateStep3": {
+    "ai_enrichment": "AI Enrichment (Autocomplete)",
+    "ai_subtitle": "Use AI to fill in the gaps and create a deeper character",
+    "backstory": "Backstory",
+    "backstory_placeholder": "No Backstory set",
+    "custom_physical": "Custom Physical",
+    "custom_physical_placeholder": "No custom physical set",
+    "custom_face": "Custom Face Details",
+    "custom_face_placeholder": "No custom face details set",
+    "greeting": "Greeting",
+    "greeting_placeholder": "No greeting set",
+    "personality_details": "Personality Details",
+    "personality_details_placeholder": "No personality details set"
+  },
+  "CreateStep4": {
+    "tab_appearance": "Appearance",
+    "tab_personality": "Personality",
+    "preview": "Preview Character",
+    "generate_process": "Generate Process",
+    "meet_companion": "Meet Your Companion",
+    "no_character": "No character data available.",
+    "tags": "Tags ({count}/10)",
+    "tag_placeholder": "Add tag...",
+    "voice": "Voice",
+    "ethnic": "Ethnic",
+    "facial_shape": "Facial Shape",
+    "hair_style": "Hair Style",
+    "eye_intensity": "Eye Intensity",
+    "figure_type": "Figure Type",
+    "bust": "Bust",
+    "hip": "Hip",
+    "personality_attr": "Personality",
+    "relationship": "Relationship",
+    "kinks_comforts": "Kinks & Comforts",
+    "social_role": "Social Role",
+    "backstory": "Backstory",
+    "physical": "Physical",
+    "face_details": "Face Details",
+    "greeting": "Greeting",
+    "personality_details": "Personality Details",
+    "hair_color": "Hair Color",
+    "eye_color": "Eye Color",
+    "skin_tone": "Skin Tone"
+  },
+  "OptionModal": {
+    "loading": "Loading..."
+  },
+  "CreateTagsField": {
+    "tags": "Tags ({count}/{max})",
+    "no_tags": "No tags set",
+    "add_tag": "Add tag..."
   }
 }

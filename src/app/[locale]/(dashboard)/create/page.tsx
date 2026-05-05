@@ -1,5 +1,6 @@
 'use client';
 import type { CreatedCharacter } from '@/components/create/CreateStep4';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
@@ -7,9 +8,8 @@ import { CreateStep3 } from '@/components/create/CreateStep3';
 import { CreateStep4 } from '@/components/create/CreateStep4';
 import { CreateStepper } from '@/components/create/CreateStepper';
 import { ForwardArrowIcon, SpinnerIcon, StackedCoinIcon } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
 import { CreateProvider, useCreate } from '@/context/CreateContext';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 
 const steps = [CreateStep1, CreateStep2, CreateStep3];
 
@@ -49,16 +49,17 @@ const getInitialCharacter = (): CreatedCharacter | null => {
 };
 
 function CreatePageContent() {
+  const t = useTranslations('CreatePage');
   const [step, setStep] = useState(getInitialStep);
   const [stepValid, setStepValid] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [character, setCharacter] = useState<CreatedCharacter | null>(getInitialCharacter);
   const { data } = useCreate();
-  const { token } = useAuth();
+  const { createCharacter } = useCharacterService();
 
   const handleGenerate = () => {
     setGenerating(true);
-    api.post('/characters', {
+    createCharacter({
       style: data.style ?? '',
       appearance: data.appearance,
       name: data.name,
@@ -74,7 +75,7 @@ function CreatePageContent() {
       personality_details: data.personalityDetails,
       tags: data.tags,
       greeting_message: data.greeting,
-    }, token ?? undefined).then((res) => {
+    }).then((res) => {
       sessionStorage.setItem('create_character_response', JSON.stringify(res));
       const content = (res as { content?: CreatedCharacter })?.content;
       if (content) {
@@ -100,15 +101,29 @@ function CreatePageContent() {
   return (
     <div className="flex min-h-full flex-col justify-between gap-8">
       <h1 className="mt-2.5 text-center text-xl font-bold text-white sm:text-2xl md:text-[32px]">
-        Create a
-        <span className="text-primary-100"> Companion</span>
+        {t('title')}
+        <span className="text-primary-100">
+          {' '}
+          {t('title_highlight')}
+        </span>
       </h1>
 
       <CreateStepper step={step} />
 
       <div className="m-auto mt-2 w-full max-w-209">
         {step === 4
-          ? <CreateStep4 character={character} />
+          ? (
+              <CreateStep4
+                character={character}
+                onTagsChange={(tags) => {
+                  if (character) {
+                    const updated = { ...character, tags };
+                    sessionStorage.setItem('create_character', JSON.stringify(updated));
+                    setCharacter(updated);
+                  }
+                }}
+              />
+            )
           : (() => {
               const StepContent = steps[step - 1];
               return StepContent ? <StepContent onValidChange={setStepValid} /> : null;
@@ -125,7 +140,7 @@ function CreatePageContent() {
             disabled={step === 1}
             className={`rounded-xl border px-6 py-4 text-sm font-medium transition-colors ${step === 1 ? 'cursor-not-allowed border-white-25/30 text-white-25' : 'cursor-pointer border-white-25 bg-black-60 text-white hover:border-white hover:text-white'}`}
           >
-            Prev
+            {t('prev')}
           </button>
           <button
             onClick={handleNext}
@@ -139,7 +154,7 @@ function CreatePageContent() {
                       ? <SpinnerIcon />
                       : (
                           <>
-                            Generate
+                            {t('generate')}
                             <span className="flex items-center gap-1.5 rounded-lg bg-white/20 px-3 py-1 text-sm font-semibold">
                               10
                               <StackedCoinIcon />
@@ -150,7 +165,7 @@ function CreatePageContent() {
                 )
               : (
                   <span className="flex items-center justify-center gap-2">
-                    Next
+                    {t('next')}
                     <ForwardArrowIcon />
                   </span>
                 )}

@@ -1,12 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
-const visualOptions = [
-  { value: 'Cinematic', description: 'High-quality results with strong prompt accuracy' },
-  { value: 'Realistic', description: 'Ultra-realistic visuals with enhanced lighting' },
-  { value: 'Anime', description: 'Stylised anime aesthetic with vivid colours' },
-];
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { useGenerateService } from '@/services/generateService';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-13', boxH: 'h-18' },
@@ -22,17 +18,54 @@ export const GenerateControls = (props: {
   onVisualChange: (v: string) => void;
   onOrientationChange: (v: string) => void;
 }) => {
+  const t = useTranslations('GenerateControls');
+  const { imagePreset } = useGenerateService();
   const [visualOpen, setVisualOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
+  const [visualOptions, setVisualOptions] = useState<{ value: string; description: string }[]>(() => [
+    { value: 'Cinematic', description: t('cinematic_desc') },
+    { value: 'Realistic', description: t('realistic_desc') },
+    { value: 'Anime', description: t('anime_desc') },
+  ]);
+
+  useEffect(() => {
+    imagePreset().then((res: unknown) => {
+      const content = (res as { content?: unknown })?.content ?? res;
+      const raw = Array.isArray(content)
+        ? content
+        : Array.isArray((content as Record<string, unknown>)?.visuals)
+          ? (content as Record<string, unknown>).visuals
+          : null;
+      if (!Array.isArray(raw) || raw.length === 0) {
+        return;
+      }
+      const parsed = (raw as unknown[]).map((v) => {
+        if (typeof v === 'string') {
+          return { value: v, description: '' };
+        }
+        const obj = v as Record<string, unknown>;
+        return {
+          value: (obj.name ?? obj.label ?? obj.value ?? String(v)) as string,
+          description: (obj.description ?? obj.desc ?? '') as string,
+        };
+      }).filter(v => v.value);
+      if (parsed.length > 0) {
+        setVisualOptions(parsed);
+        if (!parsed.some(v => v.value.toLowerCase() === props.visual.toLowerCase())) {
+          props.onVisualChange(parsed[0]!.value);
+        }
+      }
+    }).catch(() => {});
+  }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-3">
+    <div className="mx-auto flex w-full max-w-184 flex-wrap items-center gap-3">
       <div className="relative">
         <button
           onClick={() => setVisualOpen(prev => !prev)}
           className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
         >
-          Visual:
+          {t('visual_label')}
           <span className="text-white">{props.visual}</span>
         </button>
         {visualOpen && (
@@ -68,7 +101,7 @@ export const GenerateControls = (props: {
           onClick={() => setOrientationOpen(prev => !prev)}
           className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
         >
-          Orientation:
+          {t('orientation_label')}
           <span className="text-white">{props.orientation}</span>
         </button>
         {orientationOpen && (

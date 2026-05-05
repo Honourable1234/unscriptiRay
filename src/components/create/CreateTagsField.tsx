@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { CloseIcon } from '@/components/icons';
 
@@ -9,6 +10,7 @@ export const CreateTagsField = (props: {
   tags: string[];
   onChange: (tags: string[]) => void;
 }) => {
+  const t = useTranslations('CreateTagsField');
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
 
@@ -47,15 +49,11 @@ export const CreateTagsField = (props: {
       >
         <div className="flex flex-col gap-1">
           <span className="text-sm text-white">
-            Tags (
-            {props.tags.length}
-            /
-            {MAX_TAGS}
-            )
+            {t('tags', { count: props.tags.length, max: MAX_TAGS })}
           </span>
           {!open && (
             <span className={`text-xs ${props.tags.length ? 'text-white-75' : 'text-white-50'}`}>
-              {props.tags.length ? props.tags.join(', ') : 'No tags set'}
+              {props.tags.length ? props.tags.join(', ') : t('no_tags')}
             </span>
           )}
         </div>
@@ -97,7 +95,7 @@ export const CreateTagsField = (props: {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Add tag..."
+                placeholder={t('add_tag')}
                 className="min-w-24 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white-25"
               />
             )}

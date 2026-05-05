@@ -1,10 +1,11 @@
 'use client';
 
 import type { Character } from '@/data/characters';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import {
   CaptureIcon,
@@ -19,7 +20,7 @@ import {
   ProfileIcon,
   VideoIcon,
 } from '@/components/icons';
-import { api } from '@/libs/api';
+import { useCharacterService } from '@/services/useCharacterService';
 
 const MAX_TAGS_VISIBLE = 3;
 
@@ -27,6 +28,8 @@ export const CharacterModal = (props: {
   character: Character;
   onClose: () => void;
 }) => {
+  const t = useTranslations('CharacterModal');
+  const { getCharacter } = useCharacterService();
   const [expanded, setExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
@@ -44,7 +47,7 @@ export const CharacterModal = (props: {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
     setLoading(true);
-    api.get(`/characters/${props.character.id}`).then((res) => {
+    getCharacter(String(props.character.id)).then((res) => {
       const c = res?.content;
       if (c) {
         setImageCount((c.image_count as number) ?? 0);
@@ -70,11 +73,14 @@ export const CharacterModal = (props: {
       setLoading(false);
     });
   }, [props.character.id]);
-  const descRef = (node: HTMLParagraphElement | null) => {
-    if (node) {
+  const descRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const node = descRef.current;
+    if (node && !isClamped) {
       setIsClamped(node.scrollHeight > node.clientHeight);
     }
-  };
+  }, [isClamped]);
 
   const images = detailImages.length > 0 ? detailImages : [props.character.image];
   const tags = props.character.tags;
@@ -83,16 +89,18 @@ export const CharacterModal = (props: {
 
   return (
     <div
+      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      role="button"
-      tabIndex={0}
       onClick={props.onClose}
-      onKeyDown={props.onClose}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          props.onClose();
+        }
+      }}
     >
       <div
+        role="presentation"
         className="relative w-full max-w-120 rounded-2xl border border-white-25 bg-black-80 pt-5 shadow-2xl"
-        role="button"
-        tabIndex={0}
         onClick={e => e.stopPropagation()}
         onKeyDown={e => e.stopPropagation()}
       >
@@ -129,7 +137,7 @@ export const CharacterModal = (props: {
                       className="mt-1 cursor-pointer text-xs font-semibold text-white hover:underline"
                       onClick={() => setExpanded(v => !v)}
                     >
-                      {expanded ? 'show less' : 'show more'}
+                      {expanded ? t('show_less') : t('show_more')}
                     </button>
                   )}
 
@@ -157,7 +165,7 @@ export const CharacterModal = (props: {
                     }}
                   >
                     <ProfileIcon />
-                    {profileLoading ? <BouncingDots /> : <span>Profile</span>}
+                    {profileLoading ? <BouncingDots /> : <span>{t('profile')}</span>}
                   </button>
                 </div>
 
@@ -173,10 +181,7 @@ export const CharacterModal = (props: {
                   ))}
                   {extraCount > 0 && (
                     <span className="rounded-lg p-3 text-xs font-medium text-white-75">
-                      +
-                      {extraCount}
-                      {' '}
-                      more
+                      {t('more_tags', { count: extraCount })}
                     </span>
                   )}
                 </div>
@@ -220,9 +225,9 @@ export const CharacterModal = (props: {
 
                   {navClicks >= 3 && (
                     <div className="absolute left-1/2 z-40 flex h-full w-[70%] -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
-                      <p className="text-sm font-bold text-white sm:text-[20px]">Want to see more?</p>
+                      <p className="text-sm font-bold text-white sm:text-[20px]">{t('want_more')}</p>
                       <Link href={`/character/${props.character.id}`} className="rounded-xl bg-primary-100 px-2 py-2 text-xs font-semibold text-white sm:px-8">
-                        View Content
+                        {t('view_content')}
                       </Link>
                     </div>
                   )}
@@ -251,7 +256,7 @@ export const CharacterModal = (props: {
                     }}
                   >
                     <CaptureIcon />
-                    {generateLoading ? <BouncingDots /> : 'Generate'}
+                    {generateLoading ? <BouncingDots /> : t('generate')}
                   </button>
                   <button
                     className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white md:flex-2"
@@ -262,7 +267,7 @@ export const CharacterModal = (props: {
                     }}
                   >
                     <ChatIcon2 />
-                    {chatLoading ? <BouncingDots /> : 'Chat'}
+                    {chatLoading ? <BouncingDots /> : t('chat')}
                   </button>
                 </div>
               </>

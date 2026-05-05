@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { PlayIcon } from '@/components/icons';
 
 export const CharacterInfoCard = (props: {
@@ -7,6 +10,8 @@ export const CharacterInfoCard = (props: {
   iconColor?: string;
   onClick?: () => void;
 }) => {
+  const t = useTranslations('CharacterInfoCard');
+
   return (
     <div
       role="button"
@@ -22,7 +27,7 @@ export const CharacterInfoCard = (props: {
       <div className="flex flex-col gap-1">
         <span className="text-xs text-white">{props.title}</span>
         <span className={`text-sm font-medium ${props.value ? 'text-white' : 'text-white-25'}`}>
-          {props.value || `Select ${props.title}`}
+          {props.value || t('select', { title: props.title })}
         </span>
       </div>
       {props.value && (

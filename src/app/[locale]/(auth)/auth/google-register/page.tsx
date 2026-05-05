@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
-import { api } from '@/libs/api';
 import { supabase } from '@/libs/supabase';
+import { useAuthService } from '@/services/useAuthService';
 
 export default function GoogleRegisterPage() {
   const router = useRouter();
+  const { register } = useAuthService();
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -16,11 +17,7 @@ export default function GoogleRegisterPage() {
         router.push('/sign-up');
         return;
       }
-      await api.post(
-        '/auth/register',
-        { id: session.user.id, email: session.user.email, password: '' },
-        session.access_token,
-      );
+      await register(session.user.id, session.user.email, session.access_token);
       router.push('/');
     });
   }, [router]);

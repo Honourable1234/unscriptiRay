@@ -1,29 +1,31 @@
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { BouncingDots } from '@/components/general/BouncingDots';
 import { PadlockIcon, PlayIcon } from '@/components/icons';
 
 type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean };
 
-const LockedOverlay = (props: { loading: boolean; onReveal: () => void }) => (
-  <>
-    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-700 group-hover:opacity-0">
-      <PadlockIcon />
-    </div>
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 transition-opacity duration-900 group-hover:opacity-100">
-      <span className="text-lg font-semibold text-white">Secrets Locked</span>
-      <button
-        className="rounded-xl bg-gradient-to-r from-error-100 to-primary-200 px-8 py-2 text-sm font-semibold text-white"
-        disabled={props.loading}
-        onClick={props.onReveal}
-      >
-        {props.loading ? <BouncingDots /> : 'Tap to Reveal'}
-      </button>
-    </div>
-  </>
-);
+const LockedOverlay = (props: { onReveal: () => void }) => {
+  const t = useTranslations('CharacterMediaGrid');
+  return (
+    <>
+      <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-700 group-hover:opacity-0">
+        <PadlockIcon />
+      </div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 transition-opacity duration-900 group-hover:opacity-100">
+        <span className="text-lg font-semibold text-white">{t('secrets_locked')}</span>
+        <button
+          className="rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 px-8 py-2 text-sm font-semibold text-white"
+          onClick={props.onReveal}
+        >
+          {t('tap_to_reveal')}
+        </button>
+      </div>
+    </>
+  );
+};
 
-const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void; revealLoading: boolean }) => {
+const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -60,49 +62,37 @@ const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void
       {!props.isLocked && playing && (
         <button className="absolute inset-0" onClick={togglePlay} />
       )}
-      {props.isLocked && <LockedOverlay loading={props.revealLoading} onReveal={props.onReveal} />}
+      {props.isLocked && <LockedOverlay onReveal={props.onReveal} />}
     </div>
   );
 };
 
-export const CharacterMediaGrid = (props: { name: string; media: MediaItem[]; isPremium: boolean }) => {
-  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
-
-  const handleReveal = (i: number) => {
-    setLoadingIndex(i);
-    setTimeout(() => setLoadingIndex(null), 3000);
-  };
-
-  return (
-    <div className="flex flex-wrap gap-2.5">
-      {props.media.map((item, i) => {
-        const isLocked = !props.isPremium && item.locked;
-        if (item.type === 'video') {
-          return (
-
-            <VideoItem
-              key={i}
-              url={item.url}
-              isLocked={isLocked}
-              onReveal={() => handleReveal(i)}
-              revealLoading={loadingIndex === i}
-            />
-          );
-        }
+export const CharacterMediaGrid = (props: { name: string; media: MediaItem[]; isPremium: boolean }) => (
+  <div className="flex flex-wrap gap-2.5">
+    {props.media.map((item) => {
+      const isLocked = !props.isPremium && item.locked;
+      if (item.type === 'video') {
         return (
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={i} className="group relative aspect-[3/4] max-w-80 min-w-60 flex-1 overflow-hidden rounded-xl">
-            <Image
-              src={item.url}
-              alt={props.name}
-              fill
-              sizes="(max-width: 640px) 100vw, 320px"
-              className={`object-cover ${isLocked ? 'blur-sm brightness-50' : ''}`}
-            />
-            {isLocked && <LockedOverlay loading={loadingIndex === i} onReveal={() => handleReveal(i)} />}
-          </div>
+          <VideoItem
+            key={item.url}
+            url={item.url}
+            isLocked={isLocked}
+            onReveal={() => {}}
+          />
         );
-      })}
-    </div>
-  );
-};
+      }
+      return (
+        <div key={item.url} className="group relative aspect-[3/4] max-w-80 min-w-60 flex-1 overflow-hidden rounded-xl">
+          <Image
+            src={item.url}
+            alt={props.name}
+            fill
+            sizes="(max-width: 640px) 100vw, 320px"
+            className={`object-cover ${isLocked ? 'blur-sm brightness-50' : ''}`}
+          />
+          {isLocked && <LockedOverlay onReveal={() => {}} />}
+        </div>
+      );
+    })}
+  </div>
+);

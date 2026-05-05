@@ -41,11 +41,8 @@ Tailwind v4 utility classes. Reuse shared components. Responsive. No unnecessary
 - Dashboard pages (sit behind auth); define meta once in layout, not in each page.
 
 ## i18n (next-intl)
-- Never hard-code user-visible strings. Page namespaces end with `Page`.
-- Server: `getTranslations`; Client: `useTranslations`.
-- Context-specific keys (`card_title`, `meta_description`). Use `t.rich(...)` for markup.
-- Use sentence case for translations.
-- Error messages: short, no "try again" variants.
+- **Deferred:** Full i18n coverage is tracked as a follow-up. All user-visible strings are currently hardcoded English. Do not add new `getTranslations`/`useTranslations` calls until the i18n pass is scheduled.
+- When the i18n pass begins: page namespaces end with `Page`; server uses `getTranslations`; client uses `useTranslations`; keys are context-specific (`card_title`, `meta_description`); use `t.rich(...)` for markup; sentence case; error messages short with no "try again" variants.
 
 ## JSDoc
 - Start each block with `/**` directly above the symbol.
