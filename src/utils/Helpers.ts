@@ -10,7 +10,6 @@ export const getBaseUrl = () => {
   return 'http://localhost:3000';
 };
 
-
 /**
  * Builds a locale-aware path by prefixing non-default locales.
  * @param url - The base application-relative path starting with a slash.

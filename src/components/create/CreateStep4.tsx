@@ -224,7 +224,17 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
               {tags.map(tag => (
                 <span key={tag} className="flex items-center gap-1 rounded-md bg-primary-100/20 px-2 py-1 text-xs text-primary-100">
                   {tag}
-                  <button type="button" onClick={() => { const next = tags.filter(t => t !== tag); setTags(next); props.onTagsChange?.(next); }} className="cursor-pointer hover:text-white"><CloseIcon /></button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = tags.filter(t => t !== tag);
+                      setTags(next);
+                      props.onTagsChange?.(next);
+                    }}
+                    className="cursor-pointer hover:text-white"
+                  >
+                    <CloseIcon />
+                  </button>
                 </span>
               ))}
               {tags.length < 10 && (

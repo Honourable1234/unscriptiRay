@@ -12,7 +12,6 @@ export const AuthGuard = (props: { children: React.ReactNode }) => {
   const router = useRouter();
   const isPublic = PUBLIC_PATHS.includes(pathname);
 
-
   useEffect(() => {
     if (!authLoading && !isAuthenticated && !isPublic) {
       router.replace('/');

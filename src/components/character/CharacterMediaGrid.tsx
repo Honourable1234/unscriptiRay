@@ -1,6 +1,6 @@
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
 import { PadlockIcon, PlayIcon } from '@/components/icons';
 
 type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean };

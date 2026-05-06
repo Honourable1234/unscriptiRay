@@ -11,7 +11,9 @@ export const SelectCard = (props: { character: Character; onClick?: () => void; 
       tabIndex={0}
       onClick={props.onClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') props.onClick?.();
+        if (e.key === 'Enter' || e.key === ' ') {
+          props.onClick?.();
+        }
       }}
     >
       {props.character.image && (

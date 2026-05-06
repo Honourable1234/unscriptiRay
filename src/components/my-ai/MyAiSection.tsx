@@ -11,11 +11,17 @@ import { MyAiCard } from './MyAiCard';
 
 type Filter = 'All' | 'Approved' | 'Pending';
 
+const PAGE_SIZE = 9;
+
 export const MyAiSection = () => {
   const { token } = useAuth();
   const { getMyCharacters } = useMyAiService();
   const [characters, setCharacters] = useState<MyCharacter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>('All');
 
@@ -23,15 +29,35 @@ export const MyAiSection = () => {
     if (!token) {
       return;
     }
-    getMyCharacters({ limit: 50 })
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
+    setIsLoading(true);
+    getMyCharacters({ page: 1, limit: PAGE_SIZE })
       .then((res) => {
         if (res.success) {
           setCharacters(res.content.characters);
+          setPage(res.content.pagination.page);
+          setPageCount(res.content.pagination.pageCount);
+          setTotal(res.content.pagination.total);
         }
       })
       .catch(() => {})
       .finally(() => setIsLoading(false));
   }, [token]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setIsLoadingMore(true);
+    getMyCharacters({ page: nextPage, limit: PAGE_SIZE })
+      .then((res) => {
+        if (res.success) {
+          setCharacters(prev => [...prev, ...res.content.characters]);
+          setPage(res.content.pagination.page);
+          setPageCount(res.content.pagination.pageCount);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsLoadingMore(false));
+  };
 
   const filtered = useMemo(() => {
     return characters.filter((c) => {
@@ -82,13 +108,20 @@ export const MyAiSection = () => {
       </div>
 
       {/* Filters row */}
-      <div className="flex flex-wrap gap-2">
-        <FilterDropdown
-          label="Status"
-          value={filter}
-          options={['All', 'Approved', 'Pending']}
-          onChange={v => setFilter(v as Filter)}
-        />
+      <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-2">
+          <FilterDropdown
+            label="Status"
+            value={filter}
+            options={['All', 'Approved', 'Pending']}
+            onChange={v => setFilter(v as Filter)}
+          />
+        </div>
+        <span className="text-xs text-white/40">
+          {total}
+          {' '}
+          {total === 1 ? 'character' : 'characters'}
+        </span>
       </div>
 
       {/* Grid */}
@@ -99,11 +132,25 @@ export const MyAiSection = () => {
             </div>
           )
         : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((character, i) => (
-                <MyAiCard key={character.id} character={character} priority={i < 3} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((character, i) => (
+                  <MyAiCard key={character.id} character={character} priority={i < 3} />
+                ))}
+              </div>
+
+              {page < pageCount && (
+                <div className="flex justify-center pt-2">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={isLoadingMore}
+                    className="cursor-pointer rounded-xl border border-white/10 bg-black-60 px-8 py-3 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {isLoadingMore ? 'Loading...' : 'Load more'}
+                  </button>
+                </div>
+              )}
+            </>
           )}
     </div>
   );

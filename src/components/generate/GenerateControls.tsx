@@ -28,7 +28,7 @@ export const GenerateControls = (props: {
   ];
 
   return (
-    <div className="flex flex-wrap items-center w-full max-w-184 mx-auto gap-3">
+    <div className="mx-auto flex w-full max-w-184 flex-wrap items-center gap-3">
       <div className="relative">
         <button
           onClick={() => setVisualOpen(prev => !prev)}

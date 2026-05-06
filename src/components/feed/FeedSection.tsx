@@ -1,7 +1,6 @@
 'use client';
 
 import type { DiscoverItem } from './FeedCard';
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { FeedLimitError, useFeedService } from '@/services/useFeedService';
@@ -68,8 +67,8 @@ export const FeedSection = () => {
   }, [hasMore, nextCursor, seed]);
 
   const visibleItems = items;
-  const lastItem = visibleItems[visibleItems.length - 1];
-  const paywallBg = lastItem?.character.image_url ?? null;
+  // const lastItem = visibleItems[visibleItems.length - 1];
+  const paywallBg = 'https://asset.buzzs.me/web-character-avatars/0aafda48-a5d0-4959-9fa5-5fa84e18ae3a/images/010dff11-c094-4e38-b4c6-42b2b024da68.jpg';
 
   if (loading && items.length === 0) {
     return (
@@ -86,11 +85,13 @@ export const FeedSection = () => {
       ))}
 
       {limitReached && (
-        <div className="relative h-full w-full shrink-0 snap-start snap-always overflow-hidden">
-          {paywallBg && (
-            <Image src={paywallBg} alt="background" fill className="scale-110 object-cover" />
-          )}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xl" />
+        <div
+          style={{
+            backgroundImage: `url('${paywallBg}')`,
+          }}
+          className="relative h-full w-full shrink-0 snap-start snap-always overflow-hidden bg-cover bg-center bg-no-repeat "
+        >
+          <div className="absolute inset-0 backdrop-blur-xs" />
           <FeedPaywall />
         </div>
       )}

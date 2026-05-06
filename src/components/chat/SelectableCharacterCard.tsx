@@ -12,7 +12,9 @@ export const SelectableCharacterCard = (props: {
     tabIndex={0}
     onClick={props.onClick}
     onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') props.onClick();
+      if (e.key === 'Enter' || e.key === ' ') {
+        props.onClick();
+      }
     }}
     className={`relative h-77.5 max-w-75 min-w-65 flex-1 cursor-pointer overflow-hidden rounded-2xl transition-all ${
       props.selected ? 'ring-2 ring-primary-100 brightness-75' : ''

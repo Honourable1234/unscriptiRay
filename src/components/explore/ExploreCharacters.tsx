@@ -1,8 +1,8 @@
 'use client';
 
+import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import type { Character } from '@/data/characters';
 import { api } from '@/libs/api';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { CharacterGrid } from './CharacterGrid';

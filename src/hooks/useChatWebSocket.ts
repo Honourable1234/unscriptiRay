@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
 import type { Message } from '@/components/chat/types';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { api } from '@/libs/api';

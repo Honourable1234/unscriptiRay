@@ -77,6 +77,7 @@ export const CharacterModal = (props: {
   useEffect(() => {
     const node = descRef.current;
     if (node && !isClamped) {
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setIsClamped(node.scrollHeight > node.clientHeight);
     }
   }, [isClamped]);
@@ -92,7 +93,9 @@ export const CharacterModal = (props: {
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       onClick={props.onClose}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') props.onClose();
+        if (e.key === 'Escape') {
+          props.onClose();
+        }
       }}
     >
       <div

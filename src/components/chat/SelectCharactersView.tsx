@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import type { Character } from '@/data/characters';
+import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
 import { api } from '@/libs/api';
 import { mapCharacter } from '@/utils/mapCharacter';

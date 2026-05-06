@@ -13,7 +13,7 @@ const features = [
 export const FeedPaywall = () => {
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center px-4 ">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-black-80 shadow-2xl">
+      <div className="w-full max-w-md overflow-hidden rounded-2xl  bg-black-80 shadow-2xl">
         {/* Header */}
         <div className="bg-linear-to-r from-[#F483B9] to-[#ED4E9D] px-6 py-5 text-center">
           <h2 className="text-xl font-extrabold tracking-wide text-white uppercase italic">
@@ -24,7 +24,7 @@ export const FeedPaywall = () => {
         </div>
 
         {/* Body */}
-        <div className="bg-linear-to-t from-[#100E0F] from-2%  to-[#572232] to-98% px-6 py-5">
+        <div className="bg-linear-to-t from-[#100E0F] from-2%  to-[#572232] to-98% px-4 py-5 md:px-6">
           <p className="mb-8 text-center text-sm text-white ">
             You must upgrade to premium to get an unlimited feed
           </p>
@@ -44,10 +44,10 @@ export const FeedPaywall = () => {
                     {/* {f.icon} */}
                     +
                   </div>
-                  <span className="text-base">{f.label}</span>
+                  <span className="text-sm md:text-base">{f.label}</span>
                 </div>
                 {f.action && (
-                  <button className="cursor-pointer rounded-full border border-[#7B3A59] bg-[#462232] px-3 py-1.5 text-xs  text-[#F9A9D4] hover:opacity-90">
+                  <button className="cursor-pointer rounded-full border border-[#7B3A59] bg-[#462232] px-1.75 py-1.5 text-xs  text-[#F9A9D4]  hover:opacity-90 sm:px-3">
                     {f.action}
                   </button>
                 )}

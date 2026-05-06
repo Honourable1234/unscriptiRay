@@ -16,7 +16,11 @@ export const AuthTemplate = (props: {
         </div>
       </div>
       <footer className="flex h-15 w-full items-center justify-center bg-black-100 md:h-25">
-        <p className="text-sm font-semibold text-white">Copyright© {new Date().getFullYear()}. Unscripti AI</p>
+        <p className="text-sm font-semibold text-white">
+          Copyright©
+          {new Date().getFullYear()}
+          . Unscripti AI
+        </p>
       </footer>
     </div>
   );
