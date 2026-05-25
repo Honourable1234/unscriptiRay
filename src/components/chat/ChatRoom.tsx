@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { OpenIcon, TrashIcon } from '@/components/icons';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
@@ -12,36 +13,33 @@ import { ChatRightPanel } from './ChatRightPanel';
 
 export const ChatRoom = () => {
   const t = useTranslations('ChatRoom');
-  const { activeChat } = useChatNavigation();
+  const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
   const { messages, setMessages } = useChatMessages();
-  const { clearMessages } = useChatService();
+  const { clearMessages, deleteRoom, getSettings } = useChatService();
   const [rightOpen, setRightOpen] = useState(true);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [lastRatedAtCount, setLastRatedAtCount] = useState(0);
+  const [showClearConfirmId, setShowClearConfirmId] = useState<string | null>(null);
+  const [lastRatedCycles, setLastRatedCycles] = useState<Record<string, number>>({});
+  const [backgroundDisplays, setBackgroundDisplays] = useState<Record<string, boolean>>({});
 
-  const seenCharacterIds = useRef(new Set<number>());
-  const [characterResponseCount, setCharacterResponseCount] = useState(0);
+  const chatroomId = activeChat?.chatroomId;
+  const showClearConfirm = showClearConfirmId === chatroomId;
+  const lastRatedCycle = lastRatedCycles[chatroomId ?? ''] ?? 0;
+  const backgroundDisplay = backgroundDisplays[chatroomId ?? ''] ?? true;
 
   useEffect(() => {
-    if (messages.length === 0) {
-      seenCharacterIds.current.clear();
-      setCharacterResponseCount(0);
+    if (!chatroomId) {
       return;
     }
-    let added = 0;
-    for (const m of messages) {
-      if (m.sender === 'character' && !seenCharacterIds.current.has(m.id as number)) {
-        seenCharacterIds.current.add(m.id as number);
-        added++;
+    getSettings(chatroomId).then((res) => {
+      const ws = res?.content?.web_settings;
+      if (ws && typeof ws.background_display === 'boolean') {
+        setBackgroundDisplays(prev => ({ ...prev, [chatroomId]: ws.background_display as boolean }));
       }
-    }
-    if (added > 0) {
-      setCharacterResponseCount(prev => prev + added);
-    }
-  }, [messages]);
+    }).catch(() => {});
+  }, [chatroomId]);
 
+  const characterResponseCount = messages.filter(m => m.sender === 'character').length;
   const ratingCycle = Math.floor(characterResponseCount / 10);
-  const lastRatedCycle = Math.floor(lastRatedAtCount / 10);
   const showRatingPrompt = characterResponseCount > 0 && ratingCycle > lastRatedCycle;
 
   const displayMessages = messages.length === 0 && activeChat?.greetingMessage
@@ -55,10 +53,29 @@ export const ChatRoom = () => {
     clearMessages(activeChat.chatroomId)
       .then(() => {
         setMessages([]);
-        setShowClearConfirm(false);
+        setShowClearConfirmId(null);
+        toast.success('Chat cleared.');
       })
       .catch(() => {
-        setShowClearConfirm(false);
+        setShowClearConfirmId(null);
+        toast.error('Failed to clear chat.');
+      });
+  };
+
+  const handleDeleteRoom = () => {
+    if (!activeChat) {
+      return;
+    }
+    deleteRoom(activeChat.chatroomId)
+      .then(() => {
+        toast.success('Chat room deleted.');
+        setShowClearConfirmId(null);
+        setActiveChat(null);
+        bumpChatList();
+      })
+      .catch(() => {
+        setShowClearConfirmId(null);
+        toast.error('Failed to delete chat room.');
       });
   };
 
@@ -73,23 +90,23 @@ export const ChatRoom = () => {
         <div className="flex flex-shrink-0 items-center justify-between border-b border-black-40 px-4 py-3">
           <span className="font-semibold text-white">{activeChat.name}</span>
           <button
-            onClick={() => setShowClearConfirm(true)}
+            onClick={() => setShowClearConfirmId(activeChat.chatroomId)}
             className="cursor-pointer text-white-50 hover:text-white"
           >
             <TrashIcon />
           </button>
         </div>
 
-        {/* Clear confirmation */}
+        {/* Clear/delete confirmation */}
         {showClearConfirm && (
           <div className="flex flex-shrink-0 items-center justify-between border-b border-black-40 bg-black-80 px-4 py-3">
             <span className="text-sm text-white">{t('clear_confirm')}</span>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowClearConfirm(false)}
-                className="cursor-pointer rounded-lg border border-black-40 px-3 py-1.5 text-xs text-white-75 hover:text-white"
+                onClick={handleDeleteRoom}
+                className="cursor-pointer rounded-lg bg-red-700/80 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
               >
-                {t('cancel')}
+                Delete Chat Room
               </button>
               <button
                 onClick={handleClearConfirm}
@@ -105,14 +122,14 @@ export const ChatRoom = () => {
           messages={displayMessages}
           characterName={activeChat.name}
           characterImage={activeChat.image}
-          backgroundImage={activeChat.image}
+          backgroundImage={backgroundDisplay ? activeChat.image : undefined}
         />
 
         {showRatingPrompt && (
-          <ChatRatingPrompt onDone={() => setLastRatedAtCount(characterResponseCount)} />
+          <ChatRatingPrompt onDone={() => setLastRatedCycles(prev => ({ ...prev, [chatroomId!]: ratingCycle }))} />
         )}
 
-        <ChatInputBar />
+        <ChatInputBar key={activeChat.chatroomId} />
       </div>
 
       {/* Right panel toggle button (when closed) */}
@@ -129,9 +146,15 @@ export const ChatRoom = () => {
       {rightOpen && (
         <div className="absolute inset-y-0 right-0 z-30 w-full max-w-80 lg:relative lg:inset-auto lg:z-auto">
           <ChatRightPanel
+            key={activeChat.characterId}
             name={activeChat.name}
             image={activeChat.image}
             onClose={() => setRightOpen(false)}
+            onBackgroundDisplayChange={(v) => {
+              if (chatroomId) {
+                setBackgroundDisplays(prev => ({ ...prev, [chatroomId]: v }));
+              }
+            }}
           />
         </div>
       )}

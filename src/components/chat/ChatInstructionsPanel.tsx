@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useChatService } from '@/services/useChatService';
 
-export const ChatMemoryPanel = (props: { chatroomId: string }) => {
-  const { getMemory, addMemory: addMemoryApi } = useChatService();
-  const [summaries, setSummaries] = useState<string[]>([]);
+export const ChatInstructionsPanel = (props: { chatroomId: string }) => {
+  const { getInstructions, addInstruction: addInstructionApi } = useChatService();
+  const [items, setItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [input, setInput] = useState('');
@@ -14,10 +14,10 @@ export const ChatMemoryPanel = (props: { chatroomId: string }) => {
   const [addError, setAddError] = useState(false);
 
   useEffect(() => {
-    getMemory(props.chatroomId).then((res) => {
-      const items = res?.content?.summaries as string[] | undefined;
-      if (Array.isArray(items)) {
-        setSummaries(items);
+    getInstructions(props.chatroomId).then((res: unknown) => {
+      const list = (res as { content?: { instructions?: unknown[] } })?.content?.instructions;
+      if (Array.isArray(list)) {
+        setItems(list.map(i => String(i)));
       }
     }).catch(() => setError(true)).finally(() => setLoading(false));
   }, [props.chatroomId]);
@@ -29,12 +29,12 @@ export const ChatMemoryPanel = (props: { chatroomId: string }) => {
     }
     setAddError(false);
     setAdding(true);
-    addMemoryApi(props.chatroomId, text).then(() => {
-      toast.success('Memory saved.');
-      setSummaries(prev => [...prev, text]);
+    addInstructionApi(props.chatroomId, text).then(() => {
+      toast.success('Instruction saved.');
+      setItems(prev => [...prev, text]);
       setInput('');
     }).catch(() => {
-      toast.error('Failed to save memory.');
+      toast.error('Failed to save instruction.');
       setAddError(true);
     }).finally(() => setAdding(false));
   };
@@ -42,14 +42,12 @@ export const ChatMemoryPanel = (props: { chatroomId: string }) => {
   return (
     <div className="flex flex-col gap-2 px-4 pb-3">
       {loading && <p className="text-sm text-white-50">Loading…</p>}
-      {!loading && error && <p className="text-sm text-error-200">Failed to load memories.</p>}
-      {!loading && !error && summaries.length === 0 && (
-        <p className="text-sm text-white-50">No memories yet.</p>
+      {!loading && error && <p className="text-sm text-error-200">Failed to load instructions.</p>}
+      {!loading && !error && items.length === 0 && (
+        <p className="text-sm text-white-50">No instructions yet.</p>
       )}
-      {summaries.map(s => (
-        <div key={s} className="rounded-xl bg-black-60 px-3 py-2.5 text-sm text-white">
-          {s}
-        </div>
+      {items.map(item => (
+        <div key={item} className="rounded-xl bg-black-60 px-3 py-2.5 text-sm text-white">{item}</div>
       ))}
       <div className="mt-1 flex gap-2">
         <input
@@ -61,7 +59,7 @@ export const ChatMemoryPanel = (props: { chatroomId: string }) => {
               handleAdd();
             }
           }}
-          placeholder="Add a memory…"
+          placeholder="Add an instruction…"
           className="flex-1 rounded-xl bg-black-60 px-3 py-2 text-sm text-white placeholder-white-50 focus:outline-none"
         />
         <button
@@ -72,7 +70,7 @@ export const ChatMemoryPanel = (props: { chatroomId: string }) => {
           {adding ? '…' : 'Add'}
         </button>
       </div>
-      {addError && <p className="text-xs text-error-200">Failed to save memory.</p>}
+      {addError && <p className="text-xs text-error-200">Failed to save instruction.</p>}
     </div>
   );
 };

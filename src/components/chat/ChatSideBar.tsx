@@ -27,7 +27,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
   const t = useTranslations('ChatSideBar');
   const { token } = useAuth();
   const { chatListVersion, setActiveChat } = useChatNavigation();
-  const { setMessages, setNextCursor, setHasMoreMessages } = useChatMessages();
+  const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping } = useChatMessages();
   const { getChatList, getMessages } = useChatService();
   const router = useRouter();
   const [open, setOpen] = useState(true);
@@ -49,7 +49,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
       if (pagination) {
         setPages((pagination.pages as number) ?? 1);
       }
-    });
+    }).catch(() => {});
   }, [token, chatListVersion]);
 
   const loadMore = () => {
@@ -64,7 +64,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
         setRooms(prev => [...prev, ...(items as ChatRoom[])]);
         setPage(nextPage);
       }
-    }).finally(() => setLoadingMore(false));
+    }).catch(() => {}).finally(() => setLoadingMore(false));
   };
 
   if (rooms.length === 0) {
@@ -97,6 +97,7 @@ const ChatHistoryList = (props: { onSelect: () => void }) => {
                   greetingMessage: '',
                 });
                 setMessages([]);
+                setIsTyping(false);
                 getMessages(room.id).then((res) => {
                   const items = res?.content?.messages ?? res?.messages ?? res?.content?.items ?? res?.content ?? res?.data;
                   if (Array.isArray(items)) {

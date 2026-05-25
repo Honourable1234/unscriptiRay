@@ -34,7 +34,7 @@ const ChatView = () => {
           tags: (c.tags as string[]) ?? [],
         })));
       }
-    });
+    }).catch(() => {});
   }, []);
 
   const filtered = characters.filter(c =>

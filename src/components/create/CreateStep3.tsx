@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useCreate } from '@/context/CreateContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { CreateAccordionField } from './CreateAccordionField';
@@ -58,6 +59,7 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
     }).then((res: unknown) => {
       const content = (res as { content?: EnrichContent })?.content;
       if (content) {
+        toast.success('Character enriched with AI.');
         if (content.backstory) {
           ctx.setBackstory(content.backstory);
         }
@@ -75,7 +77,9 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
         }
       }
       setEnrichLoading(false);
-    }).catch(() => {
+    }).catch((err: unknown) => {
+      console.error('[aiEnrich] error:', err);
+      toast.error('AI enrichment failed.');
       setEnrichLoading(false);
     });
   };

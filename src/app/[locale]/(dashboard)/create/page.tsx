@@ -2,6 +2,7 @@
 import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
 import { CreateStep3 } from '@/components/create/CreateStep3';
@@ -86,6 +87,9 @@ function CreatePageContent() {
       setGenerating(false);
       setStepValid(false);
       setStep(4);
+    }).catch(() => {
+      toast.error('Failed to create character.');
+      setGenerating(false);
     });
   };
 

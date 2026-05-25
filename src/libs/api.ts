@@ -58,6 +58,21 @@ export const api = {
 
     return res.json();
   },
+  put: async (path: string, body: Record<string, unknown>, token?: string) => {
+    const res = await fetch(`${Env.NEXT_PUBLIC_API_URL}${path}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+    }
+    return res.json();
+  },
   post: async (path: string, body: Record<string, unknown>, token?: string) => {
     const res = await fetch(`${Env.NEXT_PUBLIC_API_URL}${path}`, {
       method: 'POST',

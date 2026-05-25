@@ -254,8 +254,11 @@ export const useGenerateService = () => {
     timerId = setTimeout(tick, intervalMs);
     return () => clearTimeout(timerId);
   };
+  const pollEvents = () =>
+    api.get('/events/poll', token ?? undefined);
 
   return {
+    pollEvents,
     imagePreset,
     getPresets,
     getGeneratedAssets,

@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { CloseIcon, StarIcon } from '@/components/icons';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
@@ -20,8 +21,10 @@ export const ChatRatingPrompt = (props: { onDone: () => void }) => {
     setSubmitting(true);
     rateChat(activeChat.chatroomId, rating)
       .then(() => {
+        toast.success('Thanks for your rating!');
         props.onDone();
       })
+      .catch(() => toast.error('Failed to submit rating.'))
       .finally(() => {
         setSubmitting(false);
       });

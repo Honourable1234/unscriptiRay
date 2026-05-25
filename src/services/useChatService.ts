@@ -52,6 +52,30 @@ export const useChatService = () => {
     return api.delete(`/chat/${chatroomId}/messages`, token);
   };
 
+  const deleteRoom = (chatroomId: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.delete(`/chat/${chatroomId}`, token);
+  };
+
+  const getInstructions = (chatroomId: string) =>
+    api.get(`/chat/${chatroomId}/instructions`, token ?? undefined);
+
+  const addInstruction = (chatroomId: string, instruction: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.put(`/chat/${chatroomId}/instructions`, { instruction }, token);
+  };
+
+  const initiateCall = (chatroomId: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.post('/voice/call', { chatroom_id: chatroomId }, token);
+  };
+
   const getSettings = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/settings`, token ?? undefined);
 
@@ -71,6 +95,10 @@ export const useChatService = () => {
     getMemory,
     addMemory,
     clearMessages,
+    deleteRoom,
+    initiateCall,
+    getInstructions,
+    addInstruction,
     getSettings,
     updateSettings,
   };

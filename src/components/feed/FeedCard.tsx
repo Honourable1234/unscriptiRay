@@ -86,7 +86,7 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
       <div className="absolute right-20 bottom-8 left-4 flex items-center gap-3">
         {props.item.character.image_url && (
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
-            <Image src={props.item.character.image_url} alt={props.item.character.name} fill className="object-cover" />
+            <Image src={props.item.character.image_url} alt={props.item.character.name} fill sizes="40px" className="object-cover" />
           </div>
         )}
         <span className="text-base font-bold text-white drop-shadow">{props.item.character.name}</span>

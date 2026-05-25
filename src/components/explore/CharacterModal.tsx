@@ -69,7 +69,7 @@ export const CharacterModal = (props: {
       if (urls.length > 0) {
         setDetailImages(urls);
       }
-    }).finally(() => {
+    }).catch(() => {}).finally(() => {
       setLoading(false);
     });
   }, [props.character.id]);
@@ -77,10 +77,15 @@ export const CharacterModal = (props: {
 
   useEffect(() => {
     const node = descRef.current;
-    if (node && !isClamped) {
-      setIsClamped(node.scrollHeight > node.clientHeight);
+    if (!node) {
+      return;
     }
-  }, [isClamped]);
+    const observer = new ResizeObserver(() => {
+      setIsClamped(node.scrollHeight > node.clientHeight);
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const images = detailImages.length > 0 ? detailImages : [props.character.image];
   const tags = props.character.tags;

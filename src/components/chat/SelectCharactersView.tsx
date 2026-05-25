@@ -29,7 +29,7 @@ export const SelectCharactersView = (props: {
       if (Array.isArray(list)) {
         setCharacters(list.map(c => mapCharacter(c as Record<string, unknown>)));
       }
-    });
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const SelectCharactersView = (props: {
       if (c) {
         setSelected([mapCharacter(c as Record<string, unknown>)]);
       }
-    });
+    }).catch(() => {});
   }, [props.preSelectedId]);
 
   const filtered = characters.filter(c =>

@@ -3,6 +3,7 @@
 import type { WebSettings } from '@/services/useChatService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useChatService } from '@/services/useChatService';
 
 const LUST_LEVELS = ['friendly', 'moderate', 'explicit'];
@@ -36,7 +37,7 @@ const SelectRow = (props: { label: string; value: string; options: string[]; onC
   </div>
 );
 
-export const ChatSettingsPanel = (props: { chatroomId: string }) => {
+export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDisplayChange?: (v: boolean) => void }) => {
   const t = useTranslations('ChatSettingsPanel');
   const { getSettings, updateSettings } = useChatService();
   const [settings, setSettings] = useState<WebSettings | null>(null);
@@ -59,9 +60,18 @@ export const ChatSettingsPanel = (props: { chatroomId: string }) => {
     const prev = settings;
     const next = { ...settings, ...update } as WebSettings;
     setSettings(next);
+    if (typeof update.background_display === 'boolean') {
+      props.onBackgroundDisplayChange?.(update.background_display);
+    }
     setSaving(true);
     updateSettings(props.chatroomId, next)
-      .catch(() => setSettings(prev))
+      .then(() => {
+        toast.success('Settings saved.');
+      })
+      .catch(() => {
+        toast.error('Failed to save settings.');
+        setSettings(prev);
+      })
       .finally(() => setSaving(false));
   };
 

@@ -60,10 +60,14 @@ export const ExploreCharacters = (props: { filters?: ActiveFilters }) => {
     getCharacters({ ...f, page: nextPage, limit }).then((res) => {
       const list: unknown = res?.content?.characters;
       if (Array.isArray(list)) {
-        setCharacters(prev => [...prev, ...list.map(c => mapCharacter(c as Record<string, unknown>))]);
+        const incoming = list.map(c => mapCharacter(c as Record<string, unknown>));
+        setCharacters((prev) => {
+          const seen = new Set(prev.map(c => c.id));
+          return [...prev, ...incoming.filter(c => !seen.has(c.id))];
+        });
         setPage(nextPage);
       }
-    }).finally(() => {
+    }).catch(() => {}).finally(() => {
       setLoadingMore(false);
     });
   };

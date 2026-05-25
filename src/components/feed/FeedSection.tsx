@@ -88,7 +88,7 @@ export const FeedSection = () => {
       {limitReached && (
         <div className="relative h-full w-full shrink-0 snap-start snap-always overflow-hidden">
           {paywallBg && (
-            <Image src={paywallBg} alt="background" fill className="scale-110 object-cover" />
+            <Image src={paywallBg} alt="background" fill sizes="100vw" className="scale-110 object-cover" />
           )}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xl" />
           <FeedPaywall />

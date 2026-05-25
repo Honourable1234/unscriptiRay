@@ -2,8 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { CloseIcon, EditIcon, PlayIcon } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
+import { api } from '@/libs/api';
 import { eyeColorMap, hairColorMap, skinToneMap } from './colorMaps';
 
 export type CreatedCharacter = {
@@ -60,9 +63,74 @@ function isLightColor(hex: string): boolean {
 
 export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsChange?: (tags: string[]) => void }) => {
   const t = useTranslations('CreateStep4');
+  const router = useRouter();
+  const { token } = useAuth();
   const [tab, setTab] = useState<Tab>('appearance');
   const [tags, setTags] = useState<string[]>(props.character?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
+  const [imageUrl, setImageUrl] = useState(props.character?.image_url ?? '');
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (imageUrl || !props.character?.id || !token) {
+      return;
+    }
+
+    const statusMap: Record<string, number> = {
+      pending: 10,
+      dispatched: 30,
+      in_progress: 60,
+      complete: 100,
+    };
+
+    let stopped = false;
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
+    const poll = async () => {
+      while (!stopped) {
+        try {
+          const res = await api.get('/events/poll', token);
+          const events = res?.content?.events ?? [];
+          for (const e of events as Record<string, unknown>[]) {
+            if (e.event !== 'generation.update') {
+              continue;
+            }
+            const data = e.data as Record<string, unknown>;
+            const status = data.status as string | undefined;
+            if (status && statusMap[status] !== undefined) {
+              setProgress(statusMap[status]!);
+            }
+            if (status === 'complete') {
+              const url = (data.url ?? data.image_url) as string | undefined;
+              if (url) {
+                setImageUrl(url);
+              }
+              stopped = true;
+              return;
+            }
+            if (status === 'failed') {
+              stopped = true;
+              return;
+            }
+          }
+        } catch {
+        // network error — keep polling
+        }
+        if (!stopped) {
+          await new Promise<void>((resolve) => {
+            timerId = setTimeout(resolve, 4000);
+          });
+        }
+      }
+    };
+
+    void poll();
+
+    return () => {
+      stopped = true;
+      clearTimeout(timerId);
+    };
+  }, [props.character?.id, token, imageUrl]);
 
   const tabs: { label: string; value: Tab }[] = [
     { label: t('tab_appearance'), value: 'appearance' },
@@ -79,8 +147,8 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
 
   const c = props.character;
   const a = c.appearance ?? {};
-  const imageUrl = c.image_url || '/Create/GenerateImage.jpg';
-  const isGenerating = !c.image_url;
+  const displayImage = imageUrl || '/Create/GenerateImage.jpg';
+  const isGenerating = !imageUrl;
 
   const voiceValue = typeof c.voice_settings === 'object' ? c.voice_settings?.voice_type : (c.voice_settings ?? c.voice_type);
   const kinkValue = Array.isArray(c.kinks) ? c.kinks[0] : c.kinks;
@@ -139,18 +207,22 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
           <p className="mb-6 text-center text-white">{t('preview')}</p>
           <div className="relative h-121 w-full overflow-hidden rounded-2xl">
             <Image
-              src={imageUrl}
+              src={displayImage}
               alt={c.name || 'Character'}
               fill
+              sizes="(max-width: 640px) 100vw, 350px"
               className="object-cover"
             />
             {isGenerating && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 px-8">
                 <p className="text-sm font-semibold text-white">{t('generate_process')}</p>
                 <div className="h-4 w-full max-w-49 overflow-hidden rounded-full bg-white">
-                  <div className="h-full w-[45%] rounded-full bg-primary-100" />
+                  <div className="h-full rounded-full bg-primary-100 transition-all duration-700" style={{ width: `${progress}%` }} />
                 </div>
-                <p className="text-sm text-white">45%</p>
+                <p className="text-sm text-white">
+                  {progress}
+                  %
+                </p>
               </div>
             )}
           </div>
@@ -264,6 +336,7 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
 
           <button
             type="button"
+            onClick={() => router.push('/my-ai')}
             className="w-full cursor-pointer rounded-xl bg-primary-100 py-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
             {t('meet_companion')}

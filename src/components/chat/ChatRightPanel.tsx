@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -18,6 +19,8 @@ import {
 } from '@/components/icons';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useCharacterService } from '@/services/useCharacterService';
+import { useChatService } from '@/services/useChatService';
+import { ChatInstructionsPanel } from './ChatInstructionsPanel';
 import { ChatMemoryPanel } from './ChatMemoryPanel';
 import { ChatSettingsPanel } from './ChatSettingsPanel';
 
@@ -25,18 +28,23 @@ export const ChatRightPanel = (props: {
   name: string;
   image: string;
   onClose: () => void;
+  onBackgroundDisplayChange?: (v: boolean) => void;
 }) => {
   const t = useTranslations('ChatRightPanel');
   const { activeChat } = useChatNavigation();
   const { getCharacter, getCharacterMedia } = useCharacterService();
+  const { initiateCall } = useChatService();
   const router = useRouter();
   const [imgIndex, setImgIndex] = useState(0);
+  const [calling, setCalling] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [age, setAge] = useState<number | null>(null);
   const [settingsOpenId, setSettingsOpenId] = useState<string | null>(null);
   const [memoryOpenId, setMemoryOpenId] = useState<string | null>(null);
+  const [instructionsOpenId, setInstructionsOpenId] = useState<string | null>(null);
   const settingsOpen = settingsOpenId === activeChat?.chatroomId;
   const memoryOpen = memoryOpenId === activeChat?.chatroomId;
+  const instructionsOpen = instructionsOpenId === activeChat?.chatroomId;
 
   useEffect(() => {
     if (!activeChat?.characterId) {
@@ -124,21 +132,44 @@ export const ChatRightPanel = (props: {
             <MediaIcon />
             {t('view_media')}
           </button>
-          <button className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white sm:px-3">
+          <button
+            disabled={calling || !activeChat}
+            onClick={() => {
+              if (!activeChat) {
+                return;
+              }
+              setCalling(true);
+              initiateCall(activeChat.chatroomId)
+                .then(() => {
+                  toast.success('Call started!');
+                })
+                .catch(() => toast.error('Failed to start call.'))
+                .finally(() => setCalling(false));
+            }}
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white disabled:opacity-50 sm:px-3"
+          >
             <PhoneIcon />
-            {t('call_me')}
+            {calling ? '…' : t('call_me')}
           </button>
         </div>
 
         <div className="mt-6 flex flex-col">
-          {/* Model row */}
-          <button className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40">
+          {/* Instructions accordion */}
+          <button
+            onClick={() => setInstructionsOpenId(instructionsOpen ? null : (activeChat?.chatroomId ?? null))}
+            className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
+          >
             <span className="flex items-center gap-2">
               <ModelIcon />
-              {t('model')}
+              Instructions
             </span>
-            <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+            <span className={`transition-transform duration-200 ${instructionsOpen ? 'rotate-0' : '-rotate-90'}`}>
+              <ChevronDownIcon />
+            </span>
           </button>
+          {instructionsOpen && activeChat && (
+            <ChatInstructionsPanel chatroomId={activeChat.chatroomId} />
+          )}
 
           {/* Voice row */}
           <button className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40">
@@ -180,7 +211,10 @@ export const ChatRightPanel = (props: {
             </span>
           </button>
           {settingsOpen && activeChat && (
-            <ChatSettingsPanel chatroomId={activeChat.chatroomId} />
+            <ChatSettingsPanel
+              chatroomId={activeChat.chatroomId}
+              onBackgroundDisplayChange={props.onBackgroundDisplayChange}
+            />
           )}
         </div>
       </div>

@@ -73,7 +73,7 @@ export const ChatMessageList = (props: {
               scrollEl.scrollTop = scrollEl.scrollHeight - prevHeight;
             });
           }
-        }).finally(() => {
+        }).catch(() => {}).finally(() => {
           loadingMoreRef.current = false;
         });
       },

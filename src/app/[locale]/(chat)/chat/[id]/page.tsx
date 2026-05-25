@@ -25,7 +25,7 @@ const formatDate = (dateStr: string) => {
 
 export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
   const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
-  const { setMessages, setNextCursor, setHasMoreMessages } = useChatMessages();
+  const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping } = useChatMessages();
   const { authLoading } = useAuth();
   const { startChat, getMessages } = useChatService();
   const router = useRouter();
@@ -37,6 +37,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
 
     setActiveChat(null);
     setMessages([]);
+    setIsTyping(false);
 
     props.params.then(({ id }) => {
       startChat(id).then((res) => {
@@ -84,13 +85,13 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
               setNextCursor((msgRes?.content?.nextCursor as string) ?? null);
               setHasMoreMessages(!!(msgRes?.content?.nextCursor));
             }
-          });
+          }).catch(() => {});
         }
       }).catch(() => {
         router.replace('/chat');
       });
     });
-  }, [authLoading, router, setActiveChat, setMessages, setNextCursor, setHasMoreMessages, bumpChatList]);
+  }, [authLoading]);
 
   if (!activeChat) {
     return (

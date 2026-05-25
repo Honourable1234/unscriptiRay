@@ -3,6 +3,7 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { LockIcon2 } from '@/components/icons';
 import { useCharacterService } from '@/services/useCharacterService';
@@ -19,12 +20,18 @@ export const CharacterUnlockButton = (props: { character: Character; onUnlocked:
     purchaseCollection(String(props.character.id))
       .then((res) => {
         if (res?.success) {
+          toast.success('Collection unlocked!');
           props.onUnlocked();
         } else {
-          setError(res?.message ?? t('purchase_failed'));
+          const msg = res?.message ?? t('purchase_failed');
+          toast.error(msg);
+          setError(msg);
         }
       })
-      .catch(() => setError(t('error')))
+      .catch(() => {
+        toast.error(t('error'));
+        setError(t('error'));
+      })
       .finally(() => setIsLoading(false));
   };
 

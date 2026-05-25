@@ -54,7 +54,7 @@ export const OptionModal = (props: {
         setItems(fetched);
       }
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, [cacheKey, token, labelKey]);
 
   return (
