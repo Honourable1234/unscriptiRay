@@ -64,14 +64,14 @@ export default async function RootLayout(props: {
   return (
     <html lang={locale} className={poppins.variable}>
       <body className="font-poppins" suppressHydrationWarning>
-        <NextIntlClientProvider>
-          <PostHogProvider>
+        <PostHogProvider>
+          <NextIntlClientProvider>
             <div className="mx-auto max-w-screen-2xl">
               {props.children}
             </div>
             <ToastContainer position="bottom-right" theme="dark" />
-          </PostHogProvider>
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

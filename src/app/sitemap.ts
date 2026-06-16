@@ -10,11 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     alternates: {
-      languages: Object.fromEntries(
-        routing.locales
-          .filter(locale => locale !== routing.defaultLocale)
-          .map(locale => [locale, `${baseUrl}${getI18nPath(route, locale)}`]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          routing.locales.map(locale => [locale, `${baseUrl}${getI18nPath(route, locale)}`]),
+        ),
+        'x-default': `${baseUrl}${route}`,
+      },
     },
   }));
 }

@@ -33,6 +33,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+.env
+.env.production
 .env*.local
 
 # Sentry Config File
@@ -40,6 +42,15 @@ yarn-error.log*
 
 # local folder
 local
+
+# Internal docs and notes
+.env.example
+CODE_REVIEW.md
+IMAGE_GENERATION_API_GUIDE.md
+needs.md
+message-1.txt
+web-websocket-chat (1).md
+fixes.md
 
 # vercel
 .vercel
