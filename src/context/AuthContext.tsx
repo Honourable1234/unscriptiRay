@@ -57,14 +57,10 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     // TODO: remove setIsPremium override when premium accounts are available for testing
     const updateUser = (userData: UserData | null) => setUser(userData);
 
-    supabase.auth.getSession().then(async ({ data }) => {
-      setToken(data.session?.access_token ?? null);
-      if (data.session) {
-        updateUser(await fetchUserData(data.session.access_token));
-      }
-      setAuthLoading(false);
-    });
-
+    // onAuthStateChange fires INITIAL_SESSION on first subscription, so a
+    // separate getSession() call is not needed and causes lock contention in
+    // React Strict Mode when two concurrent getSession() calls compete for the
+    // same Web Lock.
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setToken(session?.access_token ?? null);
       if (session) {
@@ -72,6 +68,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       } else {
         updateUser(null);
       }
+      setAuthLoading(false);
     });
 
     return () => listener.subscription.unsubscribe();

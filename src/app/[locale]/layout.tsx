@@ -66,9 +66,7 @@ export default async function RootLayout(props: {
       <body className="font-poppins" suppressHydrationWarning>
         <PostHogProvider>
           <NextIntlClientProvider>
-            <div className="mx-auto max-w-screen-2xl">
-              {props.children}
-            </div>
+            {props.children}
             <ToastContainer position="bottom-right" theme="dark" />
           </NextIntlClientProvider>
         </PostHogProvider>
