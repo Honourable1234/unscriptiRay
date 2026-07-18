@@ -1,5 +1,4 @@
 import { setRequestLocale } from 'next-intl/server';
-import { AuthGuard } from '@/components/auth/AuthGuard';
 import { AuthProvider } from '@/context/AuthContext';
 import { ChatProvider } from '@/context/ChatContext';
 import { ChatTemplate } from '@/templates/ChatTemplate';
@@ -15,9 +14,7 @@ export default async function Layout(props: {
     <AuthProvider>
       <ChatProvider>
         <ChatTemplate>
-          <AuthGuard>
-            {props.children}
-          </AuthGuard>
+          {props.children}
         </ChatTemplate>
       </ChatProvider>
     </AuthProvider>

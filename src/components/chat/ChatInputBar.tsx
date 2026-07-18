@@ -57,7 +57,7 @@ export const ChatInputBar = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="mx-auto flex w-full max-w-3xl flex-col">
       {/* Suggestion chips */}
       {(suggestions.length > 0 || loadingSuggestions) && (
         <div className="flex flex-wrap gap-2 px-4 pb-2">
@@ -80,8 +80,8 @@ export const ChatInputBar = () => {
         </div>
       )}
 
-      <div className="flex py-3 sm:px-4">
-        <div className="flex w-full items-center gap-3 rounded-l-xl border border-black-40 bg-black-60 px-3 py-3 sm:px-4 sm:py-6">
+      <div className="flex items-center gap-2 py-3 sm:px-4">
+        <div className="flex w-full items-center gap-3 rounded-full border border-black-40 bg-black-60 px-4 py-3 sm:px-5 sm:py-4">
           <button className="cursor-pointer text-white-75 hover:text-white">
             <AttachIcon />
           </button>
@@ -100,7 +100,7 @@ export const ChatInputBar = () => {
             {input.trim() ? <SendIcon /> : <AiIcon />}
           </button>
         </div>
-        <button className="cursor-pointer rounded-r-xl bg-primary-100 px-3 py-3 text-white sm:px-6 sm:py-4">
+        <button className="flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-100 p-3.5 text-white sm:p-4">
           <MicIcon />
         </button>
       </div>

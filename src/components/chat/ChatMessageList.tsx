@@ -18,6 +18,22 @@ const groupByDate = (messages: Message[]) => {
   return map;
 };
 
+// Character responses interleave *action/narration* with plain dialogue.
+// Asterisk-wrapped runs render in italic, everything else as regular text.
+const renderFormattedText = (text: string) => {
+  const paragraphs = text.split('\n').map(p => p.trim()).filter(Boolean);
+
+  return paragraphs.map((paragraph, pIndex) => (
+    <p key={pIndex} className={pIndex > 0 ? 'mt-3' : undefined}>
+      {paragraph.split(/(\*[^*]+\*)/g).filter(Boolean).map((segment, sIndex) => (
+        segment.startsWith('*') && segment.endsWith('*')
+          ? <em key={sIndex} className="text-white-75 italic">{segment.slice(1, -1)}</em>
+          : <span key={sIndex}>{segment}</span>
+      ))}
+    </p>
+  ));
+};
+
 export const ChatMessageList = (props: {
   messages: Message[];
   characterName: string;
@@ -92,7 +108,7 @@ export const ChatMessageList = (props: {
           <div className="absolute inset-0 h-full bg-black/90" />
         </>
       )}
-      <div className="relative px-4 py-4">
+      <div className="relative mx-auto max-w-3xl px-4 py-4">
         {Object.entries(grouped).map(([date, msgs]) => (
           <div key={date}>
             <div className="my-4 flex items-center justify-center md:my-7.5">
@@ -112,7 +128,7 @@ export const ChatMessageList = (props: {
                   )}
                   {msg.text && (
                     <div className={`w-full max-w-[90%] rounded-2xl px-6 py-4 text-sm leading-6 text-white sm:w-131 ${msg.sender === 'user' ? 'rounded-br-sm bg-black-40' : 'rounded-bl-sm bg-black-80'}`}>
-                      {msg.text}
+                      {renderFormattedText(msg.text)}
                     </div>
                   )}
                   <span className="text-[10px] text-white-75">{msg.time}</span>

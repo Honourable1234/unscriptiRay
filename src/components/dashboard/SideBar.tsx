@@ -1,7 +1,17 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, UpgradeIcon } from '@/components/icons';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  useSidebar,
+} from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 
@@ -20,124 +30,78 @@ const navItems: NavItem[] = [
   { label: 'Feed', href: '/feed', icon: <FeedIcon /> },
 ];
 
-export const SideBar = () => {
+const SideBarTrigger = (props: { className?: string }) => {
+  const { toggleSidebar } = useSidebar();
+  return (
+    <button
+      onClick={toggleSidebar}
+      className={`flex w-fit cursor-pointer items-center justify-center rounded-lg p-2 text-white hover:bg-black-40 hover:text-white/75 ${props.className ?? ''}`}
+    >
+      <BarsIcon />
+    </button>
+  );
+};
+
+const SideBarContent = () => {
   const { isAuthenticated, isPremium } = useAuth();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <>
-      {/* Mobile: slide-in drawer */}
-      <div className="sm:hidden">
-        <button
-          onClick={() => setMobileOpen(prev => !prev)}
-          className="fixed top-4 left-4 z-50 rounded-lg bg-black-100/40 p-2 text-white/40 hover:text-white-75"
-        >
-          <BarsIcon />
-        </button>
+    <Sidebar collapsible="icon" className="border-black-40 bg-black-100">
+      <SideBarTrigger className="fixed top-4 left-4 z-50 bg-black-100/40 text-white/40 md:hidden" />
 
-        {/* Backdrop */}
-        {mobileOpen && (
-          <button
-            type="button"
-            aria-label="Close sidebar"
-            className="fixed inset-0 z-40 cursor-default bg-black/50"
-            onClick={() => setMobileOpen(false)}
-          />
-        )}
+      <SidebarHeader className="pt-5">
+        <SideBarTrigger className="hidden md:flex" />
+      </SidebarHeader>
 
-        {/* Drawer */}
-        <div className={`fixed top-0 left-0 z-50 flex h-full w-72 flex-col justify-between bg-black-100 px-4 py-5 transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="flex flex-col gap-1">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="mb-6 flex w-fit cursor-pointer items-center justify-center rounded-lg p-2 text-white hover:bg-black-40"
-            >
-              <BarsIcon />
-            </button>
-
-            <nav className="flex flex-col gap-3">
-              {navItems.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/' && pathname.includes(item.href));
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${isActive ? 'bg-primary-100/20 text-primary-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-
-          {!isPremium && (
-            isAuthenticated
-              ? (
-                  <button
-                    className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white"
-                  >
-                    <UpgradeIcon />
-                    <span>Upgrade</span>
-                  </button>
-                )
-              : (
-                  <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-sm font-semibold text-primary-100 transition-opacity hover:opacity-80">
-                    Sign In
-                  </Link>
-                )
-          )}
-        </div>
-      </div>
-
-      {/* Desktop: vertical sidebar */}
-      <aside className={`hidden flex-col justify-between bg-black-100 py-5 transition-all duration-300 sm:flex ${isOpen ? 'h-screen w-45 items-start px-3 py-5' : 'h-fit w-16.5 items-center px-2'}`}>
-        <div className="flex w-full flex-col gap-1">
-          <button
-            onClick={() => setIsOpen(prev => !prev)}
-            className="mb-4 flex w-fit items-center justify-center rounded-lg p-2 text-white hover:bg-black-40 hover:text-white/75"
-          >
-            <BarsIcon />
-          </button>
-
-          <nav className="flex w-full flex-col gap-3">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.includes(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-3 rounded-xl p-3 text-sm font-medium transition-colors ${isActive ? 'bg-primary-100/20 text-primary-100' : 'text-white hover:bg-black-40 hover:text-white/75'}`}
+      <SidebarContent>
+        <SidebarMenu className="gap-3 px-2">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.includes(item.href));
+            return (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  render={<Link href={item.href} />}
+                  isActive={isActive}
+                  tooltip={item.label}
+                  className="h-auto rounded-xl p-3 text-sm font-medium text-white hover:bg-black-40 hover:text-white/75 data-active:bg-primary-100/20 data-active:text-primary-100"
                 >
                   {item.icon}
-                  {isOpen && <span>{item.label}</span>}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarContent>
 
+      <SidebarFooter className="pb-5">
         {!isPremium && (
           isAuthenticated
             ? (
-                <button
-                  className={`mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white ${!isOpen && 'justify-center'}`}
-                >
+                <button className="mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
                   <UpgradeIcon />
-                  {isOpen && <span>Upgrade</span>}
+                  <span className="group-data-[collapsible=icon]:hidden">Upgrade</span>
                 </button>
               )
             : (
-                <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-sm font-semibold text-primary-100 transition-opacity hover:opacity-80">
+                <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-center text-sm font-semibold text-primary-100 transition-opacity group-data-[collapsible=icon]:px-2 hover:opacity-80">
                   Sign In
                 </Link>
               )
         )}
-      </aside>
-    </>
+      </SidebarFooter>
+    </Sidebar>
+  );
+};
+
+export const SideBar = () => {
+  return (
+    // The transform makes this div the positioning container for the Sidebar's
+    // fixed-position panel, so it docks to this column instead of the viewport
+    // edge — required when stacking more than one Sidebar side by side.
+    <SidebarProvider className="h-screen min-h-0 w-fit transform-[translateZ(0)]">
+      <SideBarContent />
+    </SidebarProvider>
   );
 };
