@@ -8,6 +8,7 @@ const config: KnipConfig = {
     'src/libs/I18nNavigation.ts',
     'src/types/I18n.ts',
     'src/components/LocaleSwitcher.tsx',
+    'src/components/ui/**/*.tsx',
     'tests/**/*.ts',
   ],
   // Dependencies to ignore during analysis

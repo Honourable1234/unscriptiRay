@@ -22,6 +22,7 @@ export { DashIcon } from './DashIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { EditIcon } from './EditIcon';
 export { EmojiIcon } from './EmojiIcon';
+export { ExpandIcon } from './ExpandIcon';
 export { ExploreIcon } from './ExploreIcon';
 export { EyeIcon } from './EyeIcon';
 export { EyeOffIcon } from './EyeOffIcon';

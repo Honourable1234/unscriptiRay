@@ -3,20 +3,19 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { OpenIcon, TrashIcon } from '@/components/icons';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
 import { ChatInputBar } from './ChatInputBar';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatRatingPrompt } from './ChatRatingPrompt';
-import { ChatRightPanel } from './ChatRightPanel';
+import { ChatRightPanel, ChatRightPanelToggle } from './ChatRightPanel';
 
 export const ChatRoom = () => {
   const t = useTranslations('ChatRoom');
   const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
   const { messages, setMessages } = useChatMessages();
   const { clearMessages, deleteRoom, getSettings } = useChatService();
-  const [rightOpen, setRightOpen] = useState(true);
   const [showClearConfirmId, setShowClearConfirmId] = useState<string | null>(null);
   const [lastRatedCycles, setLastRatedCycles] = useState<Record<string, number>>({});
   const [backgroundDisplays, setBackgroundDisplays] = useState<Record<string, boolean>>({});
@@ -84,17 +83,23 @@ export const ChatRoom = () => {
   }
 
   return (
-    <div className="relative flex h-full">
-      <div className="flex flex-1 flex-col">
+    <SidebarProvider
+      className="h-full min-h-0 w-full transform-[translateZ(0)]"
+      style={{ '--sidebar-width': '20rem' } as React.CSSProperties}
+    >
+      <div className="flex min-h-0 flex-1 flex-col">
         {/* Chat header */}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-black-40 px-4 py-3">
           <span className="font-semibold text-white">{activeChat.name}</span>
-          <button
-            onClick={() => setShowClearConfirmId(activeChat.chatroomId)}
-            className="cursor-pointer text-white-50 hover:text-white"
-          >
-            <TrashIcon />
-          </button>
+          {/* <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowClearConfirmId(activeChat.chatroomId)}
+              className="cursor-pointer text-white-50 hover:text-white"
+            >
+              <TrashIcon />
+            </button> */}
+          <ChatRightPanelToggle />
+          {/* </div> */}
         </div>
 
         {/* Clear/delete confirmation */}
@@ -132,32 +137,16 @@ export const ChatRoom = () => {
         <ChatInputBar key={activeChat.chatroomId} />
       </div>
 
-      {/* Right panel toggle button (when closed) */}
-      {!rightOpen && (
-        <button
-          onClick={() => setRightOpen(true)}
-          className="fixed top-20 right-4 z-50 cursor-pointer rounded-lg bg-black-100/40 p-2 text-white/40 hover:text-white-75"
-        >
-          <OpenIcon />
-        </button>
-      )}
-
-      {/* Right panel — overlays on lg and below, inline above */}
-      {rightOpen && (
-        <div className="absolute inset-y-0 right-0 z-30 w-full max-w-80 lg:relative lg:inset-auto lg:z-auto">
-          <ChatRightPanel
-            key={activeChat.characterId}
-            name={activeChat.name}
-            image={activeChat.image}
-            onClose={() => setRightOpen(false)}
-            onBackgroundDisplayChange={(v) => {
-              if (chatroomId) {
-                setBackgroundDisplays(prev => ({ ...prev, [chatroomId]: v }));
-              }
-            }}
-          />
-        </div>
-      )}
-    </div>
+      <ChatRightPanel
+        key={activeChat.characterId}
+        name={activeChat.name}
+        image={activeChat.image}
+        onBackgroundDisplayChange={(v) => {
+          if (chatroomId) {
+            setBackgroundDisplays(prev => ({ ...prev, [chatroomId]: v }));
+          }
+        }}
+      />
+    </SidebarProvider>
   );
 };

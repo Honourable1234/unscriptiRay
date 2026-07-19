@@ -38,11 +38,11 @@ export const useChatService = () => {
   const getMemory = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/memory`, token ?? undefined);
 
-  const addMemory = (chatroomId: string, summary: string) => {
+  const addMemory = (chatroomId: string, message: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post(`/chat/${chatroomId}/memory`, { summary }, token);
+    return api.post(`/chat/${chatroomId}/memory`, { message }, token);
   };
 
   const clearMessages = (chatroomId: string) => {
@@ -62,11 +62,11 @@ export const useChatService = () => {
   const getInstructions = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/instructions`, token ?? undefined);
 
-  const addInstruction = (chatroomId: string, instruction: string) => {
+  const addInstruction = (chatroomId: string, message: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.put(`/chat/${chatroomId}/instructions`, { instruction }, token);
+    return api.put(`/chat/${chatroomId}/instructions`, { message }, token);
   };
 
   const initiateCall = (chatroomId: string) => {
