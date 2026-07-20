@@ -44,7 +44,7 @@ export const ChatTemplate = (props: { children: React.ReactNode }) => {
         {authLoading || isAuthenticated
           ? <NavBar className={activeChat ? 'bg-black-100' : undefined} />
           : <ChatGuestBanner />}
-        <div className={`flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${activeChat ? '' : 'px-4 sm:px-6 md:px-8'}`}>
+        <div className={`flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${activeChat ? 'overflow-hidden' : 'overflow-y-auto px-4 sm:px-6 md:px-8'}`}>
           {props.children}
         </div>
       </div>

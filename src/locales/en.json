@@ -107,7 +107,7 @@
     "clear": "Clear"
   },
   "ChatInputBar": {
-    "getting_suggestions": "Getting suggestions…",
+    "generating_suggestion": "Generating suggestion…",
     "placeholder": "Send a message..."
   },
   "ChatSideBar": {

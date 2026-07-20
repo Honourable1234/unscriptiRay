@@ -6,9 +6,11 @@ import { useCreate } from '@/context/CreateContext';
 import { CharacterInfo } from './CharacterInfo';
 import { CreateField } from './CreateField';
 
+const genders = ['Female', 'Male', 'Non-binary'];
+
 export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void }) => {
   const t = useTranslations('CreateStep2');
-  const { data, setName, setAge } = useCreate();
+  const { data, setName, setAge, setGender } = useCreate();
 
   const handleName = (value: string) => {
     setName(value);
@@ -32,6 +34,20 @@ export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void })
         </div>
         <div className="min-w-80 flex-1">
           <CreateField label={t('character_age')} value={data.age} onChange={handleAge} type="number" />
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-sm font-medium text-white">Gender</span>
+        <div className="flex flex-wrap justify-center gap-2">
+          {genders.map(gender => (
+            <button
+              key={gender}
+              onClick={() => setGender(gender)}
+              className={`cursor-pointer rounded-lg px-4 py-2 text-xs font-medium transition-colors ${data.gender === gender ? 'bg-primary-100 text-white' : 'bg-black-40 text-white-75 hover:bg-black-60'}`}
+            >
+              {gender}
+            </button>
+          ))}
         </div>
       </div>
       <CharacterInfo />

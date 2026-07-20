@@ -1,10 +1,12 @@
 'use client';
 
+import type { SubscriptionStatus } from '@/services/useSubscriptionService';
 import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { ChevronLeftIcon, ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
+import { useSubscriptionService } from '@/services/useSubscriptionService';
 
 const RightChevron = () => (
   <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
@@ -25,24 +27,36 @@ const PlaceholderRow = (props: { label: string; value?: string }) => (
 
 export const ProfileSection = () => {
   const { user } = useAuth();
+  const { getStatus, cancelSubscription } = useSubscriptionService();
   const [view, setView] = useState<'list' | 'subscription'>('list');
+  const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
-  const isActivePaid = !!user?.subscription_tier && user.subscription_status === 'active';
-  const tierLabel = user?.subscription_tier ? user.subscription_tier : 'Free';
-  const expiresLabel = user?.subscription_expires_at
-    ? new Date(user.subscription_expires_at).toLocaleDateString()
-    : null;
+  const status = subscription?.status ?? user?.subscription_status;
+  const tier = subscription?.tier ?? user?.subscription_tier;
+  const expiresAt = subscription?.current_period_end ?? user?.subscription_expires_at;
+  const isActivePaid = !!tier && status === 'active';
+  const tierLabel = tier || 'Free';
+  const expiresLabel = expiresAt ? new Date(expiresAt).toLocaleDateString() : null;
 
-  // TODO: replace with a real cancel-subscription API call.
+  const openSubscription = () => {
+    setView('subscription');
+    // Fall back to the user data already on screen if the fetch fails.
+    getStatus().then(res => setSubscription(res.content)).catch(() => {});
+  };
+
   const handleCancel = () => {
     setCancelling(true);
-    setTimeout(() => {
-      toast.success('Subscription cancellation requested.');
-      setShowCancelConfirm(false);
-      setCancelling(false);
-    }, 600);
+    cancelSubscription()
+      .then((res) => {
+        toast.success(res.message || 'Subscription cancelled.');
+        setShowCancelConfirm(false);
+        setSubscription(prev => (prev ? { ...prev, status: res.content.status } : prev));
+        getStatus().then(r => setSubscription(r.content)).catch(() => {});
+      })
+      .catch(() => toast.error('Failed to cancel subscription.'))
+      .finally(() => setCancelling(false));
   };
 
   if (view === 'subscription') {
@@ -141,7 +155,7 @@ export const ProfileSection = () => {
           </span>
         </div>
         <button
-          onClick={() => setView('subscription')}
+          onClick={openSubscription}
           className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5 text-left hover:bg-black-40"
         >
           <div>

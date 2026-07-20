@@ -87,7 +87,7 @@ export const ChatRoom = () => {
       className="h-full min-h-0 w-full transform-[translateZ(0)]"
       style={{ '--sidebar-width': '20rem' } as React.CSSProperties}
     >
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="relative flex h-full min-h-0 flex-1 flex-col">
         {/* Chat header */}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-black-40 px-4 py-3">
           <span className="font-semibold text-white">{activeChat.name}</span>
@@ -130,11 +130,13 @@ export const ChatRoom = () => {
           backgroundImage={backgroundDisplay ? activeChat.image : undefined}
         />
 
-        {showRatingPrompt && (
-          <ChatRatingPrompt onDone={() => setLastRatedCycles(prev => ({ ...prev, [chatroomId!]: ratingCycle }))} />
-        )}
+        <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-4">
+          {showRatingPrompt && (
+            <ChatRatingPrompt onDone={() => setLastRatedCycles(prev => ({ ...prev, [chatroomId!]: ratingCycle }))} />
+          )}
 
-        <ChatInputBar key={activeChat.chatroomId} />
+          <ChatInputBar key={activeChat.chatroomId} />
+        </div>
       </div>
 
       <ChatRightPanel

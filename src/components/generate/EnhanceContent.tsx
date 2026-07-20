@@ -1,48 +1,25 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 
 const resolutions = ['HD', '1K', '4K'];
 
 export const EnhanceContent = (props: { imageSrc: string; imageName?: string; assetId: string; onSuccess?: () => void }) => {
-  const { enhanceGeneratedImage, pollGenerationStatus } = useGenerateService();
+  const { enhanceGeneratedImage } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [resolution, setResolution] = useState('HD');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const stopPollRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
-
-  const handleGenerate = async () => {
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const res = await enhanceGeneratedImage(props.assetId) as { success: boolean; content: { generation_id: string; status: string } };
-      toast.info('Enhancement started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Enhancement complete!');
-          props.onSuccess?.();
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Enhancement failed.';
-      toast.error(message);
-      setIsGenerating(false);
-    }
+  const handleGenerate = () => {
+    void start(async () => {
+      const res = await enhanceGeneratedImage(props.assetId);
+      // The enhance endpoint reports an asset_id, not a generation_id, so
+      // track status with whichever the backend returned.
+      return { content: { generation_id: res.content.generation_id ?? res.content.asset_id } };
+    }, { successMessage: 'Enhancement complete!', onComplete: props.onSuccess });
   };
 
   return (

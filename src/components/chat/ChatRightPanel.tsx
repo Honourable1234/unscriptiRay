@@ -103,7 +103,7 @@ export const ChatRightPanel = (props: {
   }, [imgIndex]);
 
   return (
-    <Sidebar side="right" collapsible="offcanvas" className="border-black-40 bg-black-100">
+    <Sidebar side="right" collapsible="offcanvas" className="h-full border-black-40 bg-black-100">
       <SidebarContent className="relative">
         {/* {!activeSection && (
           <button

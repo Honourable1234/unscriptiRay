@@ -1,37 +1,41 @@
 'use client';
 
-import { SelectStarIcon } from '@/components/icons';
+import { SelectStarIcon, VisualIcon } from '@/components/icons';
 import { GenerateOptionCard } from './GenerateOptionCard';
 
 export const EditStyle = (props: {
-  imageSelected: boolean;
-  visualSelected: boolean;
+  imageName: string | null;
+  isUploading: boolean;
+  visualName: string | null;
   onImageClick: () => void;
+  onImageClear: () => void;
   onVisualClick: () => void;
+  onVisualClear: () => void;
 }) => {
   return (
     <div className="mx-auto flex w-full max-w-184 flex-col gap-3">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <GenerateOptionCard
-          label="Image"
+          label={props.isUploading ? 'Uploading...' : 'Image'}
           sublabel="Required"
           height="223px"
           icon={<SelectStarIcon />}
-          isSelected={props.imageSelected}
+          isSelected={!!props.imageName}
+          selectedName={props.imageName ?? undefined}
           onClick={props.onImageClick}
+          onDeselect={props.onImageClear}
         />
         <GenerateOptionCard
           label="Visual"
           sublabel="Required"
           height="223px"
-          icon={<SelectStarIcon />}
-          isSelected={props.visualSelected}
+          icon={<VisualIcon />}
+          isSelected={!!props.visualName}
+          selectedName={props.visualName ?? undefined}
           onClick={props.onVisualClick}
+          onDeselect={props.onVisualClear}
         />
       </div>
-
-      <div></div>
-
     </div>
   );
 };

@@ -21,6 +21,13 @@ export const useChatService = () => {
   const getMessages = (chatroomId: string, cursor?: string) =>
     api.get(`/chat/${chatroomId}/messages${cursor ? `?cursor=${cursor}` : ''}`, token ?? undefined);
 
+  const sendMessage = (chatroomId: string, body: { content?: string; image?: string }) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.post(`/chat/${chatroomId}/messages`, body, token);
+  };
+
   const getSuggestions = (chatroomId: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
@@ -76,6 +83,13 @@ export const useChatService = () => {
     return api.post('/voice/call', { chatroom_id: chatroomId }, token);
   };
 
+  const textToSpeech = (content: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.post('/voice/tts', { content }, token);
+  };
+
   const getSettings = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/settings`, token ?? undefined);
 
@@ -90,6 +104,7 @@ export const useChatService = () => {
     startChat,
     getChatList,
     getMessages,
+    sendMessage,
     getSuggestions,
     rateChat,
     getMemory,
@@ -97,6 +112,7 @@ export const useChatService = () => {
     clearMessages,
     deleteRoom,
     initiateCall,
+    textToSpeech,
     getInstructions,
     addInstruction,
     getSettings,

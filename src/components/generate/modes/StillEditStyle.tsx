@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { EditStyle } from '@/components/generate/EditStyle';
 import { GenerateButton } from '@/components/generate/GenerateButton';
+import { SelectVisualModal } from '@/components/generate/SelectVisualModal';
 import { StackedCoinIcon } from '@/components/icons';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 
 const modelOptions = [
@@ -20,40 +22,76 @@ const orientationOptions = [
   { value: '1:1', boxW: 'w-10', boxH: 'h-10' },
 ];
 
-export const StillEditStyle = () => {
-  const { generateImage } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+export const StillEditStyle = (props: {
+  onGenerated?: () => void;
+  onGenerationStart?: (generationId: string) => void;
+  onGenerationEnd?: (generationId: string) => void;
+}) => {
+  const { generateImage, uploadReference } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
   const [orientation, setOrientation] = useState('16:9');
   const [modelOpen, setModelOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
-  const [imageSelected, setImageSelected] = useState(false);
-  const [visualSelected, setVisualSelected] = useState(false);
+  const [reference, setReference] = useState<{ key: string; name: string } | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [visual, setVisual] = useState<{ id: string; name: string } | null>(null);
+  const [visualModalOpen, setVisualModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const activeModel = modelOptions.find(m => m.value === model) ?? modelOptions[0]!;
 
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      const quality = model === 'Eclipse' ? 'ultra' : 'balanced';
-      await generateImage({ visual: 'cinematic', orientation, quality });
-      toast.success('Image generation started!');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Generation failed.';
-      const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
-      toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
-    } finally {
-      setIsGenerating(false);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) {
+      return;
     }
+    setIsUploading(true);
+    try {
+      const uploaded = await uploadReference(file);
+      setReference({ key: uploaded.key, name: file.name });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Upload failed.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleGenerate = () => {
+    if (!reference || !visual) {
+      return;
+    }
+    void start(() => generateImage({
+      reference_image_key: reference.key,
+      visual: visual.name.toLowerCase(),
+      orientation,
+      quality: model === 'Eclipse' ? 'ultra' : 'balance',
+    }), {
+      successMessage: 'Image ready!',
+      onComplete: props.onGenerated,
+      onStart: props.onGenerationStart,
+      onSettled: props.onGenerationEnd,
+    });
   };
 
   return (
     <div className="flex flex-col gap-4">
       <EditStyle
-        imageSelected={imageSelected}
-        visualSelected={visualSelected}
-        onImageClick={() => setImageSelected(prev => !prev)}
-        onVisualClick={() => setVisualSelected(prev => !prev)}
+        imageName={reference?.name ?? null}
+        isUploading={isUploading}
+        visualName={visual?.name ?? null}
+        onImageClick={() => fileInputRef.current?.click()}
+        onImageClear={() => setReference(null)}
+        onVisualClick={() => setVisualModalOpen(true)}
+        onVisualClear={() => setVisual(null)}
+      />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={e => void handleFileChange(e)}
       />
 
       <div className="mx-auto flex w-full max-w-184 flex-wrap items-center gap-3">
@@ -136,11 +174,22 @@ export const StillEditStyle = () => {
       </div>
 
       <GenerateButton
-        label="Generate Image"
+        label={isGenerating ? 'Generating...' : 'Generate Image'}
         coins={activeModel.coins}
         onClick={handleGenerate}
         isLoading={isGenerating}
+        disabled={!reference || !visual || isUploading}
       />
+
+      {visualModalOpen && (
+        <SelectVisualModal
+          onSelect={(v) => {
+            setVisual(v);
+            setVisualModalOpen(false);
+          }}
+          onClose={() => setVisualModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

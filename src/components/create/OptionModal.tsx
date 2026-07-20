@@ -17,6 +17,8 @@ export const OptionModal = (props: {
   responseKey?: string;
   topItem?: { label: string; locked?: boolean };
   selected: string;
+  multiSelect?: boolean;
+  selectedValues?: string[];
   onSelect: (value: string) => void;
   onClose: () => void;
 }) => {
@@ -67,10 +69,14 @@ export const OptionModal = (props: {
                 key={item.key}
                 name={item.label}
                 locked={item.locked}
-                selected={props.selected === item.label}
+                selected={props.multiSelect
+                  ? (props.selectedValues ?? []).includes(item.label)
+                  : props.selected === item.label}
                 onClick={() => {
                   props.onSelect(item.label);
-                  props.onClose();
+                  if (!props.multiSelect) {
+                    props.onClose();
+                  }
                 }}
               />
             ))}

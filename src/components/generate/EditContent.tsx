@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
 import { SelectStarIcon, VisualIcon } from '@/components/icons';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
@@ -33,8 +33,8 @@ const modelOptions = [
 type PickedItem = { id: string; name: string };
 
 export const EditContent = (props: { assetId: string; onSuccess?: () => void }) => {
-  const { editImage, pollGenerationStatus } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const { editImage } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
   const [orientation, setOrientation] = useState('16:9');
   const [modelOpen, setModelOpen] = useState(false);
@@ -43,42 +43,14 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
   const [visual, setVisual] = useState<PickedItem | null>(null);
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [visualModalOpen, setVisualModalOpen] = useState(false);
-  const stopPollRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
-
-  const handleGenerate = async () => {
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const res = await editImage({
-        asset_id: props.assetId,
-        model: model.toLowerCase(),
-        orientation,
-        visual: visual?.name.toLowerCase(),
-      });
-      toast.info('Edit started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Edit complete!');
-          props.onSuccess?.();
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Edit failed.';
-      toast.error(message);
-      setIsGenerating(false);
-    }
+  const handleGenerate = () => {
+    void start(() => editImage({
+      asset_id: props.assetId,
+      model: model.toLowerCase(),
+      orientation,
+      visual: visual?.name.toLowerCase(),
+    }), { successMessage: 'Edit complete!', onComplete: props.onSuccess });
   };
 
   return (

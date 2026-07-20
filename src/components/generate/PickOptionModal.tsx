@@ -2,11 +2,13 @@
 
 import { CloseIcon } from '@/components/icons';
 
+export type PickOption = { value: string; label: string };
+
 export const PickOptionModal = (props: {
   title: string;
-  options: string[];
+  options: PickOption[];
   selected: string | null;
-  onSelect: (value: string) => void;
+  onSelect: (option: PickOption) => void;
   onClose: () => void;
 }) => {
   return (
@@ -36,14 +38,14 @@ export const PickOptionModal = (props: {
         <div className="flex flex-wrap gap-2">
           {props.options.map(opt => (
             <button
-              key={opt}
+              key={opt.value}
               onClick={() => {
                 props.onSelect(opt);
                 props.onClose();
               }}
-              className={`cursor-pointer rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${props.selected === opt ? 'border-primary-100 bg-primary-100/10 text-primary-100' : 'border-black-40 bg-black-100 text-white hover:border-primary-100'}`}
+              className={`cursor-pointer rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${props.selected === opt.value ? 'border-primary-100 bg-primary-100/10 text-primary-100' : 'border-black-40 bg-black-100 text-white hover:border-primary-100'}`}
             >
-              {opt}
+              {opt.label}
             </button>
           ))}
         </div>

@@ -6,6 +6,7 @@ type CreateCharacterBody = {
   appearance: Partial<Record<string, string>>;
   name?: string;
   age?: number;
+  gender?: string;
   voice_type?: string;
   personality_archetype?: string;
   relationship_dynamic?: string;
@@ -111,6 +112,17 @@ export const useCharacterService = () => {
     return api.patch(`/characters/${id}`, body as unknown as Record<string, unknown>, token);
   };
 
+  const generateCharacterImage = (id: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.post(`/characters/${id}/generate-image`, {}, token) as Promise<{
+      success: boolean;
+      message: string;
+      content: { generation_id: string; status: string };
+    }>;
+  };
+
   return {
     getCharacter,
     getCharacterMedia,
@@ -121,5 +133,6 @@ export const useCharacterService = () => {
     createCharacter,
     aiEnrich,
     updateCharacter,
+    generateCharacterImage,
   };
 };

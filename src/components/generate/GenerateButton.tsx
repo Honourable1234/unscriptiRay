@@ -8,6 +8,7 @@ export const GenerateButton = (props: {
   coins?: number;
   label?: string;
   isLoading?: boolean;
+  disabled?: boolean;
   className?: string;
   style?: React.CSSProperties;
   py?: string;
@@ -19,7 +20,7 @@ export const GenerateButton = (props: {
   return (
     <button
       onClick={props.onClick}
-      disabled={props.isLoading}
+      disabled={props.isLoading || props.disabled}
       style={props.style}
       className={`m-auto flex w-full max-w-118 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-primary-100 disabled:cursor-not-allowed ${props.px ?? 'px-6'} ${props.py ?? 'py-4'} ${props.textSize ?? 'text-sm'} font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60 ${props.className ?? ''}`}
     >

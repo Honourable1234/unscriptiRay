@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { useGenerateService } from '@/services/generateService';
+import { presetsOfType, useGenerateService } from '@/services/generateService';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-13', boxH: 'h-18' },
@@ -19,7 +19,7 @@ export const GenerateControls = (props: {
   onOrientationChange: (v: string) => void;
 }) => {
   const t = useTranslations('GenerateControls');
-  const { imagePreset } = useGenerateService();
+  const { getPresets } = useGenerateService();
   const [visualOpen, setVisualOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
   const [visualOptions, setVisualOptions] = useState<{ value: string; description: string }[]>(() => [
@@ -29,30 +29,13 @@ export const GenerateControls = (props: {
   ]);
 
   useEffect(() => {
-    imagePreset().then((res: unknown) => {
-      const content = (res as { content?: unknown })?.content ?? res;
-      const raw = Array.isArray(content)
-        ? content
-        : Array.isArray((content as Record<string, unknown>)?.visuals)
-          ? (content as Record<string, unknown>).visuals
-          : null;
-      if (!Array.isArray(raw) || raw.length === 0) {
-        return;
-      }
-      const parsed = (raw as unknown[]).map((v) => {
-        if (typeof v === 'string') {
-          return { value: v, description: '' };
-        }
-        const obj = v as Record<string, unknown>;
-        return {
-          value: (obj.name ?? obj.label ?? obj.value ?? String(v)) as string,
-          description: (obj.description ?? obj.desc ?? '') as string,
-        };
-      }).filter(v => v.value);
-      if (parsed.length > 0) {
-        setVisualOptions(parsed);
-        if (!parsed.some(v => v.value.toLowerCase() === props.visual.toLowerCase())) {
-          props.onVisualChange(parsed[0]!.value);
+    getPresets().then((res) => {
+      const visuals = presetsOfType(res.content ?? [], 'visual')
+        .map(p => ({ value: p.display_name || p.name, description: '' }));
+      if (visuals.length > 0) {
+        setVisualOptions(visuals);
+        if (!visuals.some(v => v.value.toLowerCase() === props.visual.toLowerCase())) {
+          props.onVisualChange(visuals[0]!.value);
         }
       }
     }).catch(() => {});

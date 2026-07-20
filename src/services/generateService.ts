@@ -10,6 +10,32 @@ type Asset = {
   created_at: string;
 };
 
+export type Preset = {
+  id: string;
+  preset_type: string;
+  name: string;
+  display_name: string;
+  image_url: string | null;
+  display_order: number;
+};
+
+type PresetsResponse = {
+  success: boolean;
+  message: string;
+  content: Preset[];
+};
+
+/**
+ * Filters presets by type (singular or plural) and sorts them by display order.
+ * @param presets - Full preset list returned by the presets endpoint.
+ * @param type - Singular preset type to keep, e.g. `action` or `visual`.
+ * @returns The matching presets ordered for display.
+ */
+export const presetsOfType = (presets: Preset[], type: string) =>
+  presets
+    .filter(p => p.preset_type?.toLowerCase().replace(/s$/, '') === type)
+    .sort((a, b) => a.display_order - b.display_order);
+
 type Pagination = {
   total: number;
   page: number;
@@ -51,9 +77,7 @@ type GenerateResult = Promise<{
 export const useGenerateService = () => {
   const { token } = useAuth();
 
-  const imagePreset = () => api.get('/generate/image-presets', token ?? undefined);
-
-  const getPresets = () => api.get('/generate/presets', token ?? undefined);
+  const getPresets = () => api.get('/generate/presets', token ?? undefined) as Promise<PresetsResponse>;
 
   const getGeneratedAssets = (params?: GetGeneratedAssetsParams) => {
     const query = new URLSearchParams();
@@ -137,7 +161,11 @@ export const useGenerateService = () => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post('/generate/enhance', { asset_id: assetId }, token);
+    return api.post('/generate/enhance', { asset_id: assetId }, token) as Promise<{
+      success: boolean;
+      message: string;
+      content: { asset_id: string; status: string; generation_id?: string };
+    }>;
   };
 
   const generateVideo = (body: {
@@ -254,12 +282,7 @@ export const useGenerateService = () => {
     timerId = setTimeout(tick, intervalMs);
     return () => clearTimeout(timerId);
   };
-  const pollEvents = () =>
-    api.get('/events/poll', token ?? undefined);
-
   return {
-    pollEvents,
-    imagePreset,
     getPresets,
     getGeneratedAssets,
     getGeneratedAsset,

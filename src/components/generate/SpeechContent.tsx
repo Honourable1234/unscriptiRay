@@ -1,9 +1,10 @@
 'use client';
 
 import type { SelectedVoice } from './VoiceModal';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VoiceIcon } from '@/components/icons';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
@@ -15,21 +16,14 @@ type Scene = 'Happy' | 'Natural' | 'Sad' | 'Angry' | 'Fearful' | 'Disgusted' | '
 const scenes: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', 'Disgusted', 'Surprised'];
 
 export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }) => {
-  const { generateSpeech, pollGenerationStatus } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const { generateSpeech } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [voice, setVoice] = useState<SelectedVoice | null>(null);
   const [script, setScript] = useState('');
   const [sceneEmotion, setSceneEmotion] = useState<Scene>('Happy');
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const stopPollRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
 
   const handlePlayVoice = () => {
     if (!voice?.sampleUrl) {
@@ -41,7 +35,7 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
     audio.play().catch(() => {});
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (!voice) {
       toast.error('Please select a voice first.');
       return;
@@ -50,34 +44,13 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
       toast.error('Please enter an audio script first.');
       return;
     }
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const res = await generateSpeech({
-        source_image_id: props.assetId,
-        mode: 'talking',
-        voice_type: voice.shortName,
-        script,
-        scene_emotion: sceneEmotion.toLowerCase(),
-      });
-      toast.info('Generation started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Scene ready!');
-          props.onSuccess?.();
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Generation failed.';
-      toast.error(message);
-      setIsGenerating(false);
-    }
+    void start(() => generateSpeech({
+      source_image_id: props.assetId,
+      mode: 'talking',
+      voice_type: voice.shortName,
+      script,
+      scene_emotion: sceneEmotion.toLowerCase(),
+    }), { successMessage: 'Scene ready!', onComplete: props.onSuccess });
   };
 
   return (

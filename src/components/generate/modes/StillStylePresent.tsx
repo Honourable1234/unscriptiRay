@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateControls } from '@/components/generate/GenerateControls';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 
 type SelectedOptions = {
@@ -17,11 +17,15 @@ type SelectedOptions = {
 
 export const StillStylePresent = (props: {
   initialCharacter?: { id: string; name: string; image: string } | null;
+  onGenerated?: () => void;
+  onGenerationStart?: (generationId: string) => void;
+  onGenerationEnd?: (generationId: string) => void;
 }) => {
   const { generateImage } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const { isGenerating, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
+  const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
   const [starCharacter, setStarCharacter] = useState(props.initialCharacter ?? null);
   const [selected, setSelected] = useState<SelectedOptions>({
     star: !!props.initialCharacter,
@@ -43,28 +47,25 @@ export const StillStylePresent = (props: {
     setSelected(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (!starCharacter) {
       return;
     }
-    setIsGenerating(true);
-    try {
-      await generateImage({
-        character_ids: [starCharacter.id],
-        visual: visual.toLowerCase(),
-        orientation,
-        ...(optionValues.action ? { action: optionValues.action } : {}),
-        ...(optionValues.setting ? { setting: optionValues.setting } : {}),
-        ...(optionValues.mood ? { mood: optionValues.mood } : {}),
-      });
-      toast.success('Image generation started!');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Generation failed.';
-      const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
-      toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
-    } finally {
-      setIsGenerating(false);
-    }
+    void start(() => generateImage({
+      character_ids: [starCharacter.id],
+      visual: visual.toLowerCase(),
+      orientation,
+      quality: 'balance',
+      ...(optionValues.action ? { action: optionValues.action } : {}),
+      ...(optionValues.setting ? { setting: optionValues.setting } : {}),
+      ...(optionValues.mood ? { mood: optionValues.mood } : {}),
+      ...(advancedPrompt ? { advanced_prompt: advancedPrompt } : {}),
+    }), {
+      successMessage: 'Image ready!',
+      onComplete: props.onGenerated,
+      onStart: props.onGenerationStart,
+      onSettled: props.onGenerationEnd,
+    });
   };
 
   return (
@@ -78,6 +79,7 @@ export const StillStylePresent = (props: {
           setSelected(prev => ({ ...prev, star: true }));
         }}
         onOptionSelect={(key, value) => setOptionValues(prev => ({ ...prev, [key]: value }))}
+        onCreativeChange={setAdvancedPrompt}
       />
       <GenerateControls
         visual={visual}
@@ -86,10 +88,11 @@ export const StillStylePresent = (props: {
         onOrientationChange={setOrientation}
       />
       <GenerateButton
-        label="Generate Image"
+        label={isGenerating ? 'Generating...' : 'Generate Image'}
         coins={10}
         onClick={handleGenerate}
-        isLoading={isGenerating || !starCharacter}
+        isLoading={isGenerating}
+        disabled={!starCharacter}
       />
     </div>
   );
