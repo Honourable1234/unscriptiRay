@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { EditStyle } from '@/components/generate/EditStyle';
@@ -27,6 +28,7 @@ export const StillEditStyle = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('StillEditStyle');
   const { generateImage, uploadReference } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
@@ -52,7 +54,7 @@ export const StillEditStyle = (props: {
       const uploaded = await uploadReference(file);
       setReference({ key: uploaded.key, name: file.name });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Upload failed.');
+      toast.error(error instanceof Error ? error.message : t('upload_failed'));
     } finally {
       setIsUploading(false);
     }
@@ -68,7 +70,7 @@ export const StillEditStyle = (props: {
       orientation,
       quality: model === 'Eclipse' ? 'ultra' : 'balance',
     }), {
-      successMessage: 'Image ready!',
+      successMessage: t('image_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -104,7 +106,7 @@ export const StillEditStyle = (props: {
             }}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Model:
+            {t('model_label')}
             <span className="text-white">{model}</span>
           </button>
           {modelOpen && (
@@ -149,7 +151,7 @@ export const StillEditStyle = (props: {
             }}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Orientation:
+            {t('orientation_label')}
             <span className="text-white">{orientation}</span>
           </button>
           {orientationOpen && (
@@ -174,7 +176,7 @@ export const StillEditStyle = (props: {
       </div>
 
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Image'}
+        label={isGenerating ? t('generating') : t('generate_image')}
         coins={activeModel.coins}
         onClick={handleGenerate}
         isLoading={isGenerating}

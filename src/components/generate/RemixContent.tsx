@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
@@ -11,6 +12,7 @@ import { GenerateOptionsGrid } from './GenerateOptionsGrid';
 type Selected = Record<'star' | 'action' | 'setting' | 'mood' | 'creative', boolean>;
 
 export const RemixContent = (props: { onSuccess?: () => void }) => {
+  const t = useTranslations('RemixContent');
   const { generateImage } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
@@ -33,7 +35,7 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
 
   const handleGenerate = () => {
     if (!starCharacter) {
-      toast.error('Please select a star first.');
+      toast.error(t('select_star_first'));
       return;
     }
     void start(() => generateImage({
@@ -45,7 +47,7 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
       orientation,
       quality: 'balance',
       ...(advancedPrompt ? { advanced_prompt: advancedPrompt } : {}),
-    }), { successMessage: 'Scene ready!', onComplete: props.onSuccess });
+    }), { successMessage: t('scene_ready'), onComplete: props.onSuccess });
   };
 
   return (
@@ -65,7 +67,7 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
         onOrientationChange={setOrientation}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Remix Scene'}
+        label={isGenerating ? t('generating') : t('remix_scene')}
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating}

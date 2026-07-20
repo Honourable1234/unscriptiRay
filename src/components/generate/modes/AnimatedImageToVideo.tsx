@@ -1,6 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
@@ -22,6 +23,7 @@ export const AnimatedImageToVideo = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('AnimatedImageToVideo');
   const { generateVideo } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
@@ -68,7 +70,7 @@ export const AnimatedImageToVideo = (props: {
         voice_type: audio.voiceType.toLowerCase(),
       }),
     }), {
-      successMessage: 'Scene ready!',
+      successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -84,7 +86,7 @@ export const AnimatedImageToVideo = (props: {
             onClick={() => setActiveSceneId(scene.id)}
             className={`cursor-pointer rounded-lg p-3 text-xs font-medium transition-colors ${activeScene.id === scene.id ? 'bg-primary-100/10 text-primary-100' : 'text-white hover:bg-black-40'}`}
           >
-            {`Scene ${scene.id}`}
+            {t('scene_label', { id: scene.id })}
           </button>
         ))}
         <button
@@ -92,24 +94,24 @@ export const AnimatedImageToVideo = (props: {
           className="flex cursor-pointer items-center gap-1 rounded-lg p-3 text-xs font-medium text-white transition-all hover:scale-105"
         >
           <PlusIcon />
-          Add
+          {t('add')}
         </button>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <GenerateOptionCard
-          label="Image"
-          sublabel="(Required)"
+          label={t('image')}
+          sublabel={t('required')}
           height="385px"
           icon={<ImageFrameIcon />}
           isSelected={!!activeScene.sourceImageId}
           selectedImage={activeScene.sourceImageUrl ?? undefined}
-          selectedName="Source image"
+          selectedName={t('select_image')}
           onClick={() => setImageModalOpen(true)}
           onDeselect={() => updateActiveScene({ sourceImageId: null, sourceImageUrl: null })}
         />
         <GenerateOptionCard
-          label="Motion"
-          sublabel="(Required)"
+          label={t('motion')}
+          sublabel={t('required')}
           height="385px"
           icon={<MotionIcon />}
           isSelected={!!activeScene.motion}
@@ -119,8 +121,8 @@ export const AnimatedImageToVideo = (props: {
         />
       </div>
       <GenerateOptionCardWide
-        label="Creative Input (Advanced)"
-        sublabel="Creator Tier Exclusive"
+        label={t('creative_input_advanced')}
+        sublabel={t('creator_tier_exclusive')}
         height="153px"
         icon={<CaptureIcon />}
       />
@@ -135,7 +137,7 @@ export const AnimatedImageToVideo = (props: {
         onAudioToggle={() => setAudioOpen(true)}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Scene'}
+        label={isGenerating ? t('generating') : t('generate_scene')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
@@ -143,7 +145,7 @@ export const AnimatedImageToVideo = (props: {
       />
       {imageModalOpen && (
         <SelectAssetModal
-          title="Select Image"
+          title={t('select_image')}
           filter="image"
           onSelect={(asset) => {
             updateActiveScene({ sourceImageId: asset.id, sourceImageUrl: asset.url });

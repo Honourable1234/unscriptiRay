@@ -1,6 +1,7 @@
 'use client';
 
 import type { Scene } from './AudioModal';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CaptureIcon, MotionIcon, SelectStarIcon } from '@/components/icons';
@@ -19,6 +20,7 @@ type MotionItem = { id: string; name: string };
 type AudioData = { script: string; sceneEmotion: Scene; voiceType: string };
 
 export const VideoContent = (props: { assetId: string; onSuccess?: () => void }) => {
+  const t = useTranslations('VideoContent');
   const { generateVideo } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
@@ -33,7 +35,7 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
 
   const handleGenerate = () => {
     if (!starCharacter) {
-      toast.error('Please select a star first.');
+      toast.error(t('select_star_first'));
       return;
     }
     void start(() => generateVideo({
@@ -49,15 +51,15 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
         script: audioData.script,
         scene_emotion: audioData.sceneEmotion.toLowerCase(),
       }),
-    }), { successMessage: 'Video ready!', onComplete: props.onSuccess });
+    }), { successMessage: t('video_ready'), onComplete: props.onSuccess });
   };
 
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 gap-3">
         <GenerateOptionCard
-          label="Select Star"
-          sublabel="(Required)"
+          label={t('select_star')}
+          sublabel={t('required')}
           height="200px"
           icon={<SelectStarIcon />}
           isSelected={!!starCharacter}
@@ -67,8 +69,8 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
           onDeselect={() => setStarCharacter(null)}
         />
         <GenerateOptionCard
-          label="Motion"
-          sublabel="(Required)"
+          label={t('motion')}
+          sublabel={t('required')}
           height="200px"
           icon={<MotionIcon />}
           isSelected={!!motion}
@@ -79,8 +81,8 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
       </div>
 
       <GenerateOptionCardWide
-        label="Creative Input"
-        sublabel="Creator Tier"
+        label={t('creative_input')}
+        sublabel={t('creator_tier')}
         height="107px"
         icon={<CaptureIcon />}
       />
@@ -97,7 +99,7 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
       />
 
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Video'}
+        label={isGenerating ? t('generating') : t('generate_video')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating || !props.assetId}

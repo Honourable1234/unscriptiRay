@@ -2,6 +2,7 @@
 
 import type { Scene } from '@/components/generate/AudioModal';
 import type { SelectedVoice } from '@/components/generate/VoiceModal';
+import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
@@ -21,6 +22,7 @@ export const AnimatedTalking = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('AnimatedTalking');
   const { generateSpeech } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
@@ -57,7 +59,7 @@ export const AnimatedTalking = (props: {
       scene_emotion: sceneEmotion.toLowerCase(),
       voice_type: voice.shortName,
     }), {
-      successMessage: 'Scene ready!',
+      successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -68,19 +70,19 @@ export const AnimatedTalking = (props: {
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-2">
         <GenerateOptionCard
-          label="Image / Video"
-          sublabel="(Required)"
+          label={t('image_video')}
+          sublabel={t('required')}
           height="385px"
           icon={<ImageFrameIcon />}
           isSelected={!!source}
           selectedImage={source?.type === 'image' ? source.url : undefined}
-          selectedName={source ? (source.type === 'video' ? 'Source video' : 'Source image') : undefined}
+          selectedName={source ? t('select_image_video') : undefined}
           onClick={() => setSourceModalOpen(true)}
           onDeselect={() => setSource(null)}
         />
         <GenerateOptionCard
-          label="Voice"
-          sublabel="(Required)"
+          label={t('voice')}
+          sublabel={t('required')}
           height="385px"
           icon={<VoiceIcon />}
           isSelected={!!voice}
@@ -104,8 +106,8 @@ export const AnimatedTalking = (props: {
       </div>
 
       <GenerateOptionCardWide
-        label="Audio Script"
-        sublabel="(Required)"
+        label={t('audio_script')}
+        sublabel={t('required')}
         height="153px"
         icon={<VoiceIcon />}
         isSelected={!!script}
@@ -114,7 +116,7 @@ export const AnimatedTalking = (props: {
       />
 
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Scene'}
+        label={isGenerating ? t('generating') : t('generate_scene')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
@@ -123,7 +125,7 @@ export const AnimatedTalking = (props: {
 
       {sourceModalOpen && (
         <SelectAssetModal
-          title="Select Image / Video"
+          title={t('select_image_video')}
           filter="all"
           onSelect={(asset) => {
             setSource(asset);

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useGenerateService } from '@/services/generateService';
@@ -16,6 +17,7 @@ type RunOptions = {
  * a tap-to-retry toast backed by the retry endpoint when it fails.
  */
 export const useGenerationRun = () => {
+  const t = useTranslations('GenerationToasts');
   const { pollGenerationStatus, retryGeneration } = useGenerateService();
   const [isGenerating, setIsGenerating] = useState(false);
   const stopPollRef = useRef<(() => void) | null>(null);
@@ -30,24 +32,24 @@ export const useGenerationRun = () => {
       () => {
         setIsGenerating(false);
         options?.onSettled?.(generationId);
-        toast.success(options?.successMessage ?? 'Generation complete!');
+        toast.success(options?.successMessage ?? t('complete'));
         options?.onComplete?.();
       },
       (message) => {
         setIsGenerating(false);
         options?.onSettled?.(generationId);
-        toast.error(`${message} — tap here to retry`, {
+        toast.error(t('tap_to_retry', { message }), {
           onClick: () => {
             setIsGenerating(true);
             retryGeneration(generationId)
               .then((res) => {
-                toast.info('Generation restarted, processing...');
+                toast.info(t('restarted'));
                 options?.onStart?.(res.content.generation_id);
                 track(res.content.generation_id, options);
               })
               .catch((error) => {
                 setIsGenerating(false);
-                toast.error(error instanceof Error ? error.message : 'Retry failed.');
+                toast.error(error instanceof Error ? error.message : t('retry_failed'));
               });
           },
         });
@@ -63,14 +65,14 @@ export const useGenerationRun = () => {
     setIsGenerating(true);
     try {
       const res = await request();
-      toast.info('Generation started, processing...');
+      toast.info(t('started'));
       options?.onStart?.(res.content.generation_id);
       track(res.content.generation_id, options);
     } catch (error) {
       setIsGenerating(false);
-      const message = error instanceof Error ? error.message : 'Generation failed.';
+      const message = error instanceof Error ? error.message : t('failed');
       const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
-      toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
+      toast.error(isInsufficient ? t('insufficient_coins', { message }) : message);
     }
   };
 

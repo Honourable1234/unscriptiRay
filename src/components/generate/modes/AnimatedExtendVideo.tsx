@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
@@ -16,6 +17,7 @@ export const AnimatedExtendVideo = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('AnimatedExtendVideo');
   const { generateVideo } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
@@ -39,7 +41,7 @@ export const AnimatedExtendVideo = (props: {
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       duration: Number(duration.replace('s', '')),
     }), {
-      successMessage: 'Scene ready!',
+      successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -50,18 +52,18 @@ export const AnimatedExtendVideo = (props: {
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-2">
         <GenerateOptionCard
-          label="Video"
-          sublabel="(Required)"
+          label={t('video')}
+          sublabel={t('required')}
           height="385px"
           icon={<VideoIcon />}
           isSelected={!!sourceVideo}
-          selectedName="Source video"
+          selectedName={t('select_video')}
           onClick={() => setVideoModalOpen(true)}
           onDeselect={() => setSourceVideo(null)}
         />
         <GenerateOptionCard
-          label="Motion"
-          sublabel="(Required)"
+          label={t('motion')}
+          sublabel={t('required')}
           height="385px"
           icon={<MotionIcon />}
           isSelected={!!motion}
@@ -71,8 +73,8 @@ export const AnimatedExtendVideo = (props: {
         />
       </div>
       <GenerateOptionCardWide
-        label="Creative Input (Advanced)"
-        sublabel="Creator Tier Exclusive"
+        label={t('creative_input_advanced')}
+        sublabel={t('creator_tier_exclusive')}
         height="153px"
         icon={<CaptureIcon />}
       />
@@ -87,7 +89,7 @@ export const AnimatedExtendVideo = (props: {
         onAudioToggle={() => {}}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Scene'}
+        label={isGenerating ? t('generating') : t('generate_scene')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
@@ -95,7 +97,7 @@ export const AnimatedExtendVideo = (props: {
       />
       {videoModalOpen && (
         <SelectAssetModal
-          title="Select Video"
+          title={t('select_video')}
           filter="video"
           onSelect={(asset) => {
             setSourceVideo({ id: asset.id, url: asset.url });

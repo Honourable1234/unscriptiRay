@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateControls } from '@/components/generate/GenerateControls';
@@ -21,6 +22,7 @@ export const StillStylePresent = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('StillStylePresent');
   const { generateImage } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
@@ -61,7 +63,7 @@ export const StillStylePresent = (props: {
       ...(optionValues.mood ? { mood: optionValues.mood } : {}),
       ...(advancedPrompt ? { advanced_prompt: advancedPrompt } : {}),
     }), {
-      successMessage: 'Image ready!',
+      successMessage: t('image_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -88,7 +90,7 @@ export const StillStylePresent = (props: {
         onOrientationChange={setOrientation}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Image'}
+        label={isGenerating ? t('generating') : t('generate_image')}
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating}

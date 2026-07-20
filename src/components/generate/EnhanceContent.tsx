@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
@@ -9,6 +10,7 @@ import { GenerateButton } from './GenerateButton';
 const resolutions = ['HD', '1K', '4K'];
 
 export const EnhanceContent = (props: { imageSrc: string; imageName?: string; assetId: string; onSuccess?: () => void }) => {
+  const t = useTranslations('EnhanceContent');
   const { enhanceGeneratedImage } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [resolution, setResolution] = useState('HD');
@@ -19,7 +21,7 @@ export const EnhanceContent = (props: { imageSrc: string; imageName?: string; as
       // The enhance endpoint reports an asset_id, not a generation_id, so
       // track status with whichever the backend returned.
       return { content: { generation_id: res.content.generation_id ?? res.content.asset_id } };
-    }, { successMessage: 'Enhancement complete!', onComplete: props.onSuccess });
+    }, { successMessage: t('enhance_complete'), onComplete: props.onSuccess });
   };
 
   return (
@@ -36,7 +38,7 @@ export const EnhanceContent = (props: { imageSrc: string; imageName?: string; as
 
       {/* Resolution */}
       <div className="flex max-w-80 flex-col items-center gap-3 text-center">
-        <p className="text-sm font-semibold text-white">Enhance the resolution of your scene</p>
+        <p className="text-sm font-semibold text-white">{t('description')}</p>
         <div className="flex items-center gap-2">
           {resolutions.map(r => (
             <button
@@ -51,7 +53,7 @@ export const EnhanceContent = (props: { imageSrc: string; imageName?: string; as
       </div>
 
       <GenerateButton
-        label={isGenerating ? 'Enhancing...' : 'Enhance Scene'}
+        label={isGenerating ? t('enhancing') : t('enhance_scene')}
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating || !props.assetId}

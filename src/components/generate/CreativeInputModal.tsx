@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
@@ -11,6 +12,7 @@ export const CreativeInputModal = (props: {
   onSave: (value: string) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('CreativeInputModal');
   const { enrichPrompt } = useGenerateService();
   const [text, setText] = useState(props.value);
   const [isEnriching, setIsEnriching] = useState(false);
@@ -30,7 +32,7 @@ export const CreativeInputModal = (props: {
         setText(res.content.enriched_prompt);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not enrich prompt.');
+      toast.error(error instanceof Error ? error.message : t('enrich_failed'));
     } finally {
       setIsEnriching(false);
     }
@@ -54,7 +56,7 @@ export const CreativeInputModal = (props: {
         onKeyDown={e => e.stopPropagation()}
       >
         <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Creative Input</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
             <CloseIcon />
           </button>
@@ -65,7 +67,7 @@ export const CreativeInputModal = (props: {
           onChange={e => setText(e.target.value)}
           disabled={isEnriching}
           rows={5}
-          placeholder="Describe extra details for your scene..."
+          placeholder={t('placeholder')}
           className="w-full resize-none rounded-xl border border-black-40 bg-black-100 px-4 py-3 text-sm text-white placeholder:text-white-50 focus:border-primary-100 focus:outline-none disabled:opacity-60"
         />
 
@@ -76,7 +78,7 @@ export const CreativeInputModal = (props: {
             className="flex cursor-pointer items-center gap-2 rounded-xl border border-black-40 bg-black-100 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:size-4"
           >
             {isEnriching ? <SpinnerIcon /> : <AiIcon />}
-            Enrich with AI
+            {t('enrich_with_ai')}
           </button>
           <button
             onClick={() => {
@@ -85,7 +87,7 @@ export const CreativeInputModal = (props: {
             }}
             className="cursor-pointer rounded-xl bg-primary-100 px-6 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Save
+            {t('save')}
           </button>
         </div>
       </div>

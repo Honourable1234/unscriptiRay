@@ -221,29 +221,147 @@
     "ultra_desc": "Optimized for NSFW and anatomical detail"
   },
   "VideoContent": {
-    "motion": "Motion"
+    "motion": "Motion",
+    "select_star": "Select Star",
+    "required": "(Required)",
+    "creative_input": "Creative Input",
+    "creator_tier": "Creator Tier",
+    "select_star_first": "Please select a star first.",
+    "generating": "Generating...",
+    "generate_video": "Generate Video",
+    "video_ready": "Video ready!"
   },
   "EditContent": {
     "visual": "Visual",
     "model_label": "Model:",
     "orientation_label": "Orientation:",
     "spark_desc": "Fast and efficient editing",
-    "pro_desc": "High quality, detailed edits"
+    "pro_desc": "High quality, detailed edits",
+    "select_star": "Select Star",
+    "required": "(Required)",
+    "editing": "Editing...",
+    "edit_scene": "Edit Scene",
+    "edit_complete": "Edit complete!"
   },
   "SpeechContent": {
     "aurora_sublabel": "(Character default)",
     "scene_label": "Scene",
-    "audio_script": "Audio Script"
+    "audio_script": "Audio Script",
+    "voice": "Voice",
+    "required": "(Required)",
+    "select_voice_first": "Please select a voice first.",
+    "enter_script_first": "Please enter an audio script first.",
+    "generating": "Generating...",
+    "generate_speech": "Generate Speech",
+    "scene_ready": "Scene ready!"
   },
   "EnhanceContent": {
-    "description": "Enhancing will make your image sharper and improve its resolution"
+    "description": "Enhancing will make your image sharper and improve its resolution",
+    "enhancing": "Enhancing...",
+    "enhance_scene": "Enhance Scene",
+    "enhance_complete": "Enhancement complete!"
+  },
+  "RemixContent": {
+    "select_star_first": "Please select a star first.",
+    "generating": "Generating...",
+    "remix_scene": "Remix Scene",
+    "scene_ready": "Scene ready!"
+  },
+  "StillStylePresent": {
+    "generating": "Generating...",
+    "generate_image": "Generate Image",
+    "image_ready": "Image ready!"
+  },
+  "StillEditStyle": {
+    "upload_failed": "Upload failed.",
+    "generating": "Generating...",
+    "generate_image": "Generate Image",
+    "image_ready": "Image ready!",
+    "model_label": "Model:",
+    "orientation_label": "Orientation:"
+  },
+  "AnimatedStylePresent": {
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "scene_label": "Scene {id}",
+    "add": "Add",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedImageToVideo": {
+    "image": "Image",
+    "required": "(Required)",
+    "motion": "Motion",
+    "creative_input_advanced": "Creative Input (Advanced)",
+    "creator_tier_exclusive": "Creator Tier Exclusive",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_image": "Select Image",
+    "scene_label": "Scene {id}",
+    "add": "Add",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedExtendVideo": {
+    "video": "Video",
+    "required": "(Required)",
+    "motion": "Motion",
+    "creative_input_advanced": "Creative Input (Advanced)",
+    "creator_tier_exclusive": "Creator Tier Exclusive",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_video": "Select Video",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedTalking": {
+    "image_video": "Image / Video",
+    "required": "(Required)",
+    "voice": "Voice",
+    "audio_script": "Audio Script",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_image_video": "Select Image / Video",
+    "scene_ready": "Scene ready!"
+  },
+  "CreativeInputModal": {
+    "title": "Creative Input",
+    "placeholder": "Describe extra details for your scene...",
+    "enrich_with_ai": "Enrich with AI",
+    "enrich_failed": "Could not enrich prompt.",
+    "save": "Save"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "No generated scenes yet",
+    "generating": "Generating...",
+    "scene_alt": "Generated scene"
+  },
+  "GenerateScenePage": {
+    "link_copied": "Link copied to clipboard!",
+    "copy_failed": "Could not copy the link.",
+    "scene_deleted": "Scene deleted.",
+    "delete_failed": "Could not delete the scene.",
+    "not_available": "Not available yet.",
+    "scene_not_found": "Scene not found",
+    "scene_alt": "Generated scene",
+    "thumbnail_alt": "Thumbnail",
+    "generated_label": "Generated {type}"
+  },
+  "GenerationToasts": {
+    "complete": "Generation complete!",
+    "restarted": "Generation restarted, processing...",
+    "retry_failed": "Retry failed.",
+    "started": "Generation started, processing...",
+    "failed": "Generation failed.",
+    "tap_to_retry": "{message} — tap here to retry",
+    "insufficient_coins": "Not enough coins. {message}"
   },
   "CreatePage": {
     "title": "Create a",
     "title_highlight": "Companion",
     "prev": "Prev",
     "next": "Next",
-    "generate": "Generate"
+    "generate": "Generate",
+    "image_gen_failed": "Character created but image generation failed to start.",
+    "create_failed": "Failed to create character.",
+    "save_tags_failed": "Failed to save tags."
   },
   "CreateStep1": {
     "ethnic_influence": "Ethnic Influence",
@@ -259,7 +377,11 @@
   },
   "CreateStep2": {
     "character_name": "Character Name",
-    "character_age": "Character Age"
+    "character_age": "Character Age",
+    "gender": "Gender",
+    "gender_female": "Female",
+    "gender_male": "Male",
+    "gender_non_binary": "Non-binary"
   },
   "CharacterInfo": {
     "heading": "Character Info",
@@ -267,10 +389,13 @@
     "personality": "Personality Archetype",
     "relationship": "Relationship Dynamic",
     "kinks": "Kinks & Comforts",
+    "hobby": "Hobby",
     "select_voice": "Select Voice",
     "select_personality": "Select Personality",
     "select_relationship": "Select Relationship",
-    "select_kinks": "Select Kinks"
+    "select_kinks": "Select Kinks",
+    "select_hobby": "Select Hobby",
+    "custom": "Custom"
   },
   "CharacterInfoCard": {
     "select": "Select {title}"
@@ -317,7 +442,12 @@
     "personality_details": "Personality Details",
     "hair_color": "Hair Color",
     "eye_color": "Eye Color",
-    "skin_tone": "Skin Tone"
+    "skin_tone": "Skin Tone",
+    "saved": "Saved.",
+    "save_failed": "Failed to save.",
+    "image_failed": "Image generation failed",
+    "retry": "Retry",
+    "save": "Save"
   },
   "OptionModal": {
     "loading": "Loading..."

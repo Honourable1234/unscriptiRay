@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SelectStarIcon, VisualIcon } from '@/components/icons';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
@@ -33,6 +34,7 @@ const modelOptions = [
 type PickedItem = { id: string; name: string };
 
 export const EditContent = (props: { assetId: string; onSuccess?: () => void }) => {
+  const t = useTranslations('EditContent');
   const { editImage } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
@@ -50,7 +52,7 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
       model: model.toLowerCase(),
       orientation,
       visual: visual?.name.toLowerCase(),
-    }), { successMessage: 'Edit complete!', onComplete: props.onSuccess });
+    }), { successMessage: t('edit_complete'), onComplete: props.onSuccess });
   };
 
   return (
@@ -58,8 +60,8 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
       {/* Cards */}
       <div className="grid grid-cols-2 gap-3">
         <GenerateOptionCard
-          label="Select Star"
-          sublabel="(Required)"
+          label={t('select_star')}
+          sublabel={t('required')}
           icon={<SelectStarIcon />}
           height="200px"
           isSelected={!!starCharacter}
@@ -68,8 +70,8 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
           onDeselect={() => setStarCharacter(null)}
         />
         <GenerateOptionCard
-          label="Visual"
-          sublabel="(Required)"
+          label={t('visual')}
+          sublabel={t('required')}
           icon={<VisualIcon />}
           height="200px"
           isSelected={!!visual}
@@ -87,7 +89,7 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
             onClick={() => setModelOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Model:
+            {t('model_label')}
             <span className="font-bold text-white">{model}</span>
           </button>
           {modelOpen && (
@@ -118,7 +120,7 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
             onClick={() => setOrientationOpen(prev => !prev)}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
           >
-            Orientation:
+            {t('orientation_label')}
             <span className="font-bold text-white">{orientation}</span>
           </button>
           {orientationOpen && (
@@ -143,7 +145,7 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
       </div>
 
       <GenerateButton
-        label={isGenerating ? 'Editing...' : 'Edit Scene'}
+        label={isGenerating ? t('editing') : t('edit_scene')}
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating || !props.assetId}

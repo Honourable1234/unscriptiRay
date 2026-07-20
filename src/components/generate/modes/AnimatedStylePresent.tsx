@@ -1,6 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
@@ -26,6 +27,7 @@ export const AnimatedStylePresent = (props: {
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
+  const t = useTranslations('AnimatedStylePresent');
   const { generateVideo } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
@@ -84,7 +86,7 @@ export const AnimatedStylePresent = (props: {
         voice_type: audio.voiceType.toLowerCase(),
       }),
     }), {
-      successMessage: 'Scene ready!',
+      successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
       onStart: props.onGenerationStart,
       onSettled: props.onGenerationEnd,
@@ -100,7 +102,7 @@ export const AnimatedStylePresent = (props: {
             onClick={() => setActiveSceneId(scene.id)}
             className={`cursor-pointer rounded-lg p-3 text-xs font-medium transition-colors ${activeScene.id === scene.id ? 'bg-primary-100/10 text-primary-100' : 'text-white hover:bg-black-40'}`}
           >
-            {`Scene ${scene.id}`}
+            {t('scene_label', { id: scene.id })}
           </button>
         ))}
         <button
@@ -108,7 +110,7 @@ export const AnimatedStylePresent = (props: {
           className="flex cursor-pointer items-center gap-1 rounded-lg p-3 text-xs font-medium text-white transition-all hover:scale-105"
         >
           <PlusIcon />
-          Add
+          {t('add')}
         </button>
       </div>
       <GenerateOptionsGrid
@@ -132,7 +134,7 @@ export const AnimatedStylePresent = (props: {
         onAudioToggle={() => setAudioOpen(true)}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Scene'}
+        label={isGenerating ? t('generating') : t('generate_scene')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}

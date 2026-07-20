@@ -70,6 +70,7 @@ function AccordionEditList(props: {
   characterId: string;
   onSaved: (apiKey: string, value: string) => void;
 }) {
+  const t = useTranslations('CreateStep4');
   const { updateCharacter } = useCharacterService();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
@@ -88,10 +89,10 @@ function AccordionEditList(props: {
     try {
       await updateCharacter(props.characterId, { [editingKey]: draft });
       props.onSaved(editingKey, draft);
-      toast.success('Saved.');
+      toast.success(t('saved'));
       setEditingKey(null);
     } catch {
-      toast.error('Failed to save.');
+      toast.error(t('save_failed'));
     } finally {
       setSaving(false);
     }
@@ -130,7 +131,7 @@ function AccordionEditList(props: {
                 disabled={saving}
                 className="cursor-pointer self-end rounded-lg bg-primary-100 px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
               >
-                {saving ? <SpinnerIcon /> : 'Save'}
+                {saving ? <SpinnerIcon /> : t('save')}
               </button>
             </div>
           )}
@@ -294,13 +295,13 @@ export const CreateStep4 = (props: {
                 {failed
                   ? (
                       <>
-                        <p className="text-sm font-semibold text-white">Image generation failed</p>
+                        <p className="text-sm font-semibold text-white">{t('image_failed')}</p>
                         <button
                           type="button"
                           onClick={() => void runImageGeneration(c.id)}
                           className="cursor-pointer rounded-xl bg-primary-100 px-6 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                         >
-                          Retry
+                          {t('retry')}
                         </button>
                       </>
                     )

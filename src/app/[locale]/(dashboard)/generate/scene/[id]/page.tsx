@@ -1,6 +1,7 @@
 'use client';
 
 import type { SceneActionKey, SceneMoreActionKey } from '@/components/generate/GenerateSceneActions';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ type Asset = { id: string; url: string; type: string; width: number; height: num
 type ThumbnailItem = { id: string; url: string; type: string };
 
 export default function GenerateScenePage() {
+  const t = useTranslations('GenerateScenePage');
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { token } = useAuth();
@@ -56,16 +58,16 @@ export default function GenerateScenePage() {
     if (key === 'Share') {
       try {
         await navigator.clipboard.writeText(activeAsset.url);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('link_copied'));
       } catch {
-        toast.error('Could not copy the link.');
+        toast.error(t('copy_failed'));
       }
       return;
     }
     if (key === 'Delete') {
       try {
         await deleteAsset(activeAsset.id);
-        toast.success('Scene deleted.');
+        toast.success(t('scene_deleted'));
         const remaining = assets.filter(a => a.id !== activeAsset.id);
         setAssets(remaining);
         if (remaining.length > 0) {
@@ -74,11 +76,11 @@ export default function GenerateScenePage() {
           router.back();
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Could not delete the scene.');
+        toast.error(error instanceof Error ? error.message : t('delete_failed'));
       }
       return;
     }
-    toast.info('Not available yet.');
+    toast.info(t('not_available'));
   };
 
   return (
@@ -100,7 +102,7 @@ export default function GenerateScenePage() {
               </span>
             )
           : !activeAsset
-              ? <p className="text-sm text-white-50">Scene not found</p>
+              ? <p className="text-sm text-white-50">{t('scene_not_found')}</p>
               : isVideo
                 ? (
                     <video
@@ -116,7 +118,7 @@ export default function GenerateScenePage() {
                     <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
                       <Image
                         src={displaySrc}
-                        alt="Generated scene"
+                        alt={t('scene_alt')}
                         fill
                         className="object-cover"
                         sizes="512px"
@@ -148,7 +150,7 @@ export default function GenerateScenePage() {
                     </div>
                   )
                 : (
-                    <Image src={item.url} alt="Thumbnail" fill className="object-cover" sizes="124px" />
+                    <Image src={item.url} alt={t('thumbnail_alt')} fill className="object-cover" sizes="124px" />
                   )}
             </button>
           ))}
@@ -161,7 +163,7 @@ export default function GenerateScenePage() {
           action={modal}
           onClose={() => setModal(null)}
           imageSrc={displaySrc}
-          imageName={activeAsset ? `Generated ${activeAsset.type}` : ''}
+          imageName={activeAsset ? t('generated_label', { type: activeAsset.type }) : ''}
           assetId={activeAsset?.id ?? ''}
           onSuccess={() => {
             getGeneratedAssets({ limit: 30, sort: 'newest' })

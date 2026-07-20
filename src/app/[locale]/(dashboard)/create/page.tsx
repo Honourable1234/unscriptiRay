@@ -98,14 +98,14 @@ function CreatePageContent() {
           sessionStorage.setItem('create_generation_id', imgRes.content.generation_id);
           setGenerationId(imgRes.content.generation_id);
         } catch {
-          toast.error('Character created but image generation failed to start.');
+          toast.error(t('image_gen_failed'));
         }
       }
       setGenerating(false);
       setStepValid(false);
       setStep(4);
     }).catch((error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to create character.');
+      toast.error(error instanceof Error ? error.message : t('create_failed'));
       setGenerating(false);
     });
   };
@@ -151,7 +151,7 @@ function CreatePageContent() {
                     sessionStorage.setItem('create_character', JSON.stringify(updated));
                     setCharacter(updated);
                     updateCharacter(character.id, { tags }).catch(() => {
-                      toast.error('Failed to save tags.');
+                      toast.error(t('save_tags_failed'));
                     });
                   }
                 }}

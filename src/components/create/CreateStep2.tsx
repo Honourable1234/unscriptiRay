@@ -6,11 +6,19 @@ import { useCreate } from '@/context/CreateContext';
 import { CharacterInfo } from './CharacterInfo';
 import { CreateField } from './CreateField';
 
-const genders = ['Female', 'Male', 'Non-binary'];
+const genders = ['female', 'male', 'non-binary'] as const;
 
 export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void }) => {
   const t = useTranslations('CreateStep2');
   const { data, setName, setAge, setGender } = useCreate();
+
+  const genderLabel = (gender: (typeof genders)[number]) => {
+    switch (gender) {
+      case 'female': return t('gender_female');
+      case 'male': return t('gender_male');
+      case 'non-binary': return t('gender_non_binary');
+    }
+  };
 
   const handleName = (value: string) => {
     setName(value);
@@ -37,7 +45,7 @@ export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void })
         </div>
       </div>
       <div className="flex flex-col items-center gap-3">
-        <span className="text-sm font-medium text-white">Gender</span>
+        <span className="text-sm font-medium text-white">{t('gender')}</span>
         <div className="flex flex-wrap justify-center gap-2">
           {genders.map(gender => (
             <button
@@ -45,7 +53,7 @@ export const CreateStep2 = (props: { onValidChange?: (valid: boolean) => void })
               onClick={() => setGender(gender)}
               className={`cursor-pointer rounded-lg px-4 py-2 text-xs font-medium transition-colors ${data.gender === gender ? 'bg-primary-100 text-white' : 'bg-black-40 text-white-75 hover:bg-black-60'}`}
             >
-              {gender}
+              {genderLabel(gender)}
             </button>
           ))}
         </div>
