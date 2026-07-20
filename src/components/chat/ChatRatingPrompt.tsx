@@ -31,7 +31,7 @@ export const ChatRatingPrompt = (props: { onDone: () => void }) => {
   };
 
   return (
-    <div className="mx-4 mb-2 flex items-center justify-between rounded-xl border border-black-40 bg-black-80 px-4 py-3">
+    <div className="mx-auto mb-1.75 flex w-full max-w-xl items-center justify-between rounded-xl border border-black-40 bg-black-80 px-4 py-3 shadow-lg">
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium text-white">{t('question')}</span>
         <div className="flex gap-1" onMouseLeave={() => setHovered(0)}>

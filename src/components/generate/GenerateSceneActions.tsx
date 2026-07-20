@@ -5,6 +5,8 @@ import { AddToProfileIcon, AiIcon, DownloadIcon, EditIcon, MoreIcon, RemixIcon, 
 
 export type SceneActionKey = 'Remix' | 'Video' | 'Edit' | 'Speech' | 'Enhance' | 'More';
 
+export type SceneMoreActionKey = 'Download' | 'Share' | 'Add to Profile' | 'Report' | 'Delete';
+
 const actions: { label: SceneActionKey; icon: React.ReactNode }[] = [
   { label: 'Remix', icon: <RemixIcon /> },
   { label: 'Video', icon: <VideoIcon /> },
@@ -14,7 +16,7 @@ const actions: { label: SceneActionKey; icon: React.ReactNode }[] = [
   { label: 'More', icon: <MoreIcon /> },
 ];
 
-const moreItems: { label: string; icon: React.ReactNode; danger?: boolean }[] = [
+const moreItems: { label: SceneMoreActionKey; icon: React.ReactNode; danger?: boolean }[] = [
   { label: 'Download', icon: <DownloadIcon /> },
   { label: 'Share', icon: <ShareIcon /> },
   { label: 'Add to Profile', icon: <AddToProfileIcon /> },
@@ -22,7 +24,10 @@ const moreItems: { label: string; icon: React.ReactNode; danger?: boolean }[] = 
   { label: 'Delete', icon: <TrashIcon />, danger: true },
 ];
 
-export const GenerateSceneActions = (props: { onAction: (key: SceneActionKey) => void }) => {
+export const GenerateSceneActions = (props: {
+  onAction: (key: SceneActionKey) => void;
+  onMoreAction?: (key: SceneMoreActionKey) => void;
+}) => {
   const [showMore, setShowMore] = useState(false);
   const [popupPos, setPopupPos] = useState({ bottom: 0, left: 0 });
   const moreButtonRef = useRef<HTMLButtonElement>(null);
@@ -69,7 +74,10 @@ export const GenerateSceneActions = (props: { onAction: (key: SceneActionKey) =>
                     {moreItems.map(item => (
                       <button
                         key={item.label}
-                        onClick={() => setShowMore(false)}
+                        onClick={() => {
+                          setShowMore(false);
+                          props.onMoreAction?.(item.label);
+                        }}
                         className={`flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-white/5 ${item.danger ? 'text-error-200' : 'text-white'}`}
                       >
                         {item.icon}

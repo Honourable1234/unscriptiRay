@@ -41,10 +41,8 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
   ];
 
   useEffect(() => {
-    const allFilled = fields.every(f => !!ctx.data[f.key]?.trim());
-    const hasTags = (ctx.data.tags ?? []).length > 0;
-    props.onValidChange?.(allFilled && hasTags);
-  }, [ctx.data.backstory, ctx.data.customPhysical, ctx.data.customFaceDetails, ctx.data.greeting, ctx.data.personalityDetails, ctx.data.tags, props.onValidChange]);
+    props.onValidChange?.(true);
+  }, []);
 
   const handleEnrich = () => {
     setEnrichLoading(true);
@@ -54,7 +52,7 @@ export const CreateStep3 = (props: { onValidChange?: (valid: boolean) => void })
       appearance: ctx.data.appearance,
       personality_archetype: ctx.data.personality,
       relationship_dynamic: ctx.data.relationship,
-      kinks: ctx.data.kinks ? [ctx.data.kinks] : [],
+      kinks: ctx.data.kinks,
       hobby: ctx.data.socialRole,
     }).then((res: unknown) => {
       const content = (res as { content?: EnrichContent })?.content;

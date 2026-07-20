@@ -1,48 +1,27 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 
 const resolutions = ['HD', '1K', '4K'];
 
 export const EnhanceContent = (props: { imageSrc: string; imageName?: string; assetId: string; onSuccess?: () => void }) => {
-  const { enhanceGeneratedImage, pollGenerationStatus } = useGenerateService();
+  const t = useTranslations('EnhanceContent');
+  const { enhanceGeneratedImage } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [resolution, setResolution] = useState('HD');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const stopPollRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
-
-  const handleGenerate = async () => {
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const res = await enhanceGeneratedImage(props.assetId) as { success: boolean; content: { generation_id: string; status: string } };
-      toast.info('Enhancement started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Enhancement complete!');
-          props.onSuccess?.();
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Enhancement failed.';
-      toast.error(message);
-      setIsGenerating(false);
-    }
+  const handleGenerate = () => {
+    void start(async () => {
+      const res = await enhanceGeneratedImage(props.assetId);
+      // The enhance endpoint reports an asset_id, not a generation_id, so
+      // track status with whichever the backend returned.
+      return { content: { generation_id: res.content.generation_id ?? res.content.asset_id } };
+    }, { successMessage: t('enhance_complete'), onComplete: props.onSuccess });
   };
 
   return (
@@ -59,7 +38,7 @@ export const EnhanceContent = (props: { imageSrc: string; imageName?: string; as
 
       {/* Resolution */}
       <div className="flex max-w-80 flex-col items-center gap-3 text-center">
-        <p className="text-sm font-semibold text-white">Enhance the resolution of your scene</p>
+        <p className="text-sm font-semibold text-white">{t('description')}</p>
         <div className="flex items-center gap-2">
           {resolutions.map(r => (
             <button
@@ -74,7 +53,7 @@ export const EnhanceContent = (props: { imageSrc: string; imageName?: string; as
       </div>
 
       <GenerateButton
-        label={isGenerating ? 'Enhancing...' : 'Enhance Scene'}
+        label={isGenerating ? t('enhancing') : t('enhance_scene')}
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating || !props.assetId}

@@ -9,10 +9,11 @@ type CreateState = {
   appearance: AppearanceSelections;
   name: string;
   age: string;
+  gender: string;
   voice: string;
   personality: string;
   relationship: string;
-  kinks: string;
+  kinks: string[];
   socialRole: string;
   backstory: string;
   scenario: string;
@@ -29,10 +30,11 @@ type CreateContextValue = {
   setAppearance: (key: string, value: string) => void;
   setName: (value: string) => void;
   setAge: (value: string) => void;
+  setGender: (value: string) => void;
   setVoice: (value: string) => void;
   setPersonality: (value: string) => void;
   setRelationship: (value: string) => void;
-  setKinks: (value: string) => void;
+  setKinks: (value: string[]) => void;
   setSocialRole: (value: string) => void;
   setBackstory: (value: string) => void;
   setScenario: (value: string) => void;
@@ -50,10 +52,11 @@ const defaultState: CreateState = {
   appearance: {},
   name: '',
   age: '',
+  gender: '',
   voice: '',
   personality: '',
   relationship: '',
-  kinks: '',
+  kinks: [],
   socialRole: '',
   backstory: '',
   scenario: '',
@@ -70,7 +73,13 @@ const readSession = (): CreateState => {
   }
   try {
     const raw = sessionStorage.getItem(SESSION_KEY);
-    return raw ? (JSON.parse(raw) as CreateState) : defaultState;
+    if (!raw) {
+      return defaultState;
+    }
+    const parsed = JSON.parse(raw) as CreateState & { kinks: string | string[] };
+    // Sessions saved before kinks became multi-select stored a single string.
+    const kinks = Array.isArray(parsed.kinks) ? parsed.kinks : (parsed.kinks ? [parsed.kinks] : []);
+    return { ...defaultState, ...parsed, kinks };
   } catch {
     return defaultState;
   }
@@ -94,10 +103,11 @@ export const CreateProvider = (props: { children: React.ReactNode }) => {
     update({ appearance: { ...data.appearance, [key]: data.appearance[key] === value ? undefined : value } });
   const setName = (value: string) => update({ name: value });
   const setAge = (value: string) => update({ age: value });
+  const setGender = (value: string) => update({ gender: value });
   const setVoice = (value: string) => update({ voice: value });
   const setPersonality = (value: string) => update({ personality: value });
   const setRelationship = (value: string) => update({ relationship: value });
-  const setKinks = (value: string) => update({ kinks: value });
+  const setKinks = (value: string[]) => update({ kinks: value });
   const setSocialRole = (value: string) => update({ socialRole: value });
   const setBackstory = (value: string) => update({ backstory: value });
   const setScenario = (value: string) => update({ scenario: value });
@@ -108,7 +118,7 @@ export const CreateProvider = (props: { children: React.ReactNode }) => {
   const setTags = (value: string[]) => update({ tags: value });
 
   return (
-    <CreateContext value={{ data, setStyle, setAppearance, setName, setAge, setVoice, setPersonality, setRelationship, setKinks, setSocialRole, setBackstory, setScenario, setPersonalityDetails, setCustomPhysical, setCustomFaceDetails, setGreeting, setTags }}>
+    <CreateContext value={{ data, setStyle, setAppearance, setName, setAge, setGender, setVoice, setPersonality, setRelationship, setKinks, setSocialRole, setBackstory, setScenario, setPersonalityDetails, setCustomPhysical, setCustomFaceDetails, setGreeting, setTags }}>
       {props.children}
     </CreateContext>
   );

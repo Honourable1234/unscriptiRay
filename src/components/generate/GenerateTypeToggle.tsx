@@ -3,8 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { MediaIcon, PictureIcon, SelectStarIcon, SparkleIcon, VideoIcon, VoiceIcon } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
-import { useGenerateService } from '@/services/generateService';
 
 type GenerateType = 'still' | 'animated';
 export type GenerateMode = 'style_present' | 'image_to_video' | 'extend_video' | 'talking' | 'edit_style';
@@ -30,8 +28,6 @@ export const GenerateTypeToggle = (props: {
   onChange: (type: GenerateType) => void;
   onModeChange: (mode: GenerateMode) => void;
 }) => {
-  const { token } = useAuth();
-  const { getPresets } = useGenerateService();
   const t = useTranslations('GenerateTypeToggle');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -40,19 +36,6 @@ export const GenerateTypeToggle = (props: {
     { label: t('still_images'), value: 'still', icon: <PictureIcon /> },
     { label: t('animated_scenes'), value: 'animated', icon: <VideoIcon /> },
   ];
-
-  useEffect(() => {
-    const fetchPresets = async () => {
-      if (!token) {
-        return;
-      }
-      const res = await getPresets();
-      if (res.ok) {
-        console.warn(res);
-      }
-    };
-    fetchPresets();
-  }, [token]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

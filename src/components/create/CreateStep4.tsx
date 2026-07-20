@@ -3,10 +3,12 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { CloseIcon, EditIcon, PlayIcon } from '@/components/icons';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { CloseIcon, EditIcon, PlayIcon, SpinnerIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
-import { api } from '@/libs/api';
+import { useGenerateService } from '@/services/generateService';
+import { useCharacterService } from '@/services/useCharacterService';
 import { eyeColorMap, hairColorMap, skinToneMap } from './colorMaps';
 
 export type CreatedCharacter = {
@@ -61,83 +63,158 @@ function isLightColor(hex: string): boolean {
   return (r * 299 + g * 587 + b * 114) / 1000 > 128;
 }
 
-export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsChange?: (tags: string[]) => void }) => {
+type AccordionField = { label: string; value?: string; apiKey: string };
+
+function AccordionEditList(props: {
+  items: AccordionField[];
+  characterId: string;
+  onSaved: (apiKey: string, value: string) => void;
+}) {
+  const t = useTranslations('CreateStep4');
+  const { updateCharacter } = useCharacterService();
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const openEdit = (item: AccordionField) => {
+    setEditingKey(item.apiKey);
+    setDraft(item.value ?? '');
+  };
+
+  const handleSave = async () => {
+    if (!editingKey) {
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateCharacter(props.characterId, { [editingKey]: draft });
+      props.onSaved(editingKey, draft);
+      toast.success(t('saved'));
+      setEditingKey(null);
+    } catch {
+      toast.error(t('save_failed'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {props.items.map(item => (
+        <div key={item.apiKey} className="rounded-xl bg-black-60">
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <div className="flex min-w-0 flex-col gap-1">
+              <span className="text-sm font-semibold text-white-75">{item.label}</span>
+              {editingKey !== item.apiKey && (
+                <span className="truncate text-xs text-white">{item.value || '—'}</span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => editingKey === item.apiKey ? setEditingKey(null) : openEdit(item)}
+              className="shrink-0 cursor-pointer text-white-75 hover:text-white"
+            >
+              {editingKey === item.apiKey ? <CloseIcon /> : <EditIcon />}
+            </button>
+          </div>
+          {editingKey === item.apiKey && (
+            <div className="flex flex-col gap-2 px-4 pb-4">
+              <textarea
+                value={draft}
+                onChange={e => setDraft(e.target.value)}
+                rows={4}
+                className="w-full resize-none rounded-xl border border-white-25/30 bg-transparent px-3 py-2 text-xs text-white outline-none placeholder:text-white-25 focus:border-white-50"
+              />
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving}
+                className="cursor-pointer self-end rounded-lg bg-primary-100 px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+              >
+                {saving ? <SpinnerIcon /> : t('save')}
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export const CreateStep4 = (props: {
+  character: CreatedCharacter | null;
+  generationId?: string | null;
+  onTagsChange?: (tags: string[]) => void;
+  onImageGenerated?: (url: string) => void;
+}) => {
   const t = useTranslations('CreateStep4');
   const router = useRouter();
   const { token } = useAuth();
+  const { generateCharacterImage } = useCharacterService();
+  const { pollGenerationStatus } = useGenerateService();
   const [tab, setTab] = useState<Tab>('appearance');
+  const [localCharacter, setLocalCharacter] = useState<CreatedCharacter | null>(props.character);
   const [tags, setTags] = useState<string[]>(props.character?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
   const [imageUrl, setImageUrl] = useState(props.character?.image_url ?? '');
   const [progress, setProgress] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const startedForRef = useRef<string | null>(null);
+  const stopPollingRef = useRef<(() => void) | null>(null);
+
+  const onFieldSaved = (apiKey: string, value: string) => {
+    setLocalCharacter(prev => prev ? { ...prev, [apiKey]: value } : prev);
+  };
+
+  const runImageGeneration = async (characterId: string, existingGenerationId?: string) => {
+    setFailed(false);
+    setProgress(0);
+    stopPollingRef.current?.();
+    try {
+      let genId = existingGenerationId;
+      if (!genId) {
+        const res = await generateCharacterImage(characterId);
+        genId = res.content.generation_id;
+      }
+      setProgress(10);
+      stopPollingRef.current = pollGenerationStatus(
+        genId,
+        (result) => {
+          setProgress(100);
+          if (result.url) {
+            setImageUrl(result.url);
+            props.onImageGenerated?.(result.url);
+          } else {
+            setFailed(true);
+          }
+        },
+        () => setFailed(true),
+      );
+    } catch {
+      setFailed(true);
+    }
+  };
 
   useEffect(() => {
-    if (imageUrl || !props.character?.id || !token) {
+    const characterId = props.character?.id;
+    if (imageUrl || !characterId || !token || startedForRef.current === characterId) {
       return;
     }
-
-    const statusMap: Record<string, number> = {
-      pending: 10,
-      dispatched: 30,
-      in_progress: 60,
-      complete: 100,
-    };
-
-    let stopped = false;
-    let timerId: ReturnType<typeof setTimeout> | undefined;
-
-    const poll = async () => {
-      while (!stopped) {
-        try {
-          const res = await api.get('/events/poll', token);
-          const events = res?.content?.events ?? [];
-          for (const e of events as Record<string, unknown>[]) {
-            if (e.event !== 'generation.update') {
-              continue;
-            }
-            const data = e.data as Record<string, unknown>;
-            const status = data.status as string | undefined;
-            if (status && statusMap[status] !== undefined) {
-              setProgress(statusMap[status]!);
-            }
-            if (status === 'complete') {
-              const url = (data.url ?? data.image_url) as string | undefined;
-              if (url) {
-                setImageUrl(url);
-              }
-              stopped = true;
-              return;
-            }
-            if (status === 'failed') {
-              stopped = true;
-              return;
-            }
-          }
-        } catch {
-        // network error — keep polling
-        }
-        if (!stopped) {
-          await new Promise<void>((resolve) => {
-            timerId = setTimeout(resolve, 4000);
-          });
-        }
-      }
-    };
-
-    void poll();
-
-    return () => {
-      stopped = true;
-      clearTimeout(timerId);
-    };
-  }, [props.character?.id, token, imageUrl]);
+    if (!props.generationId) {
+      return;
+    }
+    startedForRef.current = characterId;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void runImageGeneration(characterId, props.generationId);
+    return () => stopPollingRef.current?.();
+  }, [props.character?.id, props.generationId, token, imageUrl]);
 
   const tabs: { label: string; value: Tab }[] = [
     { label: t('tab_appearance'), value: 'appearance' },
     { label: t('tab_personality'), value: 'personality' },
   ];
 
-  if (!props.character) {
+  if (!localCharacter) {
     return (
       <div className="flex h-64 items-center justify-center rounded-2xl border border-white-25/30">
         <p className="text-sm text-white-50">{t('no_character')}</p>
@@ -145,13 +222,13 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
     );
   }
 
-  const c = props.character;
+  const c = localCharacter ?? props.character;
   const a = c.appearance ?? {};
   const displayImage = imageUrl || '/Create/GenerateImage.jpg';
   const isGenerating = !imageUrl;
 
   const voiceValue = typeof c.voice_settings === 'object' ? c.voice_settings?.voice_type : (c.voice_settings ?? c.voice_type);
-  const kinkValue = Array.isArray(c.kinks) ? c.kinks[0] : c.kinks;
+  const kinkValue = Array.isArray(c.kinks) ? c.kinks.join(', ') : c.kinks;
 
   const appearanceAttrs: { label: string; value?: string | number }[] = [
     { label: t('voice'), value: voiceValue },
@@ -171,12 +248,12 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
     { label: t('social_role'), value: c.hobby },
   ];
 
-  const personalityAccordion: { label: string; value?: string }[] = [
-    { label: t('backstory'), value: c.backstory },
-    { label: t('physical'), value: c.custom_physical_prompt },
-    { label: t('face_details'), value: c.custom_face_prompt },
-    { label: t('greeting'), value: c.greeting_message },
-    { label: t('personality_details'), value: c.personality_details },
+  const personalityAccordion: AccordionField[] = [
+    { label: t('backstory'), value: c.backstory, apiKey: 'backstory' },
+    { label: t('physical'), value: c.custom_physical_prompt, apiKey: 'custom_physical_prompt' },
+    { label: t('face_details'), value: c.custom_face_prompt, apiKey: 'custom_face_prompt' },
+    { label: t('greeting'), value: c.greeting_message, apiKey: 'greeting_message' },
+    { label: t('personality_details'), value: c.personality_details, apiKey: 'personality_details' },
   ];
 
   const colorTabs: { key: string; label: string; value?: string; map: Record<string, string> }[] = [
@@ -215,14 +292,31 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
             />
             {isGenerating && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 px-8">
-                <p className="text-sm font-semibold text-white">{t('generate_process')}</p>
-                <div className="h-4 w-full max-w-49 overflow-hidden rounded-full bg-white">
-                  <div className="h-full rounded-full bg-primary-100 transition-all duration-700" style={{ width: `${progress}%` }} />
-                </div>
-                <p className="text-sm text-white">
-                  {progress}
-                  %
-                </p>
+                {failed
+                  ? (
+                      <>
+                        <p className="text-sm font-semibold text-white">{t('image_failed')}</p>
+                        <button
+                          type="button"
+                          onClick={() => void runImageGeneration(c.id)}
+                          className="cursor-pointer rounded-xl bg-primary-100 px-6 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                        >
+                          {t('retry')}
+                        </button>
+                      </>
+                    )
+                  : (
+                      <>
+                        <p className="text-sm font-semibold text-white">{t('generate_process')}</p>
+                        <div className="h-4 w-full max-w-49 overflow-hidden rounded-full bg-white">
+                          <div className="h-full rounded-full bg-primary-100 transition-all duration-700" style={{ width: `${progress}%` }} />
+                        </div>
+                        <p className="text-sm text-white">
+                          {progress}
+                          %
+                        </p>
+                      </>
+                    )}
               </div>
             )}
           </div>
@@ -276,17 +370,7 @@ export const CreateStep4 = (props: { character: CreatedCharacter | null; onTagsC
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2">
-                {personalityAccordion.map(item => (
-                  <div key={item.label} className="flex items-center justify-between gap-3 rounded-xl bg-black-60 px-4 py-3">
-                    <div className="flex min-w-0 flex-col gap-1">
-                      <span className="text-sm font-semibold text-white-75">{item.label}</span>
-                      <span className="truncate text-xs text-white">{item.value || '—'}</span>
-                    </div>
-                    <span className="shrink-0 text-white-75"><EditIcon /></span>
-                  </div>
-                ))}
-              </div>
+              <AccordionEditList items={personalityAccordion} characterId={c.id} onSaved={onFieldSaved} />
             </>
           )}
 

@@ -49,14 +49,23 @@ const getInitialCharacter = (): CreatedCharacter | null => {
   }
 };
 
+const getInitialGenerationId = (): string | null => {
+  try {
+    return sessionStorage.getItem('create_generation_id');
+  } catch {
+    return null;
+  }
+};
+
 function CreatePageContent() {
   const t = useTranslations('CreatePage');
   const [step, setStep] = useState(getInitialStep);
   const [stepValid, setStepValid] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [character, setCharacter] = useState<CreatedCharacter | null>(getInitialCharacter);
+  const [generationId, setGenerationId] = useState<string | null>(getInitialGenerationId);
   const { data } = useCreate();
-  const { createCharacter } = useCharacterService();
+  const { createCharacter, generateCharacterImage, updateCharacter } = useCharacterService();
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -65,10 +74,11 @@ function CreatePageContent() {
       appearance: data.appearance,
       name: data.name,
       age: Number(data.age),
+      ...(data.gender ? { gender: data.gender.toLowerCase() } : {}),
       voice_type: data.voice,
       personality_archetype: data.personality,
       relationship_dynamic: data.relationship,
-      kinks: data.kinks ? [data.kinks] : [],
+      kinks: data.kinks,
       hobby: data.socialRole,
       backstory: data.backstory,
       custom_physical_prompt: data.customPhysical,
@@ -76,19 +86,26 @@ function CreatePageContent() {
       personality_details: data.personalityDetails,
       tags: data.tags,
       greeting_message: data.greeting,
-    }).then((res) => {
+    }).then(async (res) => {
       sessionStorage.setItem('create_character_response', JSON.stringify(res));
       const content = (res as { content?: CreatedCharacter })?.content;
       if (content) {
         const c = { ...content, voice_settings: content.voice_settings ?? data.voice };
         sessionStorage.setItem('create_character', JSON.stringify(c));
         setCharacter(c);
+        try {
+          const imgRes = await generateCharacterImage(content.id);
+          sessionStorage.setItem('create_generation_id', imgRes.content.generation_id);
+          setGenerationId(imgRes.content.generation_id);
+        } catch {
+          toast.error(t('image_gen_failed'));
+        }
       }
       setGenerating(false);
       setStepValid(false);
       setStep(4);
-    }).catch(() => {
-      toast.error('Failed to create character.');
+    }).catch((error) => {
+      toast.error(error instanceof Error ? error.message : t('create_failed'));
       setGenerating(false);
     });
   };
@@ -119,11 +136,23 @@ function CreatePageContent() {
           ? (
               <CreateStep4
                 character={character}
+                generationId={generationId}
+                onImageGenerated={(url) => {
+                  sessionStorage.removeItem('create_generation_id');
+                  if (character) {
+                    const updated = { ...character, image_url: url };
+                    sessionStorage.setItem('create_character', JSON.stringify(updated));
+                    setCharacter(updated);
+                  }
+                }}
                 onTagsChange={(tags) => {
                   if (character) {
                     const updated = { ...character, tags };
                     sessionStorage.setItem('create_character', JSON.stringify(updated));
                     setCharacter(updated);
+                    updateCharacter(character.id, { tags }).catch(() => {
+                      toast.error(t('save_tags_failed'));
+                    });
                   }
                 }}
               />

@@ -1,9 +1,12 @@
 'use client';
 
+import type { PickOption } from './PickOptionModal';
+import type { Preset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { ActionIcon, EmojiIcon, InputIcon, SelectStarIcon, SettingIcon } from '@/components/icons';
-import { useGenerateService } from '@/services/generateService';
+import { presetsOfType, useGenerateService } from '@/services/generateService';
+import { CreativeInputModal } from './CreativeInputModal';
 import { GenerateOptionCard } from './GenerateOptionCard';
 import { GenerateOptionCardWide } from './GenerateOptionCardWide';
 import { PickOptionModal } from './PickOptionModal';
@@ -17,46 +20,41 @@ type SelectedOptions = {
   creative: boolean;
 };
 
-const DEFAULT_ACTION_OPTIONS = ['Walk', 'Run', 'Dance', 'Fight', 'Sit', 'Fly', 'Jump', 'Swim', 'Pose', 'Hug', 'Cry', 'Laugh'];
-const DEFAULT_SETTING_OPTIONS = ['Urban Street', 'Forest', 'Beach', 'Mountain', 'Indoor', 'Outer Space', 'Desert', 'Castle', 'Underwater', 'Jungle', 'Office', 'Rooftop'];
-const DEFAULT_MOOD_OPTIONS = ['Happy', 'Sad', 'Angry', 'Romantic', 'Mysterious', 'Epic', 'Calm', 'Tense', 'Playful', 'Fearful', 'Excited', 'Nostalgic'];
+type PickKey = 'action' | 'setting' | 'mood';
+
+const toOptions = (values: string[]): PickOption[] => values.map(v => ({ value: v, label: v }));
+
+const DEFAULT_OPTIONS: Record<PickKey, PickOption[]> = {
+  action: toOptions(['Walk', 'Run', 'Dance', 'Fight', 'Sit', 'Fly', 'Jump', 'Swim', 'Pose', 'Hug', 'Cry', 'Laugh']),
+  setting: toOptions(['Urban Street', 'Forest', 'Beach', 'Mountain', 'Indoor', 'Outer Space', 'Desert', 'Castle', 'Underwater', 'Jungle', 'Office', 'Rooftop']),
+  mood: toOptions(['Happy', 'Sad', 'Angry', 'Romantic', 'Mysterious', 'Epic', 'Calm', 'Tense', 'Playful', 'Fearful', 'Excited', 'Nostalgic']),
+};
 
 export const GenerateOptionsGrid = (props: {
   selected: SelectedOptions;
   onToggle: (key: keyof SelectedOptions) => void;
-  onOptionSelect?: (key: 'action' | 'setting' | 'mood', value: string | null) => void;
+  onOptionSelect?: (key: PickKey, value: string | null) => void;
+  onCreativeChange?: (value: string | null) => void;
   starCharacter?: { id: string; name: string; image: string } | null;
   onStarSelect?: (character: { id: string; name: string; image: string }) => void;
 }) => {
   const t = useTranslations('GenerateOptionsGrid');
   const { getPresets } = useGenerateService();
   const [starModalOpen, setStarModalOpen] = useState(false);
-  const [openPickModal, setOpenPickModal] = useState<'action' | 'setting' | 'mood' | null>(null);
-  const [optionValues, setOptionValues] = useState<{ action: string | null; setting: string | null; mood: string | null }>({
+  const [openPickModal, setOpenPickModal] = useState<PickKey | null>(null);
+  const [creativeModalOpen, setCreativeModalOpen] = useState(false);
+  const [creativePrompt, setCreativePrompt] = useState('');
+  const [optionValues, setOptionValues] = useState<Record<PickKey, PickOption | null>>({
     action: null,
     setting: null,
     mood: null,
   });
-  const [actionOptions, setActionOptions] = useState<string[]>(DEFAULT_ACTION_OPTIONS);
-  const [settingOptions, setSettingOptions] = useState<string[]>(DEFAULT_SETTING_OPTIONS);
-  const [moodOptions, setMoodOptions] = useState<string[]>(DEFAULT_MOOD_OPTIONS);
+  const [presets, setPresets] = useState<Preset[]>([]);
 
   useEffect(() => {
-    getPresets().then((res: unknown) => {
-      const content = (res as { content?: Record<string, unknown> })?.content ?? res as Record<string, unknown>;
-      const toStrings = (val: unknown): string[] =>
-        Array.isArray(val) ? (val as unknown[]).map(v => typeof v === 'string' ? v : (v as Record<string, unknown>)?.name as string ?? String(v)).filter(Boolean) : [];
-      const actions = toStrings(content?.actions ?? content?.action);
-      const settings = toStrings(content?.settings ?? content?.setting);
-      const moods = toStrings(content?.moods ?? content?.mood);
-      if (actions.length > 0) {
-        setActionOptions(actions);
-      }
-      if (settings.length > 0) {
-        setSettingOptions(settings);
-      }
-      if (moods.length > 0) {
-        setMoodOptions(moods);
+    getPresets().then((res) => {
+      if (res.success && Array.isArray(res.content)) {
+        setPresets(res.content);
       }
     }).catch(() => {});
   }, []);
@@ -73,15 +71,15 @@ export const GenerateOptionsGrid = (props: {
     props.onStarSelect?.(character);
   };
 
-  const handlePickSelect = (key: 'action' | 'setting' | 'mood', value: string) => {
-    setOptionValues(prev => ({ ...prev, [key]: value }));
+  const handlePickSelect = (key: PickKey, option: PickOption) => {
+    setOptionValues(prev => ({ ...prev, [key]: option }));
     if (!props.selected[key]) {
       props.onToggle(key);
     }
-    props.onOptionSelect?.(key, value);
+    props.onOptionSelect?.(key, option.value);
   };
 
-  const handlePickDeselect = (key: 'action' | 'setting' | 'mood') => {
+  const handlePickDeselect = (key: PickKey) => {
     setOptionValues(prev => ({ ...prev, [key]: null }));
     if (props.selected[key]) {
       props.onToggle(key);
@@ -89,13 +87,24 @@ export const GenerateOptionsGrid = (props: {
     props.onOptionSelect?.(key, null);
   };
 
-  const pickOptions: Record<'action' | 'setting' | 'mood', string[]> = {
-    action: actionOptions,
-    setting: settingOptions,
-    mood: moodOptions,
+  const handleCreativeSave = (value: string) => {
+    const trimmed = value.trim();
+    setCreativePrompt(trimmed);
+    if (!!trimmed !== props.selected.creative) {
+      props.onToggle('creative');
+    }
+    props.onCreativeChange?.(trimmed || null);
   };
 
-  const pickTitles: Record<'action' | 'setting' | 'mood', string> = {
+  const pickOptions = (key: PickKey): PickOption[] => {
+    const fromPresets = presetsOfType(presets, key).map(p => ({
+      value: p.name,
+      label: p.display_name || p.name,
+    }));
+    return fromPresets.length > 0 ? fromPresets : DEFAULT_OPTIONS[key];
+  };
+
+  const pickTitles: Record<PickKey, string> = {
     action: t('action'),
     setting: t('setting'),
     mood: t('mood'),
@@ -124,7 +133,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<ActionIcon />}
             isSelected={props.selected.action}
             onClick={() => setOpenPickModal('action')}
-            selectedName={optionValues.action ?? undefined}
+            selectedName={optionValues.action?.label}
             onDeselect={() => handlePickDeselect('action')}
           />
 
@@ -135,7 +144,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<SettingIcon />}
             isSelected={props.selected.setting}
             onClick={() => setOpenPickModal('setting')}
-            selectedName={optionValues.setting ?? undefined}
+            selectedName={optionValues.setting?.label}
             onDeselect={() => handlePickDeselect('setting')}
           />
 
@@ -146,7 +155,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<EmojiIcon />}
             isSelected={props.selected.mood}
             onClick={() => setOpenPickModal('mood')}
-            selectedName={optionValues.mood ?? undefined}
+            selectedName={optionValues.mood?.label}
             onDeselect={() => handlePickDeselect('mood')}
           />
         </div>
@@ -156,7 +165,8 @@ export const GenerateOptionsGrid = (props: {
           sublabel={t('creator_tier')}
           icon={<InputIcon />}
           isSelected={props.selected.creative}
-          onClick={() => props.onToggle('creative')}
+          selectedName={creativePrompt || undefined}
+          onClick={() => setCreativeModalOpen(true)}
         />
       </div>
 
@@ -170,10 +180,19 @@ export const GenerateOptionsGrid = (props: {
       {openPickModal && (
         <PickOptionModal
           title={pickTitles[openPickModal]}
-          options={pickOptions[openPickModal]}
-          selected={optionValues[openPickModal]}
-          onSelect={value => handlePickSelect(openPickModal, value)}
+          options={pickOptions(openPickModal)}
+          selected={optionValues[openPickModal]?.value ?? null}
+          onSelect={option => handlePickSelect(openPickModal, option)}
           onClose={() => setOpenPickModal(null)}
+        />
+      )}
+
+      {creativeModalOpen && (
+        <CreativeInputModal
+          value={creativePrompt}
+          characterId={props.starCharacter?.id}
+          onSave={handleCreativeSave}
+          onClose={() => setCreativeModalOpen(false)}
         />
       )}
     </>

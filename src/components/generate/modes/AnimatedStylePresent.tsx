@@ -1,13 +1,14 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
 import { GenerateVideoControls } from '@/components/generate/GenerateVideoControls';
 import { PlusIcon } from '@/components/icons/PlusIcon';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 
 type SelectedOptions = {
@@ -22,9 +23,13 @@ type SceneData = { id: number; sourceImageId: string | null; motion: string | nu
 
 export const AnimatedStylePresent = (props: {
   initialCharacter?: { id: string; name: string; image: string } | null;
+  onGenerated?: () => void;
+  onGenerationStart?: (generationId: string) => void;
+  onGenerationEnd?: (generationId: string) => void;
 }) => {
-  const { generateVideo, pollGenerationStatus } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const t = useTranslations('AnimatedStylePresent');
+  const { generateVideo } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
@@ -44,13 +49,11 @@ export const AnimatedStylePresent = (props: {
     mood: false,
     creative: false,
   });
-  const stopPollRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
+  const [optionValues, setOptionValues] = useState<{ action: string | null; setting: string | null; mood: string | null }>({
+    action: null,
+    setting: null,
+    mood: null,
+  });
 
   const activeScene = scenes.find(s => s.id === activeSceneId) ?? scenes[0]!;
 
@@ -67,41 +70,27 @@ export const AnimatedStylePresent = (props: {
     setActiveSceneId(newId);
   };
 
-  const handleGenerate = async () => {
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const characterIds = starCharacter ? [starCharacter.id] : [];
-      const res = await generateVideo({
-        character_ids: characterIds,
-        mode: 'style_preset',
-        orientation,
-        quality: quality === 'Balanced' ? 'balance' : 'ultra',
-        duration: Number(duration.replace('s', '')),
-        ...(audio.script && {
-          script: audio.script,
-          scene_emotion: audio.sceneEmotion.toLowerCase(),
-          voice_type: audio.voiceType.toLowerCase(),
-        }),
-      });
-      toast.info('Generation started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Scene ready!');
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Generation failed.';
-      const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
-      toast.error(isInsufficient ? `Not enough coins. ${message}` : message);
-      setIsGenerating(false);
-    }
+  const handleGenerate = () => {
+    void start(() => generateVideo({
+      character_ids: starCharacter ? [starCharacter.id] : [],
+      mode: 'style_preset',
+      orientation,
+      quality: quality === 'Balanced' ? 'balance' : 'ultra',
+      duration: Number(duration.replace('s', '')),
+      ...(optionValues.action ? { action: optionValues.action } : {}),
+      ...(optionValues.setting ? { setting: optionValues.setting } : {}),
+      ...(optionValues.mood ? { mood: optionValues.mood } : {}),
+      ...(audio.script && {
+        script: audio.script,
+        scene_emotion: audio.sceneEmotion.toLowerCase(),
+        voice_type: audio.voiceType.toLowerCase(),
+      }),
+    }), {
+      successMessage: t('scene_ready'),
+      onComplete: props.onGenerated,
+      onStart: props.onGenerationStart,
+      onSettled: props.onGenerationEnd,
+    });
   };
 
   return (
@@ -113,7 +102,7 @@ export const AnimatedStylePresent = (props: {
             onClick={() => setActiveSceneId(scene.id)}
             className={`cursor-pointer rounded-lg p-3 text-xs font-medium transition-colors ${activeScene.id === scene.id ? 'bg-primary-100/10 text-primary-100' : 'text-white hover:bg-black-40'}`}
           >
-            {`Scene ${scene.id}`}
+            {t('scene_label', { id: scene.id })}
           </button>
         ))}
         <button
@@ -121,7 +110,7 @@ export const AnimatedStylePresent = (props: {
           className="flex cursor-pointer items-center gap-1 rounded-lg p-3 text-xs font-medium text-white transition-all hover:scale-105"
         >
           <PlusIcon />
-          Add
+          {t('add')}
         </button>
       </div>
       <GenerateOptionsGrid
@@ -132,6 +121,7 @@ export const AnimatedStylePresent = (props: {
           setStarCharacter(character);
           setSelected(prev => ({ ...prev, star: true }));
         }}
+        onOptionSelect={(key, value) => setOptionValues(prev => ({ ...prev, [key]: value }))}
       />
       <GenerateVideoControls
         quality={quality}
@@ -144,10 +134,11 @@ export const AnimatedStylePresent = (props: {
         onAudioToggle={() => setAudioOpen(true)}
       />
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Scene'}
+        label={isGenerating ? t('generating') : t('generate_scene')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
+        disabled={!starCharacter}
       />
       {audioOpen && (
         <AudioModal

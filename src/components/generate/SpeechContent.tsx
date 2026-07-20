@@ -1,9 +1,11 @@
 'use client';
 
 import type { SelectedVoice } from './VoiceModal';
-import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VoiceIcon } from '@/components/icons';
+import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
@@ -15,21 +17,15 @@ type Scene = 'Happy' | 'Natural' | 'Sad' | 'Angry' | 'Fearful' | 'Disgusted' | '
 const scenes: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', 'Disgusted', 'Surprised'];
 
 export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }) => {
-  const { generateSpeech, pollGenerationStatus } = useGenerateService();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const t = useTranslations('SpeechContent');
+  const { generateSpeech } = useGenerateService();
+  const { isGenerating, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [voice, setVoice] = useState<SelectedVoice | null>(null);
   const [script, setScript] = useState('');
   const [sceneEmotion, setSceneEmotion] = useState<Scene>('Happy');
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const stopPollRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    return () => {
-      stopPollRef.current?.();
-    };
-  }, []);
 
   const handlePlayVoice = () => {
     if (!voice?.sampleUrl) {
@@ -41,51 +37,30 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
     audio.play().catch(() => {});
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (!voice) {
-      toast.error('Please select a voice first.');
+      toast.error(t('select_voice_first'));
       return;
     }
     if (!script.trim()) {
-      toast.error('Please enter an audio script first.');
+      toast.error(t('enter_script_first'));
       return;
     }
-    stopPollRef.current?.();
-    setIsGenerating(true);
-    try {
-      const res = await generateSpeech({
-        source_image_id: props.assetId,
-        mode: 'talking',
-        voice_type: voice.shortName,
-        script,
-        scene_emotion: sceneEmotion.toLowerCase(),
-      });
-      toast.info('Generation started, processing...');
-      stopPollRef.current = pollGenerationStatus(
-        res.content.generation_id,
-        () => {
-          setIsGenerating(false);
-          toast.success('Scene ready!');
-          props.onSuccess?.();
-        },
-        (errorMsg) => {
-          setIsGenerating(false);
-          toast.error(errorMsg);
-        },
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Generation failed.';
-      toast.error(message);
-      setIsGenerating(false);
-    }
+    void start(() => generateSpeech({
+      source_image_id: props.assetId,
+      mode: 'talking',
+      voice_type: voice.shortName,
+      script,
+      scene_emotion: sceneEmotion.toLowerCase(),
+    }), { successMessage: t('scene_ready'), onComplete: props.onSuccess });
   };
 
   return (
     <div className="flex flex-col gap-3">
       {/* Voice */}
       <GenerateOptionCard
-        label="Voice"
-        sublabel="(Required)"
+        label={t('voice')}
+        sublabel={t('required')}
         icon={<VoiceIcon />}
         isSelected={!!voice}
         selectedName={voice?.localName}
@@ -97,7 +72,7 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
 
       {/* Scene emotion */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-white">Scene emotion</span>
+        <span className="text-sm font-medium text-white">{t('scene_label')}</span>
         <div className="flex flex-wrap gap-1.5">
           {scenes.map(s => (
             <button
@@ -113,8 +88,8 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
 
       {/* Audio Script */}
       <GenerateOptionCardWide
-        label="Audio Script"
-        sublabel="(Required)"
+        label={t('audio_script')}
+        sublabel={t('required')}
         height="105px"
         icon={<VoiceIcon />}
         isSelected={!!script}
@@ -122,7 +97,7 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
       />
 
       <GenerateButton
-        label={isGenerating ? 'Generating...' : 'Generate Speech'}
+        label={isGenerating ? t('generating') : t('generate_speech')}
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating || !props.assetId}

@@ -34,7 +34,27 @@ export default function GeneratePage() {
   const [mode, setMode] = useState<GenerateMode>('style_present');
   const [mediaTab, setMediaTab] = useState<Tab>('All');
   const [assets, setAssets] = useState<GeneratedAssetsResponse['content'] | null>(null);
+  const [pendingIds, setPendingIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleGenerationStart = (generationId: string) => {
+    setPendingIds(prev => [...prev, generationId]);
+  };
+
+  const handleGenerationEnd = (generationId: string) => {
+    setPendingIds(prev => prev.filter(id => id !== generationId));
+  };
+
+  const refreshAssets = async () => {
+    try {
+      const res = await getGeneratedAssets();
+      if (res.success) {
+        setAssets(res.content);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (!token) {
@@ -42,16 +62,8 @@ export default function GeneratePage() {
     }
     const fetch = async () => {
       setIsLoading(true);
-      try {
-        const res = await getGeneratedAssets();
-        if (res.success) {
-          setAssets(res.content);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+      await refreshAssets();
+      setIsLoading(false);
     };
     fetch();
   }, [token]);
@@ -64,17 +76,23 @@ export default function GeneratePage() {
       }
     : null;
 
+  const modeProps = {
+    onGenerated: refreshAssets,
+    onGenerationStart: handleGenerationStart,
+    onGenerationEnd: handleGenerationEnd,
+  };
+
   const modeComponent = activeType === 'still'
     ? mode === 'edit_style'
-      ? <StillEditStyle />
-      : <StillStylePresent initialCharacter={initialCharacter} />
+      ? <StillEditStyle {...modeProps} />
+      : <StillStylePresent initialCharacter={initialCharacter} {...modeProps} />
     : mode === 'image_to_video'
-      ? <AnimatedImageToVideo />
+      ? <AnimatedImageToVideo {...modeProps} />
       : mode === 'extend_video'
-        ? <AnimatedExtendVideo />
+        ? <AnimatedExtendVideo {...modeProps} />
         : mode === 'talking'
-          ? <AnimatedTalking />
-          : <AnimatedStylePresent initialCharacter={initialCharacter} />;
+          ? <AnimatedTalking {...modeProps} />
+          : <AnimatedStylePresent initialCharacter={initialCharacter} {...modeProps} />;
 
   return (
     <div className="space-y-6 py-6">
@@ -95,7 +113,7 @@ export default function GeneratePage() {
       <MediaStyleTab tab={mediaTab} onTabChange={setMediaTab} />
       {isLoading
         ? <div className="flex justify-center py-12"><span className="text-sm text-white/50">Loading...</span></div>
-        : <GenerateResultGrid assets={filteredAssets} />}
+        : <GenerateResultGrid assets={filteredAssets} pendingIds={pendingIds} />}
     </div>
   );
 }

@@ -6,6 +6,7 @@ type CreateCharacterBody = {
   appearance: Partial<Record<string, string>>;
   name?: string;
   age?: number;
+  gender?: string;
   voice_type?: string;
   personality_archetype?: string;
   relationship_dynamic?: string;
@@ -28,6 +29,36 @@ type AiEnrichBody = {
   kinks?: string[];
   hobby?: string;
 };
+
+type UpdateCharacterBody = Partial<{
+  style: string;
+  appearance: Partial<{
+    ethnic_influence: string;
+    facial_shape: string;
+    hair_color: string;
+    hair_style: string;
+    eye_color: string;
+    eye_intensity: string;
+    figure_type: string;
+    bust_profile: string;
+    hip_profile: string;
+    skin_tone: string;
+  }>;
+  name: string;
+  age: number;
+  gender: string;
+  voice_type: string;
+  personality_archetype: string;
+  relationship_dynamic: string;
+  kinks: string[];
+  hobby: string;
+  backstory: string;
+  custom_physical_prompt: string;
+  custom_face_prompt: string;
+  personality_details: string;
+  tags: string[];
+  greeting_message: string;
+}>;
 
 export const useCharacterService = () => {
   const { token } = useAuth();
@@ -74,6 +105,24 @@ export const useCharacterService = () => {
     return api.post('/characters/ai-enrich', body as unknown as Record<string, unknown>, token);
   };
 
+  const updateCharacter = (id: string, body: UpdateCharacterBody) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.patch(`/characters/${id}`, body as unknown as Record<string, unknown>, token);
+  };
+
+  const generateCharacterImage = (id: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.post(`/characters/${id}/generate-image`, {}, token) as Promise<{
+      success: boolean;
+      message: string;
+      content: { generation_id: string; status: string };
+    }>;
+  };
+
   return {
     getCharacter,
     getCharacterMedia,
@@ -83,5 +132,7 @@ export const useCharacterService = () => {
     getCreationOptions,
     createCharacter,
     aiEnrich,
+    updateCharacter,
+    generateCharacterImage,
   };
 };

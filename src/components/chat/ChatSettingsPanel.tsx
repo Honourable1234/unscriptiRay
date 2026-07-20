@@ -4,6 +4,7 @@ import type { WebSettings } from '@/services/useChatService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { ChevronDownIcon } from '@/components/icons';
 import { useChatService } from '@/services/useChatService';
 
 const LUST_LEVELS = ['friendly', 'moderate', 'explicit'];
@@ -17,7 +18,7 @@ const ToggleRow = (props: { label: string; value: boolean; onChange: (v: boolean
       onClick={() => props.onChange(!props.value)}
       className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors ${props.value ? 'bg-primary-100' : 'bg-black-40'}`}
     >
-      <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${props.value ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+      <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${props.value ? 'translate-x-5' : 'translate-x-0'}`} />
     </button>
   </div>
 );
@@ -25,15 +26,20 @@ const ToggleRow = (props: { label: string; value: boolean; onChange: (v: boolean
 const SelectRow = (props: { label: string; value: string; options: string[]; onChange: (v: string) => void }) => (
   <div className="flex items-center justify-between px-4 py-3.5">
     <span className="text-sm text-white">{props.label}</span>
-    <select
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      className="cursor-pointer rounded-lg bg-black-40 px-2 py-1 text-xs text-white capitalize focus:outline-none"
-    >
-      {props.options.map(o => (
-        <option key={o} value={o} className="capitalize">{o}</option>
-      ))}
-    </select>
+    <div className="relative">
+      <select
+        value={props.value}
+        onChange={e => props.onChange(e.target.value)}
+        className="cursor-pointer appearance-none rounded-full border border-black-40 bg-black-60/40 py-1.5 pr-7 pl-3 text-xs text-white capitalize focus:border-primary-100 focus:outline-none"
+      >
+        {props.options.map(o => (
+          <option key={o} value={o} className="capitalize">{o}</option>
+        ))}
+      </select>
+      <span className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-white-50 [&>svg]:h-2.5 [&>svg]:w-2.5">
+        <ChevronDownIcon />
+      </span>
+    </div>
   </div>
 );
 
@@ -81,7 +87,6 @@ export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDispl
 
   return (
     <div className="flex flex-col divide-y divide-black-40">
-      {saving && <div className="px-4 py-1 text-right text-xs text-white-50">{t('saving')}</div>}
       <ToggleRow
         label={t('allow_messages')}
         value={settings.allow_character_messages}
@@ -110,6 +115,7 @@ export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDispl
         options={LANGUAGES}
         onChange={v => patch({ language: v })}
       />
+      {saving && <div className="px-4 py-2 text-right text-xs text-white-50">{t('saving')}</div>}
     </div>
   );
 };

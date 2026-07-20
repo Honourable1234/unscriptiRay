@@ -1,11 +1,11 @@
 'use client';
 
 import type { Message } from './types';
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
+import { ChatMessageBubble } from './ChatMessageBubble';
 
 const groupByDate = (messages: Message[]) => {
   const map: Record<string, Message[]> = {};
@@ -27,15 +27,35 @@ export const ChatMessageList = (props: {
   const { activeChat } = useChatNavigation();
   const { isTyping, setMessages, nextCursor, setNextCursor, setHasMoreMessages } = useChatMessages();
   const { getMessages } = useChatService();
-  const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const topSentinelRef = useRef<HTMLDivElement>(null);
   const loadingMoreRef = useRef(false);
   const grouped = groupByDate(props.messages);
 
+  const handleDeleteMessage = (id: number) => {
+    setMessages(prev => prev.filter(m => m.id !== id));
+  };
+
+  const handleDuplicateFromMessage = (id: number) => {
+    setMessages((prev) => {
+      const index = prev.findIndex(m => m.id === id);
+      if (index === -1) {
+        return prev;
+      }
+      const maxId = Math.max(...prev.map(m => m.id));
+      const clones = prev.slice(index).map((m, i) => ({ ...m, id: maxId + i + 1 }));
+      return [...prev, ...clones];
+    });
+  };
+
+  const handleEditMessage = (id: number, text: string) => {
+    setMessages(prev => prev.map(m => (m.id === id ? { ...m, text } : m)));
+  };
+
   useEffect(() => {
     const id = requestAnimationFrame(() => {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const el = scrollRef.current;
+      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
     });
     return () => cancelAnimationFrame(id);
   }, [props.messages, isTyping]);
@@ -84,40 +104,27 @@ export const ChatMessageList = (props: {
   }, [nextCursor, activeChat, setMessages, setNextCursor, setHasMoreMessages]);
 
   return (
-    <div ref={scrollRef} className="relative flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div
+      ref={scrollRef}
+      style={props.backgroundImage ? { backgroundImage: `url(${props.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      className="relative flex-1 overflow-y-auto bg-black backdrop-blur-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
       <div ref={topSentinelRef} className="h-px" />
-      {props.backgroundImage && (
-        <>
-          <Image src={props.backgroundImage} alt="" fill sizes="(max-width: 640px) 100vw, calc(100vw - 500px)" className="object-cover" />
-          <div className="absolute inset-0 h-full bg-black/90" />
-        </>
-      )}
-      <div className="relative px-4 py-4">
+      <div className="relative z-20 mx-auto max-w-3xl px-4 pt-4 pb-40">
         {Object.entries(grouped).map(([date, msgs]) => (
-          <div key={date}>
+          <div className="mb-10" key={date}>
             <div className="my-4 flex items-center justify-center md:my-7.5">
               <span className="text-sm text-white">{date}</span>
             </div>
 
             {msgs.map(msg => (
-              <div
+              <ChatMessageBubble
                 key={msg.id}
-                className={`mb-3 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex max-w-[90%] flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                  {msg.image && (
-                    <div className="relative h-58 w-58 overflow-hidden rounded-xl">
-                      <Image src={msg.image} alt="message" fill sizes="232px" className="object-cover" />
-                    </div>
-                  )}
-                  {msg.text && (
-                    <div className={`w-full max-w-[90%] rounded-2xl px-6 py-4 text-sm leading-6 text-white sm:w-131 ${msg.sender === 'user' ? 'rounded-br-sm bg-black-40' : 'rounded-bl-sm bg-black-80'}`}>
-                      {msg.text}
-                    </div>
-                  )}
-                  <span className="text-[10px] text-white-75">{msg.time}</span>
-                </div>
-              </div>
+                message={msg}
+                onDelete={handleDeleteMessage}
+                onDuplicate={handleDuplicateFromMessage}
+                onEdit={handleEditMessage}
+              />
             ))}
           </div>
         ))}
@@ -129,8 +136,6 @@ export const ChatMessageList = (props: {
             </div>
           </div>
         )}
-
-        <div ref={bottomRef} />
       </div>
     </div>
   );

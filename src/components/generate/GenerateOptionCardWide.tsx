@@ -7,6 +7,7 @@ export const GenerateOptionCardWide = (props: {
   sublabel: string;
   icon: React.ReactNode;
   isSelected?: boolean;
+  selectedName?: string;
   onClick?: () => void;
   width?: string;
   height?: string;
@@ -15,7 +16,7 @@ export const GenerateOptionCardWide = (props: {
     <button
       onClick={props.onClick}
       style={{ width: props.width, height: props.height }}
-      className="flex h-41 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-xl border border-white-25 bg-black-100 py-8 text-center transition-colors hover:border-primary-100"
+      className={`flex h-41 w-full cursor-pointer flex-col items-center justify-center gap-2.5 rounded-xl border bg-black-100 py-8 text-center transition-colors hover:border-primary-100 ${props.isSelected ? 'border-primary-100' : 'border-white-25'}`}
     >
       <span className="text-white-75">{props.icon}</span>
       <div className="flex flex-col gap-1">
@@ -35,7 +36,9 @@ export const GenerateOptionCardWide = (props: {
             </span>
           </span>
         </p>
-        <span className="text-xs text-primary-100">{props.sublabel}</span>
+        {props.isSelected && props.selectedName
+          ? <span className="line-clamp-2 max-w-100 px-4 text-xs text-white-75">{props.selectedName}</span>
+          : <span className="text-xs text-primary-100">{props.sublabel}</span>}
       </div>
     </button>
   );

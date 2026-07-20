@@ -8,12 +8,19 @@ import { OptionModal } from './OptionModal';
 
 export const CharacterInfo = () => {
   const t = useTranslations('CharacterInfo');
-  const { data, setVoice, setPersonality, setRelationship, setKinks } = useCreate();
+  const { data, setVoice, setPersonality, setRelationship, setKinks, setSocialRole } = useCreate();
 
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [personalityOpen, setPersonalityOpen] = useState(false);
   const [relationshipOpen, setRelationshipOpen] = useState(false);
   const [kinksOpen, setKinksOpen] = useState(false);
+  const [hobbyOpen, setHobbyOpen] = useState(false);
+
+  const toggleKink = (value: string) => {
+    setKinks(data.kinks.includes(value)
+      ? data.kinks.filter(k => k !== value)
+      : [...data.kinks, value]);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -29,7 +36,10 @@ export const CharacterInfo = () => {
           <CharacterInfoCard title={t('relationship')} value={data.relationship} iconColor="#4e9f3d" onClick={() => setRelationshipOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('kinks')} value={data.kinks} iconColor="#4e9f3d" onClick={() => setKinksOpen(true)} />
+          <CharacterInfoCard title={t('kinks')} value={data.kinks.join(', ')} iconColor="#4e9f3d" onClick={() => setKinksOpen(true)} />
+        </div>
+        <div className="min-w-80 flex-1">
+          <CharacterInfoCard title={t('hobby')} value={data.socialRole} iconColor="#4e9f3d" onClick={() => setHobbyOpen(true)} />
         </div>
       </div>
 
@@ -48,7 +58,7 @@ export const CharacterInfo = () => {
           title={t('select_personality')}
           endpoint="/characters/creation-options"
           responseKey="personality_archetypes"
-          topItem={{ label: 'Custom', locked: true }}
+          topItem={{ label: t('custom'), locked: true }}
           selected={data.personality}
           onSelect={setPersonality}
           onClose={() => setPersonalityOpen(false)}
@@ -59,7 +69,7 @@ export const CharacterInfo = () => {
           title={t('select_relationship')}
           endpoint="/characters/creation-options"
           responseKey="relationship_dynamics"
-          topItem={{ label: 'Custom', locked: true }}
+          topItem={{ label: t('custom'), locked: true }}
           selected={data.relationship}
           onSelect={setRelationship}
           onClose={() => setRelationshipOpen(false)}
@@ -70,10 +80,22 @@ export const CharacterInfo = () => {
           title={t('select_kinks')}
           endpoint="/characters/creation-options"
           responseKey="kinks"
-          topItem={{ label: 'Custom', locked: true }}
-          selected={data.kinks}
-          onSelect={setKinks}
+          topItem={{ label: t('custom'), locked: true }}
+          selected=""
+          multiSelect
+          selectedValues={data.kinks}
+          onSelect={toggleKink}
           onClose={() => setKinksOpen(false)}
+        />
+      )}
+      {hobbyOpen && (
+        <OptionModal
+          title={t('select_hobby')}
+          endpoint="/characters/creation-options"
+          responseKey="hobbies"
+          selected={data.socialRole}
+          onSelect={setSocialRole}
+          onClose={() => setHobbyOpen(false)}
         />
       )}
     </div>

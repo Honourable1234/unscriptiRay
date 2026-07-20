@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { CloseIcon, SearchIcon } from '@/components/icons';
+import { presetsOfType, useGenerateService } from '@/services/generateService';
 
-type Motion = { id: string; name: string; emoji: string };
+type Motion = { id: string; name: string; emoji?: string; imageUrl?: string | null };
 
 const MOTIONS: Motion[] = [
   { id: '1', name: 'Walking', emoji: '🚶' },
@@ -28,9 +30,21 @@ export const SelectMotionModal = (props: {
   onSelect: (motion: { id: string; name: string }) => void;
   onClose: () => void;
 }) => {
+  const { getPresets } = useGenerateService();
   const [search, setSearch] = useState('');
+  const [motions, setMotions] = useState<Motion[]>(MOTIONS);
 
-  const filtered = MOTIONS.filter(m => m.name.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    getPresets().then((res) => {
+      const fromPresets = presetsOfType(res.content ?? [], 'motion')
+        .map(p => ({ id: p.id, name: p.display_name || p.name, imageUrl: p.image_url }));
+      if (fromPresets.length > 0) {
+        setMotions(fromPresets);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const filtered = motions.filter(m => m.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div
@@ -88,10 +102,22 @@ export const SelectMotionModal = (props: {
                     <button
                       key={motion.id}
                       onClick={() => props.onSelect({ id: motion.id, name: motion.name })}
-                      className="flex h-65 w-40 min-w-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
+                      className="relative flex h-65 w-40 min-w-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
                     >
-                      <span className="text-4xl">{motion.emoji}</span>
-                      <span className="text-sm font-semibold text-white">{motion.name}</span>
+                      {motion.imageUrl
+                        ? (
+                            <>
+                              <Image src={motion.imageUrl} alt={motion.name} fill sizes="200px" className="object-cover" />
+                              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
+                              <span className="absolute right-0 bottom-3 left-0 px-2 text-center text-sm font-semibold text-white drop-shadow">{motion.name}</span>
+                            </>
+                          )
+                        : (
+                            <>
+                              <span className="text-4xl">{motion.emoji ?? '🎥'}</span>
+                              <span className="text-sm font-semibold text-white">{motion.name}</span>
+                            </>
+                          )}
                     </button>
                   ))}
                 </div>

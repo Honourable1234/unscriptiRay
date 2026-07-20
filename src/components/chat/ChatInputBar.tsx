@@ -1,11 +1,13 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { AiIcon, AttachIcon, MicIcon, SendIcon } from '@/components/icons';
+import { useRef, useState } from 'react';
+import { AiIcon, SendIcon, SpinnerIcon } from '@/components/icons';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useChatWebSocket } from '@/hooks/useChatWebSocket';
 import { useChatService } from '@/services/useChatService';
+
+const MAX_INPUT_HEIGHT = 160;
 
 export const ChatInputBar = () => {
   const t = useTranslations('ChatInputBar');
@@ -15,6 +17,13 @@ export const ChatInputBar = () => {
   const { activeChat } = useChatNavigation();
   const { send } = useChatWebSocket();
   const { getSuggestions } = useChatService();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const resetTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  };
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -23,6 +32,7 @@ export const ChatInputBar = () => {
     }
     setInput('');
     setSuggestions([]);
+    resetTextareaHeight();
     await send(text);
   };
 
@@ -42,67 +52,84 @@ export const ChatInputBar = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       void sendMessage();
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
     if (suggestions.length > 0) {
       setSuggestions([]);
     }
+    e.target.style.height = 'auto';
+    e.target.style.height = `${Math.min(e.target.scrollHeight, MAX_INPUT_HEIGHT)}px`;
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="mx-auto flex w-full max-w-3xl flex-col ">
       {/* Suggestion chips */}
-      {(suggestions.length > 0 || loadingSuggestions) && (
+      {suggestions.length > 0 && (
         <div className="flex flex-wrap gap-2 px-4 pb-2">
-          {loadingSuggestions
-            ? (
-                <span className="text-xs text-white-50">{t('getting_suggestions')}</span>
-              )
-            : suggestions.map(s => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    setInput(s);
-                    setSuggestions([]);
-                  }}
-                  className="cursor-pointer rounded-full border border-black-40 bg-black-60 px-3 py-1.5 text-xs text-white hover:border-primary-100 hover:text-primary-100"
-                >
-                  {s}
-                </button>
-              ))}
+          {suggestions.map(s => (
+            <button
+              key={s}
+              onClick={() => {
+                setInput(s);
+                setSuggestions([]);
+                resetTextareaHeight();
+              }}
+              className="cursor-pointer rounded-full border border-black-40 bg-black-60 px-3 py-1.5 text-xs text-white hover:border-primary-100 hover:text-primary-100"
+            >
+              {s}
+            </button>
+          ))}
         </div>
       )}
 
-      <div className="flex py-3 sm:px-4">
-        <div className="flex w-full items-center gap-3 rounded-l-xl border border-black-40 bg-black-60 px-3 py-3 sm:px-4 sm:py-6">
-          <button className="cursor-pointer text-white-75 hover:text-white">
-            <AttachIcon />
-          </button>
-          <input
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder={t('placeholder')}
-            className="flex-1 bg-transparent text-sm text-white placeholder-white-75 focus:outline-none"
-          />
-          <button
-            onClick={input.trim() ? () => void sendMessage() : () => void fetchSuggestions()}
-            className="cursor-pointer text-white-75 hover:text-white"
-          >
-            {input.trim() ? <SendIcon /> : <AiIcon />}
-          </button>
+      <div className="pt-3 pb-1 sm:px-4">
+        <div className="rounded-3xl border border-black-40 bg-black-60 px-4 pt-4 pb-3 sm:px-5">
+          <div className="flex items-start gap-2">
+            {loadingSuggestions
+              ? (
+                  <div className="flex flex-1 items-center gap-2 text-sm text-white-75">
+                    <span className="text-premium-100">
+                      <SpinnerIcon />
+                    </span>
+                    {t('generating_suggestion')}
+                  </div>
+                )
+              : (
+                  <textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder={t('placeholder')}
+                    rows={1}
+                    className="max-h-40 flex-1 resize-none overflow-y-auto bg-transparent text-sm text-white placeholder-white-75 [scrollbar-width:none] focus:outline-none [&::-webkit-scrollbar]:hidden"
+                  />
+                )}
+          </div>
+
+          <div className="mt-3 flex items-center justify-end gap-3">
+            <button
+              onClick={() => void fetchSuggestions()}
+              className="cursor-pointer text-white-75 hover:text-white [&>svg]:size-4"
+            >
+              <AiIcon />
+            </button>
+            <button
+              onClick={() => void sendMessage()}
+              aria-label="Send message"
+              className="flex cursor-pointer items-center justify-center rounded-full bg-white p-2.5 text-black-100 [&>svg]:size-4"
+            >
+              <SendIcon />
+            </button>
+          </div>
         </div>
-        <button className="cursor-pointer rounded-r-xl bg-primary-100 px-3 py-3 text-white sm:px-6 sm:py-4">
-          <MicIcon />
-        </button>
       </div>
     </div>
   );

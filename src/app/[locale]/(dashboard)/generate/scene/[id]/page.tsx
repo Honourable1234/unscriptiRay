@@ -1,10 +1,11 @@
 'use client';
 
-import type { SceneActionKey } from '@/components/generate/GenerateSceneActions';
+import type { SceneActionKey, SceneMoreActionKey } from '@/components/generate/GenerateSceneActions';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { generatePlaceholders } from '@/components/generate/generatePlaceholders';
+import { toast } from 'react-toastify';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
 import { CloseIcon, SpinnerIcon, VideoIcon } from '@/components/icons';
@@ -15,17 +16,12 @@ type Asset = { id: string; url: string; type: string; width: number; height: num
 
 type ThumbnailItem = { id: string; url: string; type: string };
 
-const placeholderThumbnails: ThumbnailItem[] = generatePlaceholders.map(p => ({
-  id: p.id,
-  url: p.src,
-  type: 'image',
-}));
-
 export default function GenerateScenePage() {
+  const t = useTranslations('GenerateScenePage');
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { token } = useAuth();
-  const { getGeneratedAssets } = useGenerateService();
+  const { getGeneratedAssets, deleteAsset } = useGenerateService();
   const [activeId, setActiveId] = useState(params.id);
   const [modal, setModal] = useState<SceneActionKey | null>(null);
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -46,13 +42,46 @@ export default function GenerateScenePage() {
   }, [token]);
 
   const activeAsset = assets.find(a => a.id === activeId) ?? null;
-  const fallbackSrc = generatePlaceholders.find(p => p.id === activeId)?.src ?? generatePlaceholders[0]!.src;
-  const displaySrc = activeAsset?.url ?? fallbackSrc;
+  const displaySrc = activeAsset?.url ?? '';
   const isVideo = activeAsset?.type === 'video';
 
-  const thumbnails: ThumbnailItem[] = assets.length > 0
-    ? assets.map(a => ({ id: a.id, url: a.url, type: a.type }))
-    : placeholderThumbnails;
+  const thumbnails: ThumbnailItem[] = assets.map(a => ({ id: a.id, url: a.url, type: a.type }));
+
+  const handleMoreAction = async (key: SceneMoreActionKey) => {
+    if (!activeAsset) {
+      return;
+    }
+    if (key === 'Download') {
+      window.open(activeAsset.url, '_blank', 'noopener');
+      return;
+    }
+    if (key === 'Share') {
+      try {
+        await navigator.clipboard.writeText(activeAsset.url);
+        toast.success(t('link_copied'));
+      } catch {
+        toast.error(t('copy_failed'));
+      }
+      return;
+    }
+    if (key === 'Delete') {
+      try {
+        await deleteAsset(activeAsset.id);
+        toast.success(t('scene_deleted'));
+        const remaining = assets.filter(a => a.id !== activeAsset.id);
+        setAssets(remaining);
+        if (remaining.length > 0) {
+          setActiveId(remaining[0]!.id);
+        } else {
+          router.back();
+        }
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : t('delete_failed'));
+      }
+      return;
+    }
+    toast.info(t('not_available'));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black">
@@ -72,34 +101,36 @@ export default function GenerateScenePage() {
                 <SpinnerIcon />
               </span>
             )
-          : isVideo
-            ? (
-                <video
-                  src={displaySrc}
-                  controls
-                  playsInline
-                  className="h-full max-h-123 w-full max-w-105 rounded-lg object-cover"
-                >
-                  <track kind="captions" />
-                </video>
-              )
-            : (
-                <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
-                  <Image
-                    src={displaySrc}
-                    alt="Generated scene"
-                    fill
-                    className="object-cover"
-                    sizes="512px"
-                  />
-                </div>
-              )}
+          : !activeAsset
+              ? <p className="text-sm text-white-50">{t('scene_not_found')}</p>
+              : isVideo
+                ? (
+                    <video
+                      src={displaySrc}
+                      controls
+                      playsInline
+                      className="h-full max-h-123 w-full max-w-105 rounded-lg object-cover"
+                    >
+                      <track kind="captions" />
+                    </video>
+                  )
+                : (
+                    <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
+                      <Image
+                        src={displaySrc}
+                        alt={t('scene_alt')}
+                        fill
+                        className="object-cover"
+                        sizes="512px"
+                      />
+                    </div>
+                  )}
       </div>
 
       {/* Actions */}
       <div className="overflow-x-auto pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="m-auto flex w-fit gap-2 px-4">
-          <GenerateSceneActions onAction={key => setModal(key)} />
+          <GenerateSceneActions onAction={key => setModal(key)} onMoreAction={key => void handleMoreAction(key)} />
         </div>
       </div>
 
@@ -119,7 +150,7 @@ export default function GenerateScenePage() {
                     </div>
                   )
                 : (
-                    <Image src={item.url} alt="Thumbnail" fill className="object-cover" sizes="124px" />
+                    <Image src={item.url} alt={t('thumbnail_alt')} fill className="object-cover" sizes="124px" />
                   )}
             </button>
           ))}
@@ -132,7 +163,7 @@ export default function GenerateScenePage() {
           action={modal}
           onClose={() => setModal(null)}
           imageSrc={displaySrc}
-          imageName={activeAsset ? `Generated ${activeAsset.type}` : 'Sample'}
+          imageName={activeAsset ? t('generated_label', { type: activeAsset.type }) : ''}
           assetId={activeAsset?.id ?? ''}
           onSuccess={() => {
             getGeneratedAssets({ limit: 30, sort: 'newest' })
