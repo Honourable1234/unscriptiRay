@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export const CreateStyleCard = (props: { style: string; onClick?: () => void; selected?: boolean }) => {
+export const CreateStyleCard = (props: { label: string; imageUrl?: string | null; onClick?: () => void; selected?: boolean }) => {
   return (
     <div
       className={`relative h-69 cursor-pointer overflow-hidden rounded-2xl transition-all ${props.selected ? 'ring-2 ring-primary-100' : ''}`}
@@ -14,8 +14,8 @@ export const CreateStyleCard = (props: { style: string; onClick?: () => void; se
       }}
     >
       <Image
-        src={`/Create/${props.style}.png`}
-        alt={props.style}
+        src={props.imageUrl || '/Create/GenerateImage.jpg'}
+        alt={props.label}
         fill
         sizes="200px"
         className="object-cover object-[center_25%]"
@@ -29,7 +29,7 @@ export const CreateStyleCard = (props: { style: string; onClick?: () => void; se
         </div>
       )}
       <div className="absolute right-0 bottom-0 left-0 p-2.5 text-center">
-        <span className="text-sm font-semibold text-white">{props.style}</span>
+        <span className="text-sm font-semibold text-white">{props.label}</span>
       </div>
     </div>
   );

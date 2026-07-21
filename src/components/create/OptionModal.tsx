@@ -8,7 +8,7 @@ import { CreateModal } from './CreateModal';
 import { OptionButton } from './OptionButton';
 
 type RawItem = Record<string, unknown>;
-type CachedItem = { key: string; label: string; locked?: boolean };
+type CachedItem = { key: string; value: string; label: string; locked?: boolean };
 
 export const OptionModal = (props: {
   title: string;
@@ -28,7 +28,7 @@ export const OptionModal = (props: {
   const cacheKey = `${props.endpoint}:${props.responseKey ?? ''}`;
   const [items, setItems] = useState<CachedItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const labelKey = props.labelKey ?? 'name';
+  const labelKey = props.labelKey ?? 'display_name';
 
   useEffect(() => {
     if (cache.current[cacheKey]) {
@@ -39,16 +39,18 @@ export const OptionModal = (props: {
       const raw = props.responseKey ? (content as Record<string, unknown>)?.[props.responseKey] : content;
       if (Array.isArray(raw)) {
         const top = props.topItem
-          ? [{ key: props.topItem.label, label: props.topItem.label, locked: props.topItem.locked }]
+          ? [{ key: props.topItem.label, value: props.topItem.label, label: props.topItem.label, locked: props.topItem.locked }]
           : [];
         const fetched: CachedItem[] = [...top, ...(raw as (RawItem | string)[]).map((item, i) => {
           const locked = i >= 10;
           if (typeof item === 'string') {
-            return { key: item, label: item, locked };
+            return { key: item, value: item, label: item, locked };
           }
+          const value = String(item.value ?? item.id ?? item.name ?? item[labelKey]);
           return {
-            key: String(item.id ?? item.name ?? item[labelKey]),
-            label: String(item[labelKey] ?? item.name ?? ''),
+            key: value,
+            value,
+            label: String(item[labelKey] ?? item.name ?? value),
             locked,
           };
         })];
@@ -70,10 +72,10 @@ export const OptionModal = (props: {
                 name={item.label}
                 locked={item.locked}
                 selected={props.multiSelect
-                  ? (props.selectedValues ?? []).includes(item.label)
-                  : props.selected === item.label}
+                  ? (props.selectedValues ?? []).includes(item.value)
+                  : props.selected === item.value}
                 onClick={() => {
-                  props.onSelect(item.label);
+                  props.onSelect(item.value);
                   if (!props.multiSelect) {
                     props.onClose();
                   }
