@@ -1,6 +1,7 @@
 'use client';
 
 import type { SceneActionKey, SceneMoreActionKey } from '@/components/generate/GenerateSceneActions';
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
@@ -11,8 +12,6 @@ import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
 import { CloseIcon, SpinnerIcon, VideoIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
-
-type Asset = { id: string; url: string; type: string; width: number; height: number; created_at: string };
 
 type ThumbnailItem = { id: string; url: string; type: string };
 

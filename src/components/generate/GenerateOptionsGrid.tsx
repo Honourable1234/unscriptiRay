@@ -1,11 +1,9 @@
 'use client';
 
-import type { PickOption } from './PickOptionModal';
-import type { Preset } from '@/services/generateService';
+import type { PickOption, PickOptionType } from './PickOptionModal';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ActionIcon, EmojiIcon, InputIcon, SelectStarIcon, SettingIcon } from '@/components/icons';
-import { presetsOfType, useGenerateService } from '@/services/generateService';
 import { CreativeInputModal } from './CreativeInputModal';
 import { GenerateOptionCard } from './GenerateOptionCard';
 import { GenerateOptionCardWide } from './GenerateOptionCardWide';
@@ -20,26 +18,22 @@ type SelectedOptions = {
   creative: boolean;
 };
 
-type PickKey = 'action' | 'setting' | 'mood';
+type PickKey = PickOptionType;
 
-const toOptions = (values: string[]): PickOption[] => values.map(v => ({ value: v, label: v }));
+type StarCharacter = { id: string; name: string; image: string };
 
-const DEFAULT_OPTIONS: Record<PickKey, PickOption[]> = {
-  action: toOptions(['Walk', 'Run', 'Dance', 'Fight', 'Sit', 'Fly', 'Jump', 'Swim', 'Pose', 'Hug', 'Cry', 'Laugh']),
-  setting: toOptions(['Urban Street', 'Forest', 'Beach', 'Mountain', 'Indoor', 'Outer Space', 'Desert', 'Castle', 'Underwater', 'Jungle', 'Office', 'Rooftop']),
-  mood: toOptions(['Happy', 'Sad', 'Angry', 'Romantic', 'Mysterious', 'Epic', 'Calm', 'Tense', 'Playful', 'Fearful', 'Excited', 'Nostalgic']),
-};
+const MAX_STARS = 4;
 
 export const GenerateOptionsGrid = (props: {
   selected: SelectedOptions;
   onToggle: (key: keyof SelectedOptions) => void;
   onOptionSelect?: (key: PickKey, value: string | null) => void;
   onCreativeChange?: (value: string | null) => void;
-  starCharacter?: { id: string; name: string; image: string } | null;
-  onStarSelect?: (character: { id: string; name: string; image: string }) => void;
+  starCharacters?: StarCharacter[];
+  onStarsChange?: (characters: StarCharacter[]) => void;
+  multipleStars?: boolean;
 }) => {
   const t = useTranslations('GenerateOptionsGrid');
-  const { getPresets } = useGenerateService();
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [openPickModal, setOpenPickModal] = useState<PickKey | null>(null);
   const [creativeModalOpen, setCreativeModalOpen] = useState(false);
@@ -49,27 +43,8 @@ export const GenerateOptionsGrid = (props: {
     setting: null,
     mood: null,
   });
-  const [presets, setPresets] = useState<Preset[]>([]);
 
-  useEffect(() => {
-    getPresets().then((res) => {
-      if (res.success && Array.isArray(res.content)) {
-        setPresets(res.content);
-      }
-    }).catch(() => {});
-  }, []);
-
-  const handleStarClick = () => {
-    if (props.selected.star) {
-      props.onToggle('star');
-    } else {
-      setStarModalOpen(true);
-    }
-  };
-
-  const handleStarSelect = (character: { id: string; name: string; image: string }) => {
-    props.onStarSelect?.(character);
-  };
+  const stars = props.starCharacters ?? [];
 
   const handlePickSelect = (key: PickKey, option: PickOption) => {
     setOptionValues(prev => ({ ...prev, [key]: option }));
@@ -96,14 +71,6 @@ export const GenerateOptionsGrid = (props: {
     props.onCreativeChange?.(trimmed || null);
   };
 
-  const pickOptions = (key: PickKey): PickOption[] => {
-    const fromPresets = presetsOfType(presets, key).map(p => ({
-      value: p.name,
-      label: p.display_name || p.name,
-    }));
-    return fromPresets.length > 0 ? fromPresets : DEFAULT_OPTIONS[key];
-  };
-
   const pickTitles: Record<PickKey, string> = {
     action: t('action'),
     setting: t('setting'),
@@ -119,11 +86,12 @@ export const GenerateOptionsGrid = (props: {
             label={t('select_star')}
             sublabel={t('required')}
             icon={<SelectStarIcon />}
-            isSelected={props.selected.star}
-            onClick={handleStarClick}
-            selectedImage={props.starCharacter?.image}
-            selectedName={props.starCharacter?.name}
-            onDeselect={() => props.onToggle('star')}
+            isSelected={stars.length > 0}
+            selectedImage={stars[0]?.image}
+            selectedName={stars.length > 1 ? t('stars_count', { count: stars.length }) : stars[0]?.name}
+            badge={stars.length > 1 ? `+${stars.length - 1}` : undefined}
+            onClick={() => setStarModalOpen(true)}
+            onDeselect={() => props.onStarsChange?.([])}
           />
 
           {/* Action */}
@@ -133,6 +101,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<ActionIcon />}
             isSelected={props.selected.action}
             onClick={() => setOpenPickModal('action')}
+            selectedImage={optionValues.action?.image}
             selectedName={optionValues.action?.label}
             onDeselect={() => handlePickDeselect('action')}
           />
@@ -144,6 +113,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<SettingIcon />}
             isSelected={props.selected.setting}
             onClick={() => setOpenPickModal('setting')}
+            selectedImage={optionValues.setting?.image}
             selectedName={optionValues.setting?.label}
             onDeselect={() => handlePickDeselect('setting')}
           />
@@ -155,6 +125,7 @@ export const GenerateOptionsGrid = (props: {
             icon={<EmojiIcon />}
             isSelected={props.selected.mood}
             onClick={() => setOpenPickModal('mood')}
+            selectedImage={optionValues.mood?.image}
             selectedName={optionValues.mood?.label}
             onDeselect={() => handlePickDeselect('mood')}
           />
@@ -171,16 +142,28 @@ export const GenerateOptionsGrid = (props: {
       </div>
 
       {starModalOpen && (
-        <SelectStarModal
-          onSelect={handleStarSelect}
-          onClose={() => setStarModalOpen(false)}
-        />
+        props.multipleStars
+          ? (
+              <SelectStarModal
+                multiple
+                selected={stars}
+                max={MAX_STARS}
+                onConfirm={characters => props.onStarsChange?.(characters)}
+                onClose={() => setStarModalOpen(false)}
+              />
+            )
+          : (
+              <SelectStarModal
+                onSelect={character => props.onStarsChange?.([character])}
+                onClose={() => setStarModalOpen(false)}
+              />
+            )
       )}
 
       {openPickModal && (
         <PickOptionModal
           title={pickTitles[openPickModal]}
-          options={pickOptions(openPickModal)}
+          type={openPickModal}
           selected={optionValues[openPickModal]?.value ?? null}
           onSelect={option => handlePickSelect(openPickModal, option)}
           onClose={() => setOpenPickModal(null)}
@@ -190,7 +173,7 @@ export const GenerateOptionsGrid = (props: {
       {creativeModalOpen && (
         <CreativeInputModal
           value={creativePrompt}
-          characterId={props.starCharacter?.id}
+          characterId={stars[0]?.id}
           onSave={handleCreativeSave}
           onClose={() => setCreativeModalOpen(false)}
         />

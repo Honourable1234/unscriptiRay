@@ -72,7 +72,6 @@ export const AnimatedTalking = (props: {
         <GenerateOptionCard
           label={t('image_video')}
           sublabel={t('required')}
-          height="385px"
           icon={<ImageFrameIcon />}
           isSelected={!!source}
           selectedImage={source?.type === 'image' ? source.url : undefined}
@@ -83,7 +82,6 @@ export const AnimatedTalking = (props: {
         <GenerateOptionCard
           label={t('voice')}
           sublabel={t('required')}
-          height="385px"
           icon={<VoiceIcon />}
           isSelected={!!voice}
           selectedName={voice?.localName}
@@ -108,7 +106,6 @@ export const AnimatedTalking = (props: {
       <GenerateOptionCardWide
         label={t('audio_script')}
         sublabel={t('required')}
-        height="153px"
         icon={<VoiceIcon />}
         isSelected={!!script}
         selectedName={script || undefined}

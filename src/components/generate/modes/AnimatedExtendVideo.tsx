@@ -54,7 +54,6 @@ export const AnimatedExtendVideo = (props: {
         <GenerateOptionCard
           label={t('video')}
           sublabel={t('required')}
-          height="385px"
           icon={<VideoIcon />}
           isSelected={!!sourceVideo}
           selectedName={t('select_video')}
@@ -64,7 +63,6 @@ export const AnimatedExtendVideo = (props: {
         <GenerateOptionCard
           label={t('motion')}
           sublabel={t('required')}
-          height="385px"
           icon={<MotionIcon />}
           isSelected={!!motion}
           selectedName={motion ?? undefined}
@@ -75,7 +73,6 @@ export const AnimatedExtendVideo = (props: {
       <GenerateOptionCardWide
         label={t('creative_input_advanced')}
         sublabel={t('creator_tier_exclusive')}
-        height="153px"
         icon={<CaptureIcon />}
       />
       <GenerateVideoControls

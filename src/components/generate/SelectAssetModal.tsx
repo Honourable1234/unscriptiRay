@@ -71,19 +71,19 @@ export const SelectAssetModal = (props: {
                   </div>
                 )
               : (
-                  <div className="flex flex-wrap gap-2">
-                    {assets.map(asset => (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {assets.map((asset, i) => (
                       <button
                         key={asset.id}
                         onClick={() => props.onSelect(asset)}
-                        className="relative h-52 w-40 min-w-40 flex-1 cursor-pointer overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
+                        className="relative h-65 cursor-pointer overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
                       >
                         {asset.type === 'video'
                           ? (
                               <video src={asset.url} muted playsInline preload="metadata" className="h-full w-full object-cover" />
                             )
                           : (
-                              <Image src={asset.url} alt="Generated asset" fill sizes="200px" className="object-cover" />
+                              <Image src={asset.url} alt="Generated asset" fill sizes="200px" priority={i < 3} className="object-cover" />
                             )}
                       </button>
                     ))}

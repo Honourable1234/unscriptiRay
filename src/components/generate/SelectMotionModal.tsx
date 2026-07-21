@@ -3,45 +3,37 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { CloseIcon, SearchIcon } from '@/components/icons';
-import { presetsOfType, useGenerateService } from '@/services/generateService';
+import { useGenerateService } from '@/services/generateService';
 
-type Motion = { id: string; name: string; emoji?: string; imageUrl?: string | null };
-
-const MOTIONS: Motion[] = [
-  { id: '1', name: 'Walking', emoji: '🚶' },
-  { id: '2', name: 'Running', emoji: '🏃' },
-  { id: '3', name: 'Dancing', emoji: '💃' },
-  { id: '4', name: 'Fighting', emoji: '🥊' },
-  { id: '5', name: 'Sitting', emoji: '🪑' },
-  { id: '6', name: 'Standing', emoji: '🧍' },
-  { id: '7', name: 'Posing', emoji: '🤳' },
-  { id: '8', name: 'Flying', emoji: '🦅' },
-  { id: '9', name: 'Swimming', emoji: '🏊' },
-  { id: '10', name: 'Hugging', emoji: '🤗' },
-  { id: '11', name: 'Waving', emoji: '👋' },
-  { id: '12', name: 'Jumping', emoji: '🦘' },
-  { id: '13', name: 'Crying', emoji: '😢' },
-  { id: '14', name: 'Laughing', emoji: '😄' },
-  { id: '15', name: 'Punching', emoji: '👊' },
-  { id: '16', name: 'Kicking', emoji: '🦵' },
-];
+type Motion = { id: string; name: string; value: string; imageUrl?: string | null };
 
 export const SelectMotionModal = (props: {
-  onSelect: (motion: { id: string; name: string }) => void;
+  onSelect: (motion: { id: string; name: string; value: string }) => void;
   onClose: () => void;
 }) => {
   const { getPresets } = useGenerateService();
   const [search, setSearch] = useState('');
-  const [motions, setMotions] = useState<Motion[]>(MOTIONS);
+  const [motions, setMotions] = useState<Motion[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPresets().then((res) => {
-      const fromPresets = presetsOfType(res.content ?? [], 'motion')
-        .map(p => ({ id: p.id, name: p.display_name || p.name, imageUrl: p.image_url }));
-      if (fromPresets.length > 0) {
-        setMotions(fromPresets);
-      }
-    }).catch(() => {});
+    getPresets('motion').then((res) => {
+      const list = Array.isArray(res.content) ? res.content : [];
+      setMotions(
+        list
+          .sort((a, b) => a.display_order - b.display_order)
+          .map(preset => ({
+            id: preset.id,
+            name: preset.display_name || preset.name,
+            value: preset.name,
+            imageUrl: preset.image_url,
+          })),
+      );
+    }).catch(() => {
+      setMotions([]);
+    }).finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   const filtered = motions.filter(m => m.name.toLowerCase().includes(search.toLowerCase()));
@@ -90,38 +82,39 @@ export const SelectMotionModal = (props: {
 
         {/* Grid */}
         <div className="max-h-[60vh] overflow-y-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {filtered.length === 0
+          {loading
             ? (
                 <div className="flex items-center justify-center py-16">
-                  <p className="text-sm text-white-50">No results</p>
+                  <p className="text-sm text-white-50">Loading motions...</p>
                 </div>
               )
-            : (
-                <div className="flex flex-wrap gap-2">
-                  {filtered.map(motion => (
-                    <button
-                      key={motion.id}
-                      onClick={() => props.onSelect({ id: motion.id, name: motion.name })}
-                      className="relative flex h-65 w-40 min-w-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
-                    >
-                      {motion.imageUrl
-                        ? (
-                            <>
-                              <Image src={motion.imageUrl} alt={motion.name} fill sizes="200px" className="object-cover" />
-                              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                              <span className="absolute right-0 bottom-3 left-0 px-2 text-center text-sm font-semibold text-white drop-shadow">{motion.name}</span>
-                            </>
-                          )
-                        : (
-                            <>
-                              <span className="text-4xl">{motion.emoji ?? '🎥'}</span>
-                              <span className="text-sm font-semibold text-white">{motion.name}</span>
-                            </>
-                          )}
-                    </button>
-                  ))}
-                </div>
-              )}
+            : filtered.length === 0
+              ? (
+                  <div className="flex items-center justify-center py-16">
+                    <p className="text-sm text-white-50">No motions found.</p>
+                  </div>
+                )
+              : (
+                  <div className="flex flex-wrap gap-2">
+                    {filtered.map((motion, i) => (
+                      <button
+                        key={motion.id}
+                        onClick={() => props.onSelect({ id: motion.id, name: motion.name, value: motion.value })}
+                        className="relative flex h-65 max-w-50 min-w-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
+                      >
+                        {motion.imageUrl
+                          ? (
+                              <>
+                                <Image src={motion.imageUrl} alt={motion.name} fill sizes="200px" priority={i < 4} className="object-cover" />
+                                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                                <span className="absolute right-0 bottom-0 left-0 p-2.5 text-center text-sm font-semibold text-white">{motion.name}</span>
+                              </>
+                            )
+                          : <span className="px-2 text-center text-sm font-semibold text-white">{motion.name}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
         </div>
       </div>
     </div>

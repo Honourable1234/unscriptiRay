@@ -8,15 +8,19 @@ import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { SelectCard } from './SelectCard';
 
-export const SelectStarModal = (props: {
-  onSelect: (character: { id: string; name: string; image: string }) => void;
-  onClose: () => void;
-}) => {
+type StarCharacter = { id: string; name: string; image: string };
+
+type SelectStarModalProps
+  = | { multiple?: false; onSelect: (character: StarCharacter) => void; onClose: () => void }
+    | { multiple: true; selected: StarCharacter[]; max: number; onConfirm: (characters: StarCharacter[]) => void; onClose: () => void };
+
+export const SelectStarModal = (props: SelectStarModalProps) => {
   const t = useTranslations('SelectStarModal');
   const { getCharacters } = createExploreService();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [picked, setPicked] = useState<StarCharacter[]>(props.multiple ? props.selected : []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
@@ -39,8 +43,19 @@ export const SelectStarModal = (props: {
   }, [search]);
 
   const handleSelect = (character: Character) => {
-    props.onSelect({ id: String(character.id), name: character.name, image: character.image });
-    props.onClose();
+    const star: StarCharacter = { id: String(character.id), name: character.name, image: character.image };
+    if (!props.multiple) {
+      props.onSelect(star);
+      props.onClose();
+      return;
+    }
+    const max = props.max;
+    setPicked((prev) => {
+      if (prev.some(s => s.id === star.id)) {
+        return prev.filter(s => s.id !== star.id);
+      }
+      return prev.length >= max ? prev : [...prev, star];
+    });
   };
 
   return (
@@ -86,7 +101,7 @@ export const SelectStarModal = (props: {
         </div>
 
         {/* Grid */}
-        <div className="max-h-[60vh] overflow-y-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="max-h-[60vh] overflow-y-auto px-5 pt-1 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {loading
             ? (
                 <div className="flex items-center justify-center py-16">
@@ -101,17 +116,38 @@ export const SelectStarModal = (props: {
                 )
               : (
                   <div className="flex flex-wrap gap-2">
-                    {characters.map((character, i) => (
-                      <SelectCard
-                        key={String(character.id)}
-                        character={character}
-                        onClick={() => handleSelect(character)}
-                        priority={i < 4}
-                      />
-                    ))}
+                    {characters.map((character, i) => {
+                      const isPicked = picked.some(s => s.id === String(character.id));
+                      return (
+                        <SelectCard
+                          key={String(character.id)}
+                          character={character}
+                          onClick={() => handleSelect(character)}
+                          priority={i < 4}
+                          isSelected={isPicked}
+                          isDisabled={props.multiple && !isPicked && picked.length >= props.max}
+                        />
+                      );
+                    })}
                   </div>
                 )}
         </div>
+
+        {props.multiple && (
+          <div className="flex items-center justify-between gap-3 border-t border-black-40 px-5 py-4">
+            <span className="text-sm text-white-50">{t('selected_count', { count: picked.length, max: props.max })}</span>
+            <button
+              onClick={() => {
+                props.onConfirm(picked);
+                props.onClose();
+              }}
+              disabled={picked.length === 0}
+              className="cursor-pointer rounded-xl bg-primary-100 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t('done')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

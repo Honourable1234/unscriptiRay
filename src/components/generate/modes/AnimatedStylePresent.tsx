@@ -7,7 +7,6 @@ import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
 import { GenerateVideoControls } from '@/components/generate/GenerateVideoControls';
-import { PlusIcon } from '@/components/icons/PlusIcon';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 
@@ -19,10 +18,10 @@ type SelectedOptions = {
   creative: boolean;
 };
 
-type SceneData = { id: number; sourceImageId: string | null; motion: string | null };
+type StarCharacter = { id: string; name: string; image: string };
 
 export const AnimatedStylePresent = (props: {
-  initialCharacter?: { id: string; name: string; image: string } | null;
+  initialCharacter?: StarCharacter | null;
   onGenerated?: () => void;
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
@@ -39,9 +38,7 @@ export const AnimatedStylePresent = (props: {
     sceneEmotion: 'Happy',
     voiceType: 'Aurora',
   });
-  const [scenes, setScenes] = useState<SceneData[]>([{ id: 1, sourceImageId: null, motion: null }]);
-  const [activeSceneId, setActiveSceneId] = useState(1);
-  const [starCharacter, setStarCharacter] = useState(props.initialCharacter ?? null);
+  const [stars, setStars] = useState<StarCharacter[]>(props.initialCharacter ? [props.initialCharacter] : []);
   const [selected, setSelected] = useState<SelectedOptions>({
     star: !!props.initialCharacter,
     action: false,
@@ -55,24 +52,24 @@ export const AnimatedStylePresent = (props: {
     mood: null,
   });
 
-  const activeScene = scenes.find(s => s.id === activeSceneId) ?? scenes[0]!;
-
   const handleToggle = (key: keyof SelectedOptions) => {
     if (key === 'star' && selected.star) {
-      setStarCharacter(null);
+      setStars([]);
     }
     setSelected(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const addScene = () => {
-    const newId = Math.max(...scenes.map(s => s.id)) + 1;
-    setScenes(prev => [...prev, { id: newId, sourceImageId: null, motion: null }]);
-    setActiveSceneId(newId);
+  const handleStarsChange = (characters: StarCharacter[]) => {
+    setStars(characters);
+    setSelected(prev => ({ ...prev, star: characters.length > 0 }));
   };
 
   const handleGenerate = () => {
+    if (stars.length === 0) {
+      return;
+    }
     void start(() => generateVideo({
-      character_ids: starCharacter ? [starCharacter.id] : [],
+      character_ids: stars.map(s => s.id),
       mode: 'style_preset',
       orientation,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
@@ -95,32 +92,12 @@ export const AnimatedStylePresent = (props: {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-2">
-        {scenes.map(scene => (
-          <button
-            key={scene.id}
-            onClick={() => setActiveSceneId(scene.id)}
-            className={`cursor-pointer rounded-lg p-3 text-xs font-medium transition-colors ${activeScene.id === scene.id ? 'bg-primary-100/10 text-primary-100' : 'text-white hover:bg-black-40'}`}
-          >
-            {t('scene_label', { id: scene.id })}
-          </button>
-        ))}
-        <button
-          onClick={addScene}
-          className="flex cursor-pointer items-center gap-1 rounded-lg p-3 text-xs font-medium text-white transition-all hover:scale-105"
-        >
-          <PlusIcon />
-          {t('add')}
-        </button>
-      </div>
       <GenerateOptionsGrid
         selected={selected}
         onToggle={handleToggle}
-        starCharacter={starCharacter}
-        onStarSelect={(character) => {
-          setStarCharacter(character);
-          setSelected(prev => ({ ...prev, star: true }));
-        }}
+        starCharacters={stars}
+        onStarsChange={handleStarsChange}
+        multipleStars
         onOptionSelect={(key, value) => setOptionValues(prev => ({ ...prev, [key]: value }))}
       />
       <GenerateVideoControls
@@ -138,7 +115,7 @@ export const AnimatedStylePresent = (props: {
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
-        disabled={!starCharacter}
+        disabled={stars.length === 0}
       />
       {audioOpen && (
         <AudioModal

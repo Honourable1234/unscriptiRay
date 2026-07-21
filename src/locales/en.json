@@ -162,6 +162,8 @@
   },
   "GenerateOptionsGrid": {
     "select_star": "Select Star",
+    "add_star": "Add Star",
+    "stars_count": "{count} stars",
     "required": "(Required)",
     "optional": "(Optional)",
     "action": "Action",
@@ -194,7 +196,13 @@
     "title": "Select Star",
     "search_placeholder": "Search characters...",
     "loading": "Loading characters...",
-    "no_results": "No characters found."
+    "no_results": "No characters found.",
+    "selected_count": "{count} of {max} selected",
+    "done": "Done"
+  },
+  "PickOptionModal": {
+    "loading": "Loading options...",
+    "no_results": "No options available."
   },
   "GenerateSceneModal": {
     "title_remix": "Remix",
@@ -296,8 +304,9 @@
     "generating": "Generating...",
     "generate_scene": "Generate Scene",
     "select_image": "Select Image",
-    "scene_label": "Scene {id}",
-    "add": "Add",
+    "select_star": "Select Star",
+    "add_star": "Add Star",
+    "stars_count": "{count} stars",
     "scene_ready": "Scene ready!"
   },
   "AnimatedExtendVideo": {
