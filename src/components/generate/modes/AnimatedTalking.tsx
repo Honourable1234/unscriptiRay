@@ -9,11 +9,16 @@ import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
 import { ScriptModal } from '@/components/generate/ScriptModal';
 import { SelectAssetModal } from '@/components/generate/SelectAssetModal';
-import { VoiceIcon } from '@/components/icons';
+import { SelectStarModal } from '@/components/generate/SelectStarModal';
+import { SelectStarIcon, VoiceIcon } from '@/components/icons';
 import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 import { VoiceModal } from '../VoiceModal';
+
+type StarCharacter = { id: string; name: string; image: string };
+
+const MAX_STARS = 4;
 
 const sceneEmotions: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', 'Disgusted', 'Surprised'];
 
@@ -28,6 +33,8 @@ export const AnimatedTalking = (props: {
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
+  const [starModalOpen, setStarModalOpen] = useState(false);
+  const [stars, setStars] = useState<StarCharacter[]>([]);
   const [voice, setVoice] = useState<SelectedVoice | null>(null);
   const [source, setSource] = useState<{ id: string; url: string; type: string } | null>(null);
   const [script, setScript] = useState('');
@@ -45,11 +52,11 @@ export const AnimatedTalking = (props: {
   };
 
   const handleGenerate = () => {
-    if (!source || !voice || !script.trim()) {
+    if (stars.length === 0 || !source || !voice || !script.trim()) {
       return;
     }
     void start(() => generateSpeech({
-      character_ids: [],
+      character_ids: stars.map(s => s.id),
       mode: 'talking',
       source_image_id: source.id,
       orientation: '16:9',
@@ -68,7 +75,18 @@ export const AnimatedTalking = (props: {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <GenerateOptionCard
+          label={t('select_star')}
+          sublabel={t('required')}
+          icon={<SelectStarIcon />}
+          isSelected={stars.length > 0}
+          selectedImage={stars[0]?.image}
+          selectedName={stars.length > 1 ? t('stars_count', { count: stars.length }) : stars[0]?.name}
+          badge={stars.length > 1 ? `+${stars.length - 1}` : undefined}
+          onClick={() => setStarModalOpen(true)}
+          onDeselect={() => setStars([])}
+        />
         <GenerateOptionCard
           label={t('image_video')}
           sublabel={t('required')}
@@ -117,7 +135,7 @@ export const AnimatedTalking = (props: {
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
-        disabled={!source || !voice || !script.trim()}
+        disabled={stars.length === 0 || !source || !voice || !script.trim()}
       />
 
       {sourceModalOpen && (
@@ -148,6 +166,16 @@ export const AnimatedTalking = (props: {
           script={script}
           onSave={setScript}
           onClose={() => setScriptModalOpen(false)}
+        />
+      )}
+
+      {starModalOpen && (
+        <SelectStarModal
+          multiple
+          selected={stars}
+          max={MAX_STARS}
+          onConfirm={setStars}
+          onClose={() => setStarModalOpen(false)}
         />
       )}
     </div>

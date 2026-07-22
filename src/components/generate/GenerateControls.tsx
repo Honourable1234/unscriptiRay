@@ -6,7 +6,6 @@ import { presetsOfType, useGenerateService } from '@/services/generateService';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-13', boxH: 'h-18' },
-  { value: '5:4', boxW: 'w-18', boxH: 'h-14' },
   { value: '9:16', boxW: 'w-11', boxH: 'h-14' },
   { value: '16:9', boxW: 'w-14', boxH: 'h-11' },
   { value: '1:1', boxW: 'w-10', boxH: 'h-10' },

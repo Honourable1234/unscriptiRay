@@ -6,7 +6,6 @@ import { SpeechIcon, StackedCoinIcon } from '@/components/icons';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-10', boxH: 'h-12' },
-  { value: '5:4', boxW: 'w-12', boxH: 'h-10' },
   { value: '9:16', boxW: 'w-8', boxH: 'h-14' },
   { value: '16:9', boxW: 'w-14', boxH: 'h-8' },
   { value: '1:1', boxW: 'w-11', boxH: 'h-11' },

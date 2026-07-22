@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { CloseIcon } from '@/components/icons';
+import { toast } from 'react-toastify';
+import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
+import { useGenerateService } from '@/services/generateService';
 import { VoiceModal } from './VoiceModal';
 
 const scenes = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', 'Disgusted', 'Surprised'] as const;
@@ -14,10 +16,30 @@ export const AudioModal = (props: {
   onSave: (values: { script: string; sceneEmotion: Scene; voiceType: string }) => void;
   onClose: () => void;
 }) => {
+  const { enrichPrompt } = useGenerateService();
   const [script, setScript] = useState(props.script);
   const [sceneEmotion, setSceneEmotion] = useState<Scene>(props.sceneEmotion);
   const [voiceType, setVoiceType] = useState(props.voiceType);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [isEnriching, setIsEnriching] = useState(false);
+
+  const handleEnrich = async () => {
+    const prompt = script.trim();
+    if (!prompt || isEnriching) {
+      return;
+    }
+    setIsEnriching(true);
+    try {
+      const res = await enrichPrompt({ prompt });
+      if (res.content?.enriched_prompt) {
+        setScript(res.content.enriched_prompt);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not enrich script.');
+    } finally {
+      setIsEnriching(false);
+    }
+  };
 
   return (
     <>
@@ -31,13 +53,24 @@ export const AudioModal = (props: {
           </div>
 
           <div className="flex flex-col gap-5">
-            <textarea
-              value={script}
-              onChange={e => setScript(e.target.value)}
-              placeholder="Type what you want them to say..."
-              rows={5}
-              className="w-full resize-none rounded-xl border border-black-40 bg-black-100 px-4 py-3 text-sm text-white placeholder:text-white-50 focus:border-primary-100 focus:outline-none"
-            />
+            <div className="flex flex-col gap-2">
+              <textarea
+                value={script}
+                onChange={e => setScript(e.target.value)}
+                disabled={isEnriching}
+                placeholder="Type what you want them to say..."
+                rows={5}
+                className="w-full resize-none rounded-xl border border-black-40 bg-black-100 px-4 py-3 text-sm text-white placeholder:text-white-50 focus:border-primary-100 focus:outline-none disabled:opacity-60"
+              />
+              <button
+                onClick={() => void handleEnrich()}
+                disabled={!script.trim() || isEnriching}
+                className="flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-black-40 bg-black-100 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:size-4"
+              >
+                {isEnriching ? <SpinnerIcon /> : <AiIcon />}
+                Enrich with AI
+              </button>
+            </div>
 
             <div className="flex flex-col gap-2">
               <span className="text-sm font-semibold text-white">Scene</span>

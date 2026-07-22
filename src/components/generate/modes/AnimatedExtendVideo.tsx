@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { CreativeInputModal } from '@/components/generate/CreativeInputModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
@@ -27,6 +28,8 @@ export const AnimatedExtendVideo = (props: {
   const [motion, setMotion] = useState<string | null>(null);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [motionModalOpen, setMotionModalOpen] = useState(false);
+  const [creativeOpen, setCreativeOpen] = useState(false);
+  const [creativePrompt, setCreativePrompt] = useState('');
 
   const handleGenerate = () => {
     if (!sourceVideo || !motion) {
@@ -40,6 +43,7 @@ export const AnimatedExtendVideo = (props: {
       orientation,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       duration: Number(duration.replace('s', '')),
+      ...(creativePrompt && { advanced_prompt: creativePrompt }),
     }), {
       successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
@@ -74,6 +78,9 @@ export const AnimatedExtendVideo = (props: {
         label={t('creative_input_advanced')}
         sublabel={t('creator_tier_exclusive')}
         icon={<CaptureIcon />}
+        isSelected={!!creativePrompt}
+        selectedName={creativePrompt || undefined}
+        onClick={() => setCreativeOpen(true)}
       />
       <GenerateVideoControls
         quality={quality}
@@ -110,6 +117,13 @@ export const AnimatedExtendVideo = (props: {
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}
+        />
+      )}
+      {creativeOpen && (
+        <CreativeInputModal
+          value={creativePrompt}
+          onSave={value => setCreativePrompt(value.trim())}
+          onClose={() => setCreativeOpen(false)}
         />
       )}
     </div>

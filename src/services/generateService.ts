@@ -222,6 +222,7 @@ export const useGenerateService = () => {
     quality?: string;
     orientation?: string;
     duration?: number;
+    advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
@@ -243,6 +244,7 @@ export const useGenerateService = () => {
     quality?: string;
     orientation?: string;
     duration?: number;
+    advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));

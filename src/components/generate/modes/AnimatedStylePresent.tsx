@@ -51,6 +51,7 @@ export const AnimatedStylePresent = (props: {
     setting: null,
     mood: null,
   });
+  const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
 
   const handleToggle = (key: keyof SelectedOptions) => {
     if (key === 'star' && selected.star) {
@@ -77,6 +78,7 @@ export const AnimatedStylePresent = (props: {
       ...(optionValues.action ? { action: optionValues.action } : {}),
       ...(optionValues.setting ? { setting: optionValues.setting } : {}),
       ...(optionValues.mood ? { mood: optionValues.mood } : {}),
+      ...(advancedPrompt ? { advanced_prompt: advancedPrompt } : {}),
       ...(audio.script && {
         script: audio.script,
         scene_emotion: audio.sceneEmotion.toLowerCase(),
@@ -99,6 +101,7 @@ export const AnimatedStylePresent = (props: {
         onStarsChange={handleStarsChange}
         multipleStars
         onOptionSelect={(key, value) => setOptionValues(prev => ({ ...prev, [key]: value }))}
+        onCreativeChange={setAdvancedPrompt}
       />
       <GenerateVideoControls
         quality={quality}

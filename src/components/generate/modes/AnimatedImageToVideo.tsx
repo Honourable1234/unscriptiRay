@@ -4,6 +4,7 @@ import type { Scene } from '@/components/generate/AudioModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AudioModal } from '@/components/generate/AudioModal';
+import { CreativeInputModal } from '@/components/generate/CreativeInputModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
@@ -43,6 +44,8 @@ export const AnimatedImageToVideo = (props: {
   const [stars, setStars] = useState<StarCharacter[]>([]);
   const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
   const [motion, setMotion] = useState<{ name: string; value: string } | null>(null);
+  const [creativeOpen, setCreativeOpen] = useState(false);
+  const [creativePrompt, setCreativePrompt] = useState('');
 
   const isIncomplete = stars.length === 0 || !sourceImage || !motion;
 
@@ -58,6 +61,7 @@ export const AnimatedImageToVideo = (props: {
       orientation,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       duration: Number(duration.replace('s', '')),
+      ...(creativePrompt && { advanced_prompt: creativePrompt }),
       ...(audio.script && {
         script: audio.script,
         scene_emotion: audio.sceneEmotion.toLowerCase(),
@@ -109,6 +113,9 @@ export const AnimatedImageToVideo = (props: {
         label={t('creative_input_advanced')}
         sublabel={t('creator_tier_exclusive')}
         icon={<CaptureIcon />}
+        isSelected={!!creativePrompt}
+        selectedName={creativePrompt || undefined}
+        onClick={() => setCreativeOpen(true)}
       />
       <GenerateVideoControls
         quality={quality}
@@ -154,6 +161,14 @@ export const AnimatedImageToVideo = (props: {
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}
+        />
+      )}
+      {creativeOpen && (
+        <CreativeInputModal
+          value={creativePrompt}
+          characterId={stars[0]?.id}
+          onSave={value => setCreativePrompt(value.trim())}
+          onClose={() => setCreativeOpen(false)}
         />
       )}
       {audioOpen && (

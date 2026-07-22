@@ -322,6 +322,8 @@
   "AnimatedTalking": {
     "image_video": "Image / Video",
     "required": "(Required)",
+    "select_star": "Select Star",
+    "stars_count": "{count} stars",
     "voice": "Voice",
     "audio_script": "Audio Script",
     "generating": "Generating...",
