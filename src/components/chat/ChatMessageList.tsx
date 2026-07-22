@@ -80,6 +80,7 @@ export const ChatMessageList = (props: {
               const ts = m.timestamp ? new Date(m.timestamp as number) : null;
               return {
                 id: i,
+                messageId: (m.id ?? m.message_id ?? m._id) as string | undefined,
                 text: (m.text ?? m.content ?? m.message) as string | undefined,
                 sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
                 time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',

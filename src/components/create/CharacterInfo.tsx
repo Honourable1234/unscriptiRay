@@ -30,16 +30,16 @@ export const CharacterInfo = () => {
           <CharacterInfoCard title={t('voice')} value={data.voice} onClick={() => setVoiceOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('personality')} value={data.personality} iconColor="#4e9f3d" onClick={() => setPersonalityOpen(true)} />
+          <CharacterInfoCard title={t('personality')} value={data.personality} iconColor="#4e9f3d" hideIcon onClick={() => setPersonalityOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('relationship')} value={data.relationship} iconColor="#4e9f3d" onClick={() => setRelationshipOpen(true)} />
+          <CharacterInfoCard title={t('relationship')} value={data.relationship} iconColor="#4e9f3d" hideIcon onClick={() => setRelationshipOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('kinks')} value={data.kinks.join(', ')} iconColor="#4e9f3d" onClick={() => setKinksOpen(true)} />
+          <CharacterInfoCard title={t('kinks')} value={data.kinks.join(', ')} iconColor="#4e9f3d" hideIcon onClick={() => setKinksOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('hobby')} value={data.socialRole} iconColor="#4e9f3d" onClick={() => setHobbyOpen(true)} />
+          <CharacterInfoCard title={t('hobby')} value={data.socialRole} iconColor="#4e9f3d" hideIcon onClick={() => setHobbyOpen(true)} />
         </div>
       </div>
 
@@ -59,6 +59,7 @@ export const CharacterInfo = () => {
           endpoint="/characters/creation-options"
           responseKey="personality_archetypes"
           topItem={{ label: t('custom'), locked: true }}
+          cardStyle
           selected={data.personality}
           onSelect={setPersonality}
           onClose={() => setPersonalityOpen(false)}
@@ -70,6 +71,7 @@ export const CharacterInfo = () => {
           endpoint="/characters/creation-options"
           responseKey="relationship_dynamics"
           topItem={{ label: t('custom'), locked: true }}
+          cardStyle
           selected={data.relationship}
           onSelect={setRelationship}
           onClose={() => setRelationshipOpen(false)}
@@ -81,6 +83,7 @@ export const CharacterInfo = () => {
           endpoint="/characters/creation-options"
           responseKey="kinks"
           topItem={{ label: t('custom'), locked: true }}
+          cardStyle
           selected=""
           multiSelect
           selectedValues={data.kinks}
@@ -93,6 +96,7 @@ export const CharacterInfo = () => {
           title={t('select_hobby')}
           endpoint="/characters/creation-options"
           responseKey="hobbies"
+          cardStyle
           selected={data.socialRole}
           onSelect={setSocialRole}
           onClose={() => setHobbyOpen(false)}

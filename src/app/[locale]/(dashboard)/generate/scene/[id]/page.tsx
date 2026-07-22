@@ -1,6 +1,7 @@
 'use client';
 
 import type { SceneActionKey, SceneMoreActionKey } from '@/components/generate/GenerateSceneActions';
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
@@ -8,11 +9,10 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
-import { CloseIcon, SpinnerIcon, VideoIcon } from '@/components/icons';
+import { CloseIcon, VideoIcon } from '@/components/icons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
-
-type Asset = { id: string; url: string; type: string; width: number; height: number; created_at: string };
 
 type ThumbnailItem = { id: string; url: string; type: string };
 
@@ -96,11 +96,7 @@ export default function GenerateScenePage() {
       {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-2">
         {isLoading
-          ? (
-              <span className="animate-spin text-white-50">
-                <SpinnerIcon />
-              </span>
-            )
+          ? <Skeleton className="h-full max-h-123 w-full max-w-105 rounded-lg" />
           : !activeAsset
               ? <p className="text-sm text-white-50">{t('scene_not_found')}</p>
               : isVideo

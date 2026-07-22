@@ -16,8 +16,10 @@ type SelectedOptions = {
   creative: boolean;
 };
 
+type StarCharacter = { id: string; name: string; image: string };
+
 export const StillStylePresent = (props: {
-  initialCharacter?: { id: string; name: string; image: string } | null;
+  initialCharacter?: StarCharacter | null;
   onGenerated?: () => void;
   onGenerationStart?: (generationId: string) => void;
   onGenerationEnd?: (generationId: string) => void;
@@ -28,7 +30,7 @@ export const StillStylePresent = (props: {
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
   const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
-  const [starCharacter, setStarCharacter] = useState(props.initialCharacter ?? null);
+  const [stars, setStars] = useState<StarCharacter[]>(props.initialCharacter ? [props.initialCharacter] : []);
   const [selected, setSelected] = useState<SelectedOptions>({
     star: !!props.initialCharacter,
     action: false,
@@ -44,17 +46,22 @@ export const StillStylePresent = (props: {
 
   const handleToggle = (key: keyof SelectedOptions) => {
     if (key === 'star' && selected.star) {
-      setStarCharacter(null);
+      setStars([]);
     }
     setSelected(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handleStarsChange = (characters: StarCharacter[]) => {
+    setStars(characters);
+    setSelected(prev => ({ ...prev, star: characters.length > 0 }));
+  };
+
   const handleGenerate = () => {
-    if (!starCharacter) {
+    if (stars.length === 0) {
       return;
     }
     void start(() => generateImage({
-      character_ids: [starCharacter.id],
+      character_ids: stars.map(s => s.id),
       visual: visual.toLowerCase(),
       orientation,
       quality: 'balance',
@@ -75,11 +82,8 @@ export const StillStylePresent = (props: {
       <GenerateOptionsGrid
         selected={selected}
         onToggle={handleToggle}
-        starCharacter={starCharacter}
-        onStarSelect={(character) => {
-          setStarCharacter(character);
-          setSelected(prev => ({ ...prev, star: true }));
-        }}
+        starCharacters={stars}
+        onStarsChange={handleStarsChange}
         onOptionSelect={(key, value) => setOptionValues(prev => ({ ...prev, [key]: value }))}
         onCreativeChange={setAdvancedPrompt}
       />
@@ -94,7 +98,7 @@ export const StillStylePresent = (props: {
         coins={10}
         onClick={handleGenerate}
         isLoading={isGenerating}
-        disabled={!starCharacter}
+        disabled={stars.length === 0}
       />
     </div>
   );

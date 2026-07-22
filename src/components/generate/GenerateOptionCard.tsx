@@ -13,17 +13,31 @@ export const GenerateOptionCard = (props: {
   onPlay?: () => void;
   selectedImage?: string;
   selectedName?: string;
+  badge?: string;
   width?: string;
   height?: string;
 }) => {
   if (props.isSelected && props.selectedImage) {
     return (
       <div
+        role="button"
+        tabIndex={0}
         style={{ width: props.width, height: props.height }}
-        className="relative m-auto h-56 w-full overflow-hidden rounded-xl border border-primary-100"
+        className="relative m-auto h-56 w-full cursor-pointer overflow-hidden rounded-xl border border-primary-100"
+        onClick={props.onClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            props.onClick?.();
+          }
+        }}
       >
         <Image src={props.selectedImage} alt={props.selectedName ?? ''} fill sizes="(max-width: 640px) 100vw, 300px" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+        {props.badge && (
+          <span className="absolute top-2 left-2 z-10 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-bold text-white">
+            {props.badge}
+          </span>
+        )}
         <button
           onClick={props.onDeselect ?? props.onClick}
           className="absolute top-2 right-2 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"

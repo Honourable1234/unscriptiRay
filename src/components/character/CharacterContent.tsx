@@ -3,10 +3,10 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { BouncingDots } from '@/components/general/BouncingDots';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
 import { useAuth } from '@/context/AuthContext';
 import { useCharacterService } from '@/services/useCharacterService';
+import { CharacterContentSkeleton } from './CharacterContentSkeleton';
 import { CharacterHeader } from './CharacterHeader';
 import { CharacterMediaGrid } from './CharacterMediaGrid';
 import { CharacterUnlockButton } from './CharacterUnlockButton';
@@ -98,11 +98,7 @@ export const CharacterContent = (props: { id: string }) => {
   }, [props.id, reloadKey]);
 
   if (loading) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <BouncingDots />
-      </div>
-    );
+    return <CharacterContentSkeleton />;
   }
 
   if (error || !character) {

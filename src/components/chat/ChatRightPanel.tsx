@@ -24,6 +24,7 @@ import {
 import { useChatNavigation } from '@/context/ChatContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { useChatService } from '@/services/useChatService';
+import { isValidImageSrc } from '@/utils/isValidImageSrc';
 import { ChatInstructionsPanel } from './ChatInstructionsPanel';
 import { ChatMemoryPanel } from './ChatMemoryPanel';
 import { ChatSettingsPanel } from './ChatSettingsPanel';
@@ -94,7 +95,8 @@ export const ChatRightPanel = (props: {
     }).catch(() => {});
   }, [activeChat?.characterId]);
 
-  const displayImages = images.length > 0 ? images : [props.image];
+  const displayImages = (images.length > 0 ? images : [props.image])
+    .map(src => isValidImageSrc(src) ? src : '/General/Profile.png');
   const prev = () => setImgIndex(i => (i - 1 + displayImages.length) % displayImages.length);
   const next = () => setImgIndex(i => (i + 1) % displayImages.length);
 

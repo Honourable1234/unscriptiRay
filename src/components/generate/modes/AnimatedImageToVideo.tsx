@@ -4,19 +4,22 @@ import type { Scene } from '@/components/generate/AudioModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AudioModal } from '@/components/generate/AudioModal';
+import { CreativeInputModal } from '@/components/generate/CreativeInputModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
 import { GenerateVideoControls } from '@/components/generate/GenerateVideoControls';
 import { SelectAssetModal } from '@/components/generate/SelectAssetModal';
 import { SelectMotionModal } from '@/components/generate/SelectMotionModal';
-import { CaptureIcon, MotionIcon } from '@/components/icons';
+import { SelectStarModal } from '@/components/generate/SelectStarModal';
+import { CaptureIcon, MotionIcon, SelectStarIcon } from '@/components/icons';
 import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
-import { PlusIcon } from '@/components/icons/PlusIcon';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';
 
-type SceneData = { id: number; sourceImageId: string | null; sourceImageUrl: string | null; motion: string | null };
+type StarCharacter = { id: string; name: string; image: string };
+
+const MAX_STARS = 4;
 
 export const AnimatedImageToVideo = (props: {
   onGenerated?: () => void;
@@ -37,33 +40,28 @@ export const AnimatedImageToVideo = (props: {
     sceneEmotion: 'Happy',
     voiceType: 'Aurora',
   });
-  const [scenes, setScenes] = useState<SceneData[]>([{ id: 1, sourceImageId: null, sourceImageUrl: null, motion: null }]);
-  const [activeSceneId, setActiveSceneId] = useState(1);
+  const [starModalOpen, setStarModalOpen] = useState(false);
+  const [stars, setStars] = useState<StarCharacter[]>([]);
+  const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
+  const [motion, setMotion] = useState<{ name: string; value: string } | null>(null);
+  const [creativeOpen, setCreativeOpen] = useState(false);
+  const [creativePrompt, setCreativePrompt] = useState('');
 
-  const activeScene = scenes.find(s => s.id === activeSceneId) ?? scenes[0]!;
-
-  const updateActiveScene = (patch: Partial<SceneData>) => {
-    setScenes(prev => prev.map(s => (s.id === activeSceneId ? { ...s, ...patch } : s)));
-  };
-
-  const addScene = () => {
-    const newId = Math.max(...scenes.map(s => s.id)) + 1;
-    setScenes(prev => [...prev, { id: newId, sourceImageId: null, sourceImageUrl: null, motion: null }]);
-    setActiveSceneId(newId);
-  };
+  const isIncomplete = stars.length === 0 || !sourceImage || !motion;
 
   const handleGenerate = () => {
-    if (!activeScene.sourceImageId || !activeScene.motion) {
+    if (isIncomplete) {
       return;
     }
     void start(() => generateVideo({
-      character_ids: [],
+      character_ids: stars.map(s => s.id),
       mode: 'image_to_video',
-      source_image_id: activeScene.sourceImageId!,
-      motion: activeScene.motion!.toLowerCase(),
+      source_image_id: sourceImage.id,
+      motion: motion.value,
       orientation,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       duration: Number(duration.replace('s', '')),
+      ...(creativePrompt && { advanced_prompt: creativePrompt }),
       ...(audio.script && {
         script: audio.script,
         scene_emotion: audio.sceneEmotion.toLowerCase(),
@@ -79,52 +77,45 @@ export const AnimatedImageToVideo = (props: {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-2">
-        {scenes.map(scene => (
-          <button
-            key={scene.id}
-            onClick={() => setActiveSceneId(scene.id)}
-            className={`cursor-pointer rounded-lg p-3 text-xs font-medium transition-colors ${activeScene.id === scene.id ? 'bg-primary-100/10 text-primary-100' : 'text-white hover:bg-black-40'}`}
-          >
-            {t('scene_label', { id: scene.id })}
-          </button>
-        ))}
-        <button
-          onClick={addScene}
-          className="flex cursor-pointer items-center gap-1 rounded-lg p-3 text-xs font-medium text-white transition-all hover:scale-105"
-        >
-          <PlusIcon />
-          {t('add')}
-        </button>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <GenerateOptionCard
+          label={t('select_star')}
+          sublabel={t('required')}
+          icon={<SelectStarIcon />}
+          isSelected={stars.length > 0}
+          selectedImage={stars[0]?.image}
+          selectedName={stars.length > 1 ? t('stars_count', { count: stars.length }) : stars[0]?.name}
+          badge={stars.length > 1 ? `+${stars.length - 1}` : undefined}
+          onClick={() => setStarModalOpen(true)}
+          onDeselect={() => setStars([])}
+        />
         <GenerateOptionCard
           label={t('image')}
           sublabel={t('required')}
-          height="385px"
           icon={<ImageFrameIcon />}
-          isSelected={!!activeScene.sourceImageId}
-          selectedImage={activeScene.sourceImageUrl ?? undefined}
+          isSelected={!!sourceImage}
+          selectedImage={sourceImage?.url}
           selectedName={t('select_image')}
           onClick={() => setImageModalOpen(true)}
-          onDeselect={() => updateActiveScene({ sourceImageId: null, sourceImageUrl: null })}
+          onDeselect={() => setSourceImage(null)}
         />
         <GenerateOptionCard
           label={t('motion')}
           sublabel={t('required')}
-          height="385px"
           icon={<MotionIcon />}
-          isSelected={!!activeScene.motion}
-          selectedName={activeScene.motion ?? undefined}
+          isSelected={!!motion}
+          selectedName={motion?.name}
           onClick={() => setMotionModalOpen(true)}
-          onDeselect={() => updateActiveScene({ motion: null })}
+          onDeselect={() => setMotion(null)}
         />
       </div>
       <GenerateOptionCardWide
         label={t('creative_input_advanced')}
         sublabel={t('creator_tier_exclusive')}
-        height="153px"
         icon={<CaptureIcon />}
+        isSelected={!!creativePrompt}
+        selectedName={creativePrompt || undefined}
+        onClick={() => setCreativeOpen(true)}
       />
       <GenerateVideoControls
         quality={quality}
@@ -141,26 +132,43 @@ export const AnimatedImageToVideo = (props: {
         coins={30}
         onClick={handleGenerate}
         isLoading={isGenerating}
-        disabled={!activeScene.sourceImageId || !activeScene.motion}
+        disabled={isIncomplete}
       />
       {imageModalOpen && (
         <SelectAssetModal
           title={t('select_image')}
           filter="image"
           onSelect={(asset) => {
-            updateActiveScene({ sourceImageId: asset.id, sourceImageUrl: asset.url });
+            setSourceImage({ id: asset.id, url: asset.url });
             setImageModalOpen(false);
           }}
           onClose={() => setImageModalOpen(false)}
         />
       )}
+      {starModalOpen && (
+        <SelectStarModal
+          multiple
+          selected={stars}
+          max={MAX_STARS}
+          onConfirm={setStars}
+          onClose={() => setStarModalOpen(false)}
+        />
+      )}
       {motionModalOpen && (
         <SelectMotionModal
           onSelect={(m) => {
-            updateActiveScene({ motion: m.name });
+            setMotion({ name: m.name, value: m.value });
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}
+        />
+      )}
+      {creativeOpen && (
+        <CreativeInputModal
+          value={creativePrompt}
+          characterId={stars[0]?.id}
+          onSave={value => setCreativePrompt(value.trim())}
+          onClose={() => setCreativeOpen(false)}
         />
       )}
       {audioOpen && (

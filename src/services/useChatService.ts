@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
+import { guestToken } from '@/libs/guestToken';
 
 export type WebSettings = {
   allow_character_messages: boolean;
@@ -13,13 +14,13 @@ export const useChatService = () => {
   const { token } = useAuth();
 
   const startChat = (characterId: string) =>
-    api.post('/chat/start', { character_id: characterId }, token ?? undefined);
+    api.post('/chat/start', { character_id: characterId }, token ?? guestToken.get() ?? undefined);
 
   const getChatList = (page = 1) =>
     api.get(`/chat/list?page=${page}`, token ?? undefined);
 
   const getMessages = (chatroomId: string, cursor?: string) =>
-    api.get(`/chat/${chatroomId}/messages${cursor ? `?cursor=${cursor}` : ''}`, token ?? undefined);
+    api.get(`/chat/${chatroomId}/messages${cursor ? `?cursor=${cursor}` : ''}`, token ?? guestToken.get() ?? undefined);
 
   const sendMessage = (chatroomId: string, body: { content?: string; image?: string }) => {
     if (!token) {
@@ -45,11 +46,11 @@ export const useChatService = () => {
   const getMemory = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/memory`, token ?? undefined);
 
-  const addMemory = (chatroomId: string, message: string) => {
+  const addMemory = (chatroomId: string, content: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post(`/chat/${chatroomId}/memory`, { message }, token);
+    return api.post(`/chat/${chatroomId}/memory`, { content }, token);
   };
 
   const clearMessages = (chatroomId: string) => {
@@ -69,11 +70,11 @@ export const useChatService = () => {
   const getInstructions = (chatroomId: string) =>
     api.get(`/chat/${chatroomId}/instructions`, token ?? undefined);
 
-  const addInstruction = (chatroomId: string, message: string) => {
+  const updateInstructions = (chatroomId: string, customInstructions: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.put(`/chat/${chatroomId}/instructions`, { message }, token);
+    return api.put(`/chat/${chatroomId}/instructions`, { instructions: customInstructions }, token);
   };
 
   const initiateCall = (chatroomId: string) => {
@@ -83,11 +84,14 @@ export const useChatService = () => {
     return api.post('/voice/call', { chatroom_id: chatroomId }, token);
   };
 
-  const textToSpeech = (content: string) => {
+  const getMessageSpeech = (chatroomId: string, messageId: string) => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post('/voice/tts', { content }, token);
+    return api.post(`/chat/${chatroomId}/messages/${encodeURIComponent(messageId)}/speech`, {}, token) as Promise<{
+      success: boolean;
+      content: { audio: string; format: string };
+    }>;
   };
 
   const getSettings = (chatroomId: string) =>
@@ -98,6 +102,13 @@ export const useChatService = () => {
       return Promise.reject(new Error('Not authenticated'));
     }
     return api.patch(`/chat/${chatroomId}/settings`, { web_settings: settings as unknown as Record<string, unknown> }, token);
+  };
+
+  const updateVoice = (chatroomId: string, voiceId: string) => {
+    if (!token) {
+      return Promise.reject(new Error('Not authenticated'));
+    }
+    return api.patch(`/chat/${chatroomId}/settings`, { voice_id: voiceId }, token);
   };
 
   return {
@@ -112,10 +123,11 @@ export const useChatService = () => {
     clearMessages,
     deleteRoom,
     initiateCall,
-    textToSpeech,
+    getMessageSpeech,
     getInstructions,
-    addInstruction,
+    updateInstructions,
     getSettings,
     updateSettings,
+    updateVoice,
   };
 };

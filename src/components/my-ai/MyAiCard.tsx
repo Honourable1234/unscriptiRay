@@ -9,7 +9,7 @@ export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) 
   const total = c.image_count + c.video_count;
 
   return (
-    <Link href="" className="relative block cursor-pointer overflow-hidden rounded-2xl bg-black-80">
+    <Link href={`/chat/${c.id}`} className="relative block cursor-pointer overflow-hidden rounded-2xl bg-black-80">
       {/* Image */}
       <div className="relative h-116 w-full lg:h-136">
         {c.image_url

@@ -8,8 +8,11 @@ import { SearchIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useMyAiService } from '@/services/useMyAiService';
 import { MyAiCard } from './MyAiCard';
+import { MyAiCardSkeleton } from './MyAiCardSkeleton';
 
 type Filter = 'All' | 'Approved' | 'Pending';
+
+const skeletonKeys = ['a', 'b', 'c'];
 
 export const MyAiSection = () => {
   const { token } = useAuth();
@@ -45,15 +48,7 @@ export const MyAiSection = () => {
     });
   }, [characters, search, filter]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-16">
-        <span className="text-sm text-white/50">Loading...</span>
-      </div>
-    );
-  }
-
-  if (characters.length === 0) {
+  if (!isLoading && characters.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-16">
         <p className="text-sm text-white/50">You haven't created any AI characters yet.</p>
@@ -92,19 +87,25 @@ export const MyAiSection = () => {
       </div>
 
       {/* Grid */}
-      {filtered.length === 0
+      {isLoading
         ? (
-            <div className="flex justify-center py-16">
-              <p className="text-sm text-white/50">No characters match your search.</p>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {skeletonKeys.map(key => <MyAiCardSkeleton key={key} />)}
             </div>
           )
-        : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((character, i) => (
-                <MyAiCard key={character.id} character={character} priority={i < 3} />
-              ))}
-            </div>
-          )}
+        : filtered.length === 0
+          ? (
+              <div className="flex justify-center py-16">
+                <p className="text-sm text-white/50">No characters match your search.</p>
+              </div>
+            )
+          : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((character, i) => (
+                  <MyAiCard key={character.id} character={character} priority={i < 3} />
+                ))}
+              </div>
+            )}
     </div>
   );
 };

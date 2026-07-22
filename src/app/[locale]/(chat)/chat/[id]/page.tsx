@@ -7,6 +7,7 @@ import { ChatRoom } from '@/components/chat/ChatRoom';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { guestToken } from '@/libs/guestToken';
 import { useChatService } from '@/services/useChatService';
 
 const formatTime = (dateStr: string) => {
@@ -25,9 +26,9 @@ const formatDate = (dateStr: string) => {
 
 export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
   const { id } = use(props.params);
-  const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
-  const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping } = useChatMessages();
-  const { authLoading } = useAuth();
+  const { activeChat, setActiveChat, setVoiceId, bumpChatList } = useChatNavigation();
+  const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping, setGuestLimitReached } = useChatMessages();
+  const { authLoading, isAuthenticated } = useAuth();
   const { startChat, getMessages } = useChatService();
   const router = useRouter();
 
@@ -39,12 +40,21 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
     setActiveChat(null);
     setMessages([]);
     setIsTyping(false);
+    setGuestLimitReached(false);
+    setVoiceId(null);
 
     startChat(id).then((res) => {
       const c = res?.content;
       if (!c?.chatroom_id) {
         router.replace('/chat');
         return;
+      }
+
+      if (!isAuthenticated) {
+        const gt = (c.guest_token ?? res?.guest_token) as string | undefined;
+        if (gt) {
+          guestToken.set(gt);
+        }
       }
 
       const greetingMessage = (c.character?.greeting_message as string) ?? '';
@@ -55,6 +65,11 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
         image: (c.character?.image_url as string) ?? '',
         greetingMessage,
       });
+
+      const voiceId = (c.voice_id ?? c.web_settings?.voice_id ?? c.settings?.voice_id) as string | undefined;
+      if (voiceId) {
+        setVoiceId(voiceId);
+      }
 
       if (c.is_new && greetingMessage) {
         setMessages([{ id: 0, text: greetingMessage, sender: 'character', time: '', date: 'Today' }]);
@@ -69,6 +84,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
               const ts = m.timestamp ? new Date(m.timestamp as number) : null;
               return {
                 id: i,
+                messageId: (m.id ?? m.message_id ?? m._id) as string | undefined,
                 text: (m.text ?? m.content ?? m.message) as string | undefined,
                 sender: m.sender_type === 'user' ? 'user' : 'character',
                 time: ts ? formatTime(ts.toISOString()) : '',

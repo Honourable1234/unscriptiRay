@@ -3,9 +3,12 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { CardSkeleton } from '@/components/general/CardSkeleton';
 import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { CharacterGrid } from './CharacterGrid';
+
+const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
 type ActiveFilters = {
   q: string;
@@ -72,22 +75,6 @@ export const ExploreCharacters = (props: { filters?: ActiveFilters }) => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20">
-        <p className="text-sm text-white-50">{t('loading')}</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20">
-        <p className="text-sm text-white-50">{t('error')}</p>
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="mb-4 flex items-center gap-2">
@@ -102,17 +89,34 @@ export const ExploreCharacters = (props: { filters?: ActiveFilters }) => {
           </button>
         ))}
       </div>
-      <CharacterGrid characters={characters} showLike />
-      {page < pageCount && (
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={loadMore}
-            disabled={loadingMore}
-            className="cursor-pointer rounded-xl border border-white-25 px-8 py-3 text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100 disabled:opacity-50"
-          >
-            {loadingMore ? t('loading_more') : t('load_more')}
-          </button>
+
+      {loading && (
+        <div className="flex flex-wrap gap-2">
+          {skeletonKeys.map(key => <CardSkeleton key={key} />)}
         </div>
+      )}
+
+      {!loading && error && (
+        <div className="flex flex-col items-center justify-center gap-3 py-20">
+          <p className="text-sm text-white-50">{t('error')}</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <CharacterGrid characters={characters} showLike />
+          {page < pageCount && (
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="cursor-pointer rounded-xl border border-white-25 px-8 py-3 text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100 disabled:opacity-50"
+              >
+                {loadingMore ? t('loading_more') : t('load_more')}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </>
   );

@@ -1,6 +1,7 @@
 'use client';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, UpgradeIcon } from '@/components/icons';
+import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, SignOutIcon, UpgradeIcon } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +15,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
+import { supabase } from '@/libs/supabase';
 
 type NavItem = {
   label: string;
@@ -43,7 +45,7 @@ const SideBarTrigger = (props: { className?: string }) => {
 };
 
 const SideBarContent = () => {
-  const { isAuthenticated, isPremium } = useAuth();
+  const { isAuthenticated, isPremium, user } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -75,11 +77,11 @@ const SideBarContent = () => {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="pb-5">
+      <SidebarFooter className="gap-3 pb-5">
         {!isPremium && (
           isAuthenticated
             ? (
-                <button className="mt-15 flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
+                <button className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
                   <UpgradeIcon />
                   <span className="group-data-[collapsible=icon]:hidden">Upgrade</span>
                 </button>
@@ -89,6 +91,35 @@ const SideBarContent = () => {
                   Sign In
                 </Link>
               )
+        )}
+
+        {isAuthenticated && (
+          <>
+            <Link
+              href="/profile"
+              className="flex w-full cursor-pointer items-center gap-3 rounded-xl p-2 text-left group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1 hover:bg-black-40"
+            >
+              <span className="relative h-8 w-8 flex-shrink-0">
+                <Image src={user?.image_url ?? '/General/Profile.png'} alt="User Avatar" fill sizes="32px" className="rounded-full object-cover" />
+              </span>
+              <span className="min-w-0 group-data-[collapsible=icon]:hidden">
+                <span className="block truncate text-sm font-semibold text-white">{user?.display_name ?? user?.username ?? 'Account'}</span>
+                {user?.email && <span className="block truncate text-xs text-white-50">{user.email}</span>}
+              </span>
+            </Link>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => supabase.auth.signOut()}
+                  tooltip="Sign Out"
+                  className="h-auto rounded-xl p-3 text-sm font-medium text-white hover:bg-black-40 hover:text-white/75 [&>svg]:size-5"
+                >
+                  <SignOutIcon />
+                  <span>Sign Out</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </>
         )}
       </SidebarFooter>
     </Sidebar>

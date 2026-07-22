@@ -11,6 +11,8 @@ import { GenerateOptionsGrid } from './GenerateOptionsGrid';
 
 type Selected = Record<'star' | 'action' | 'setting' | 'mood' | 'creative', boolean>;
 
+type StarCharacter = { id: string; name: string; image: string };
+
 export const RemixContent = (props: { onSuccess?: () => void }) => {
   const t = useTranslations('RemixContent');
   const { generateImage } = useGenerateService();
@@ -18,15 +20,15 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
   const [selected, setSelected] = useState<Selected>({ star: false, action: false, setting: false, mood: false, creative: false });
-  const [starCharacter, setStarCharacter] = useState<{ id: string; name: string; image: string } | null>(null);
+  const [stars, setStars] = useState<StarCharacter[]>([]);
   const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
   const [optionValues, setOptionValues] = useState<{ action: string | null; setting: string | null; mood: string | null }>({ action: null, setting: null, mood: null });
 
   const toggle = (key: keyof Selected) => setSelected(prev => ({ ...prev, [key]: !prev[key] }));
 
-  const handleStarSelect = (character: { id: string; name: string; image: string }) => {
-    setStarCharacter(character);
-    setSelected(prev => ({ ...prev, star: true }));
+  const handleStarsChange = (characters: StarCharacter[]) => {
+    setStars(characters);
+    setSelected(prev => ({ ...prev, star: characters.length > 0 }));
   };
 
   const handleOptionSelect = (key: 'action' | 'setting' | 'mood', value: string | null) => {
@@ -34,12 +36,12 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
   };
 
   const handleGenerate = () => {
-    if (!starCharacter) {
+    if (stars.length === 0) {
       toast.error(t('select_star_first'));
       return;
     }
     void start(() => generateImage({
-      character_ids: [starCharacter.id],
+      character_ids: stars.map(s => s.id),
       action: optionValues.action ?? undefined,
       setting: optionValues.setting ?? undefined,
       mood: optionValues.mood ?? undefined,
@@ -57,8 +59,8 @@ export const RemixContent = (props: { onSuccess?: () => void }) => {
         onToggle={toggle}
         onOptionSelect={handleOptionSelect}
         onCreativeChange={setAdvancedPrompt}
-        starCharacter={starCharacter}
-        onStarSelect={handleStarSelect}
+        starCharacters={stars}
+        onStarsChange={handleStarsChange}
       />
       <GenerateControls
         visual={visual}

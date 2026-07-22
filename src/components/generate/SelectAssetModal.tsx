@@ -2,10 +2,13 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { CloseIcon, SpinnerIcon } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useGenerateService } from '@/services/generateService';
 
 type SelectedAsset = { id: string; url: string; type: string };
+
+const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
 
 export const SelectAssetModal = (props: {
   title: string;
@@ -60,8 +63,8 @@ export const SelectAssetModal = (props: {
         <div className="max-h-[60vh] overflow-y-auto px-5 py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {isLoading
             ? (
-                <div className="flex items-center justify-center py-16">
-                  <span className="animate-spin text-white-50"><SpinnerIcon /></span>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {skeletonKeys.map(key => <Skeleton key={key} className="h-65 rounded-2xl" />)}
                 </div>
               )
             : assets.length === 0
@@ -71,19 +74,19 @@ export const SelectAssetModal = (props: {
                   </div>
                 )
               : (
-                  <div className="flex flex-wrap gap-2">
-                    {assets.map(asset => (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {assets.map((asset, i) => (
                       <button
                         key={asset.id}
                         onClick={() => props.onSelect(asset)}
-                        className="relative h-52 w-40 min-w-40 flex-1 cursor-pointer overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
+                        className="relative h-65 cursor-pointer overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
                       >
                         {asset.type === 'video'
                           ? (
                               <video src={asset.url} muted playsInline preload="metadata" className="h-full w-full object-cover" />
                             )
                           : (
-                              <Image src={asset.url} alt="Generated asset" fill sizes="200px" className="object-cover" />
+                              <Image src={asset.url} alt="Generated asset" fill sizes="200px" priority={i < 3} className="object-cover" />
                             )}
                       </button>
                     ))}

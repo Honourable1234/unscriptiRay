@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SpinnerIcon, VoiceIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
 import { ChatMessageActions } from './ChatMessageActions';
 
@@ -23,6 +24,12 @@ const renderFormattedText = (text: string) => {
       ))}
     </p>
   ));
+};
+
+const audioMimeTypes: Record<string, string> = {
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  ogg: 'audio/ogg',
 };
 
 // Reads the edited contentEditable DOM back into the *asterisk* markdown the app stores as text.
@@ -53,24 +60,33 @@ export const ChatMessageBubble = (props: {
   const [isPlayingVoice, setIsPlayingVoice] = useState(false);
   const editableRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { textToSpeech } = useChatService();
+  const { activeChat } = useChatNavigation();
+  const { getMessageSpeech } = useChatService();
   const isUser = props.message.sender === 'user';
+  const messageId = props.message.messageId;
 
   const playVoice = async () => {
-    if (!props.message.text || isPlayingVoice) {
+    if (!activeChat || !messageId || isPlayingVoice) {
       return;
     }
+    console.error(activeChat, messageId);
+
     setIsPlayingVoice(true);
     try {
-      const res = await textToSpeech(props.message.text);
-      const audioUrl = res?.content?.audio_url;
-      if (audioUrl) {
-        audioRef.current?.pause();
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-        await audio.play();
-      }
+      const res = await getMessageSpeech(activeChat.chatroomId, messageId);
+      const { audio: base64Audio, format } = res.content;
+      console.error('speech response', { format, audioLength: base64Audio?.length });
+      const mimeType = audioMimeTypes[format.toLowerCase()] ?? `audio/${format}`;
+      audioRef.current?.pause();
+      const audio = new Audio(`data:${mimeType};base64,${base64Audio}`);
+      audio.addEventListener('error', () => {
+        console.error('audio element error', audio.error);
+      });
+      audioRef.current = audio;
+      await audio.play();
+      console.error('audio.play() resolved', { paused: audio.paused, duration: audio.duration });
     } catch (error) {
+      console.error('playVoice failed', error);
       toast.error(error instanceof Error ? error.message : 'Failed to play voice.');
     } finally {
       setIsPlayingVoice(false);
@@ -128,7 +144,7 @@ export const ChatMessageBubble = (props: {
           </div>
         )}
 
-        <div className="flex w-full  items-center gap-2 opacity-0 transition-all duration-200 ease-in-out group-hover:opacity-100 group-focus:opacity-100">
+        <div className="opacity- flex  w-full items-center gap-2 transition-all duration-200 ease-in-out group-hover:opacity-100 group-focus:opacity-100">
           {/* <span className="text-[10px] text-white-75">{props.message.time}</span> */}
           {props.message.text && (
             <div className="flex w-full items-center justify-between">
@@ -142,7 +158,7 @@ export const ChatMessageBubble = (props: {
                 <button
                   type="button"
                   aria-label="Play voice"
-                  disabled={isPlayingVoice}
+                  disabled={isPlayingVoice || !messageId}
                   onClick={() => void playVoice()}
                   className="flex size-7 cursor-pointer items-center justify-center rounded-full bg-black-100/70 text-white hover:text-white disabled:cursor-not-allowed disabled:opacity-60 [&>svg]:size-3.5"
                 >

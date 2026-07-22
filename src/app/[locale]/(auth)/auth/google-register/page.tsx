@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
+import { guestToken } from '@/libs/guestToken';
+import { returnUrl } from '@/libs/returnUrl';
 import { supabase } from '@/libs/supabase';
 import { createAuthService } from '@/services/useAuthService';
 
@@ -17,8 +19,12 @@ export default function GoogleRegisterPage() {
         router.push('/sign-up');
         return;
       }
-      await register(session.user.id, session.user.email, session.access_token);
-      router.push('/');
+      const savedGuestToken = guestToken.get();
+      await register({ id: session.user.id, email: session.user.email, token: session.access_token, guestToken: savedGuestToken ?? undefined });
+      if (savedGuestToken) {
+        guestToken.clear();
+      }
+      router.push(returnUrl.consume() ?? '/');
     });
   }, [router]);
 

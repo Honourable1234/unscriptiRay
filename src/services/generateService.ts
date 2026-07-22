@@ -1,16 +1,27 @@
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 
-type Asset = {
+export type Asset = {
   id: string;
   url: string;
   type: string;
-  width: number;
-  height: number;
+  width: number | null;
+  height: number | null;
   created_at: string;
 };
 
-export type Preset = {
+type RawImageAsset = {
+  id: string;
+  character_id: string | null;
+  image_url: string;
+  prompt: string | null;
+  width: number | null;
+  height: number | null;
+  misc: Record<string, unknown> | null;
+  created_at: string;
+};
+
+type Preset = {
   id: string;
   preset_type: string;
   name: string;
@@ -43,6 +54,16 @@ type Pagination = {
   pageCount: number;
 };
 
+type RawGeneratedAssetsResponse = {
+  success: boolean;
+  message: string;
+  content: {
+    images: RawImageAsset[];
+    videos: Asset[];
+    pagination: Pagination;
+  };
+};
+
 export type GeneratedAssetsResponse = {
   success: boolean;
   message: string;
@@ -52,6 +73,20 @@ export type GeneratedAssetsResponse = {
     pagination: Pagination;
   };
 };
+
+/**
+ * Normalizes a raw image asset into the shared asset shape used across the generate UI.
+ * @param image - Image entry as returned by the assets endpoint.
+ * @returns The image as a normalized asset.
+ */
+const toAsset = (image: RawImageAsset): Asset => ({
+  id: image.id,
+  url: image.image_url,
+  type: 'image',
+  width: image.width,
+  height: image.height,
+  created_at: image.created_at,
+});
 
 type GenerationStatus = {
   generation_id: string;
@@ -77,7 +112,8 @@ type GenerateResult = Promise<{
 export const useGenerateService = () => {
   const { token } = useAuth();
 
-  const getPresets = () => api.get('/generate/presets', token ?? undefined) as Promise<PresetsResponse>;
+  const getPresets = (type?: string) =>
+    api.get(`/generate/presets${type ? `?type=${type}` : ''}`, token ?? undefined) as Promise<PresetsResponse>;
 
   const getGeneratedAssets = (params?: GetGeneratedAssetsParams) => {
     const query = new URLSearchParams();
@@ -97,7 +133,11 @@ export const useGenerateService = () => {
       query.set('limit', String(params.limit));
     }
     const qs = query.toString();
-    return api.get(`/generate/assets${qs ? `?${qs}` : ''}`, token ?? undefined) as Promise<GeneratedAssetsResponse>;
+    return (api.get(`/generate/assets${qs ? `?${qs}` : ''}`, token ?? undefined) as Promise<RawGeneratedAssetsResponse>)
+      .then(res => ({
+        ...res,
+        content: { ...res.content, images: res.content.images.map(toAsset) },
+      }));
   };
 
   const getGeneratedAsset = (assetId: string) => api.get(`/generate/assets/${assetId}`, token ?? undefined);
@@ -182,6 +222,7 @@ export const useGenerateService = () => {
     quality?: string;
     orientation?: string;
     duration?: number;
+    advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
@@ -203,6 +244,7 @@ export const useGenerateService = () => {
     quality?: string;
     orientation?: string;
     duration?: number;
+    advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
@@ -257,30 +299,63 @@ export const useGenerateService = () => {
     intervalMs = 3000,
     timeoutMs = 300000,
   ): (() => void) => {
+    // The model is serverless and can cold-start (~1-3min) on the first request
+    // after idle, which can surface as a spurious `failed` status. Auto-retry
+    // once within that window before treating it as a real failure.
+    const coldStartRetryWindowMs = 180000;
     const start = Date.now();
+    let currentId = generationId;
+    let retriedForColdStart = false;
+    let stopped = false;
     let timerId: ReturnType<typeof setTimeout>;
 
     const tick = () => {
+      if (stopped) {
+        return;
+      }
       if (Date.now() - start > timeoutMs) {
         onError('Generation timed out');
         return;
       }
-      getGenerationStatus(generationId).then((res) => {
+      getGenerationStatus(currentId).then((res) => {
+        if (stopped) {
+          return;
+        }
         const { status } = res.content;
         if (status === 'complete' || status === 'completed') {
           onComplete(res.content);
         } else if (status === 'failed' || status === 'error') {
-          onError('Generation failed');
+          if (!retriedForColdStart && Date.now() - start < coldStartRetryWindowMs) {
+            retriedForColdStart = true;
+            retryGeneration(currentId).then((retryRes) => {
+              if (stopped) {
+                return;
+              }
+              currentId = retryRes.content.generation_id;
+              timerId = setTimeout(tick, intervalMs);
+            }).catch(() => {
+              if (!stopped) {
+                onError('Generation failed');
+              }
+            });
+          } else {
+            onError('Generation failed');
+          }
         } else {
           timerId = setTimeout(tick, intervalMs);
         }
       }).catch(() => {
-        timerId = setTimeout(tick, intervalMs);
+        if (!stopped) {
+          timerId = setTimeout(tick, intervalMs);
+        }
       });
     };
 
     timerId = setTimeout(tick, intervalMs);
-    return () => clearTimeout(timerId);
+    return () => {
+      stopped = true;
+      clearTimeout(timerId);
+    };
   };
   return {
     getPresets,

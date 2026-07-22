@@ -16,7 +16,7 @@ import { SelectMotionModal } from './SelectMotionModal';
 import { SelectStarModal } from './SelectStarModal';
 
 type StarCharacter = { id: string; name: string; image: string };
-type MotionItem = { id: string; name: string };
+type MotionItem = { id: string; name: string; value: string };
 type AudioData = { script: string; sceneEmotion: Scene; voiceType: string };
 
 export const VideoContent = (props: { assetId: string; onSuccess?: () => void }) => {
@@ -42,7 +42,7 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
       source_image_id: props.assetId,
       character_ids: [starCharacter.id],
       mode: 'image_to_video',
-      motion: motion?.name.toLowerCase(),
+      motion: motion?.value,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       orientation,
       duration: Number.parseInt(duration, 10),

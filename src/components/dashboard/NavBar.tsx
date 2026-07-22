@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
-import { supabase } from '@/libs/supabase';
 import { useNotificationService } from '@/services/useNotificationService';
 import { BellIcon, CoinIcon, UpgradeIcon } from '../icons';
 
@@ -122,20 +121,6 @@ export const NavBar = (props: { className?: string }) => {
                   </div>
                 </>
               )}
-            </div>
-            <div className="group relative h-6 w-6 md:h-10 md:w-10">
-              <Image src={user?.image_url ?? '/General/Profile.png'} alt="User Avatar" fill sizes="40px" className="cursor-pointer rounded-full" />
-              <div className="absolute top-full right-0 mt-0 hidden w-32 rounded-xl border border-black-40 bg-black-100 py-1 shadow-lg group-hover:block">
-                <Link href="/profile" className="block w-full px-4 py-2.5 text-left text-sm text-white hover:bg-black-40">
-                  Profile
-                </Link>
-                <button
-                  onClick={() => supabase.auth.signOut()}
-                  className="w-full cursor-pointer px-4 py-2.5 text-left text-sm text-white hover:bg-black-40"
-                >
-                  Sign Out
-                </button>
-              </div>
             </div>
           </div>
         )}

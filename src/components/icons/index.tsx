@@ -62,6 +62,7 @@ export { SendIcon } from './SendIcon';
 export { SettingIcon } from './SettingIcon';
 export { SettingsIcon } from './SettingsIcon';
 export { ShareIcon } from './ShareIcon';
+export { SignOutIcon } from './SignOutIcon';
 export { SparkleIcon } from './SparkleIcon';
 export { SpeechIcon } from './SpeechIcon';
 export { SpinnerIcon } from './SpinnerIcon';

@@ -9,6 +9,12 @@ import { eyeColorMap, hairColorMap, skinToneMap } from './colorMaps';
 import { CreateStyleCard } from './CreateStyleCard';
 import { EthnicCard } from './EthnicCard';
 
+type Style = {
+  value: string;
+  display_name: string;
+  image_url: string | null;
+};
+
 type AppearanceOptions = {
   ethnic_influence: string[];
   eye_color: string[];
@@ -40,7 +46,7 @@ export const CreateStep1 = (props: { onValidChange?: (valid: boolean) => void })
   ];
   const { getCreationOptions } = useCharacterService();
   const { data, setStyle, setAppearance: setAppearanceCtx } = useCreate();
-  const [styles, setStyles] = useState<string[]>([]);
+  const [styles, setStyles] = useState<Style[]>([]);
   const [appearance, setAppearance] = useState<AppearanceOptions>({
     ethnic_influence: [],
     eye_color: [],
@@ -88,10 +94,11 @@ export const CreateStep1 = (props: { onValidChange?: (valid: boolean) => void })
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {styles.map(style => (
           <CreateStyleCard
-            key={style}
-            style={style}
-            selected={data.style === style}
-            onClick={() => setStyle(style)}
+            key={style.value}
+            label={style.display_name}
+            imageUrl={style.image_url}
+            selected={data.style === style.value}
+            onClick={() => setStyle(style.value)}
           />
         ))}
       </div>
