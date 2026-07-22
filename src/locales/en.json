@@ -116,7 +116,6 @@
     "new_scenario": "New scenario",
     "your_chats": "Your chats ({count})",
     "loading_more": "Loading...",
-    "load_more": "Load more",
     "close_sidebar": "Close sidebar"
   },
   "ChatRightPanel": {
@@ -461,7 +460,8 @@
     "save": "Save"
   },
   "OptionModal": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "search_placeholder": "Search..."
   },
   "CreateTagsField": {
     "tags": "Tags ({count}/{max})",

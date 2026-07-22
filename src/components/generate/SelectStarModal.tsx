@@ -3,10 +3,13 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { CardSkeleton } from '@/components/general/CardSkeleton';
 import { CloseIcon, SearchIcon } from '@/components/icons';
 import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
 import { SelectCard } from './SelectCard';
+
+const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
 
 type StarCharacter = { id: string; name: string; image: string };
 
@@ -104,8 +107,8 @@ export const SelectStarModal = (props: SelectStarModalProps) => {
         <div className="max-h-[60vh] overflow-y-auto px-5 pt-1 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {loading
             ? (
-                <div className="flex items-center justify-center py-16">
-                  <p className="text-sm text-white-50">{t('loading')}</p>
+                <div className="flex flex-wrap gap-2">
+                  {skeletonKeys.map(key => <CardSkeleton key={key} size="sm" />)}
                 </div>
               )
             : characters.length === 0

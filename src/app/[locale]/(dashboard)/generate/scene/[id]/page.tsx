@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
-import { CloseIcon, SpinnerIcon, VideoIcon } from '@/components/icons';
+import { CloseIcon, VideoIcon } from '@/components/icons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
 
@@ -95,11 +96,7 @@ export default function GenerateScenePage() {
       {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-2">
         {isLoading
-          ? (
-              <span className="animate-spin text-white-50">
-                <SpinnerIcon />
-              </span>
-            )
+          ? <Skeleton className="h-full max-h-123 w-full max-w-105 rounded-lg" />
           : !activeAsset
               ? <p className="text-sm text-white-50">{t('scene_not_found')}</p>
               : isVideo

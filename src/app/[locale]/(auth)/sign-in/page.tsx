@@ -10,12 +10,16 @@ import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
 import { BouncingDots } from '@/components/general/BouncingDots';
+import { guestToken } from '@/libs/guestToken';
 import { Link } from '@/libs/I18nNavigation';
+import { returnUrl } from '@/libs/returnUrl';
 import { supabase } from '@/libs/supabase';
+import { createAuthService } from '@/services/useAuthService';
 
 export default function SignInPage() {
   const t = useTranslations('SignInPage');
   const router = useRouter();
+  const { claimGuest } = createAuthService();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,8 +39,14 @@ export default function SignInPage() {
       return;
     }
 
+    const savedGuestToken = guestToken.get();
+    if (savedGuestToken) {
+      await claimGuest(savedGuestToken, data.session.access_token).catch(() => {});
+      guestToken.clear();
+    }
+
     setIsLoading(false);
-    router.push('/');
+    router.push(returnUrl.consume() ?? '/');
   };
 
   return (

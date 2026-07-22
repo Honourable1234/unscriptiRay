@@ -3,10 +3,26 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { createExploreService } from '@/services/useExploreService';
 import { ExploreCharacters } from './ExploreCharacters';
 import { FilterDropdown } from './FilterDropdown';
 import { TagFilter } from './TagFilter';
+
+const filterSkeletons = [
+  { key: 'identity', width: 'w-28' },
+  { key: 'style', width: 'w-24' },
+  { key: 'age', width: 'w-20' },
+  { key: 'vibe', width: 'w-24' },
+  { key: 'sort', width: 'w-28' },
+];
+const tagSkeletons = [
+  { key: 'tag-1', width: 'w-14' },
+  { key: 'tag-2', width: 'w-20' },
+  { key: 'tag-3', width: 'w-16' },
+  { key: 'tag-4', width: 'w-24' },
+  { key: 'tag-5', width: 'w-16' },
+];
 
 type AgeRange = { label?: string; name?: string; value?: string; min?: number; max?: number };
 
@@ -87,49 +103,60 @@ export const ExploreSection = () => {
         onChange={setRawQuery}
         onSearch={setRawQuery}
       />
-      {filters && (
-        <>
-          <div className="mt-3 hidden flex-wrap items-start gap-2 md:flex">
-            <FilterDropdown
-              label={t('filter_identity')}
-              value={active.identity}
-              options={['All', ...filters.identities]}
-              onChange={v => setActive(prev => ({ ...prev, identity: v }))}
-            />
-            <FilterDropdown
-              label={t('filter_style')}
-              value={active.style}
-              options={['All', ...filters.styles]}
-              onChange={v => setActive(prev => ({ ...prev, style: v }))}
-            />
-            <FilterDropdown
-              label={t('filter_age')}
-              value={selectedAgeLabel}
-              options={ageRangeOptions}
-              onChange={handleAgeChange}
-            />
-            <FilterDropdown
-              label={t('filter_vibe')}
-              value={active.vibe}
-              options={['All', ...filters.vibes]}
-              onChange={v => setActive(prev => ({ ...prev, vibe: v }))}
-            />
-            <FilterDropdown
-              label={t('filter_sort')}
-              value={active.sort}
-              options={['All', ...filters.sort_options]}
-              onChange={v => setActive(prev => ({ ...prev, sort: v }))}
-            />
-          </div>
-          <div className="mt-3 mb-4">
-            <TagFilter
-              tags={tagOptions}
-              selected={active.tags}
-              onChange={v => setActive(prev => ({ ...prev, tags: v }))}
-            />
-          </div>
-        </>
-      )}
+      {filters
+        ? (
+            <>
+              <div className="mt-3 hidden flex-wrap items-start gap-2 md:flex">
+                <FilterDropdown
+                  label={t('filter_identity')}
+                  value={active.identity}
+                  options={['All', ...filters.identities]}
+                  onChange={v => setActive(prev => ({ ...prev, identity: v }))}
+                />
+                <FilterDropdown
+                  label={t('filter_style')}
+                  value={active.style}
+                  options={['All', ...filters.styles]}
+                  onChange={v => setActive(prev => ({ ...prev, style: v }))}
+                />
+                <FilterDropdown
+                  label={t('filter_age')}
+                  value={selectedAgeLabel}
+                  options={ageRangeOptions}
+                  onChange={handleAgeChange}
+                />
+                <FilterDropdown
+                  label={t('filter_vibe')}
+                  value={active.vibe}
+                  options={['All', ...filters.vibes]}
+                  onChange={v => setActive(prev => ({ ...prev, vibe: v }))}
+                />
+                <FilterDropdown
+                  label={t('filter_sort')}
+                  value={active.sort}
+                  options={['All', ...filters.sort_options]}
+                  onChange={v => setActive(prev => ({ ...prev, sort: v }))}
+                />
+              </div>
+              <div className="mt-3 mb-4">
+                <TagFilter
+                  tags={tagOptions}
+                  selected={active.tags}
+                  onChange={v => setActive(prev => ({ ...prev, tags: v }))}
+                />
+              </div>
+            </>
+          )
+        : (
+            <>
+              <div className="mt-3 hidden flex-wrap items-start gap-2 md:flex">
+                {filterSkeletons.map(s => <Skeleton key={s.key} className={`h-9.5 ${s.width} rounded-xl`} />)}
+              </div>
+              <div className="mt-3 mb-4 flex items-center gap-2">
+                {tagSkeletons.map(s => <Skeleton key={s.key} className={`h-10.5 ${s.width} rounded-xl`} />)}
+              </div>
+            </>
+          )}
       <ExploreCharacters filters={active} />
     </>
   );

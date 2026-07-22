@@ -299,30 +299,63 @@ export const useGenerateService = () => {
     intervalMs = 3000,
     timeoutMs = 300000,
   ): (() => void) => {
+    // The model is serverless and can cold-start (~1-3min) on the first request
+    // after idle, which can surface as a spurious `failed` status. Auto-retry
+    // once within that window before treating it as a real failure.
+    const coldStartRetryWindowMs = 180000;
     const start = Date.now();
+    let currentId = generationId;
+    let retriedForColdStart = false;
+    let stopped = false;
     let timerId: ReturnType<typeof setTimeout>;
 
     const tick = () => {
+      if (stopped) {
+        return;
+      }
       if (Date.now() - start > timeoutMs) {
         onError('Generation timed out');
         return;
       }
-      getGenerationStatus(generationId).then((res) => {
+      getGenerationStatus(currentId).then((res) => {
+        if (stopped) {
+          return;
+        }
         const { status } = res.content;
         if (status === 'complete' || status === 'completed') {
           onComplete(res.content);
         } else if (status === 'failed' || status === 'error') {
-          onError('Generation failed');
+          if (!retriedForColdStart && Date.now() - start < coldStartRetryWindowMs) {
+            retriedForColdStart = true;
+            retryGeneration(currentId).then((retryRes) => {
+              if (stopped) {
+                return;
+              }
+              currentId = retryRes.content.generation_id;
+              timerId = setTimeout(tick, intervalMs);
+            }).catch(() => {
+              if (!stopped) {
+                onError('Generation failed');
+              }
+            });
+          } else {
+            onError('Generation failed');
+          }
         } else {
           timerId = setTimeout(tick, intervalMs);
         }
       }).catch(() => {
-        timerId = setTimeout(tick, intervalMs);
+        if (!stopped) {
+          timerId = setTimeout(tick, intervalMs);
+        }
       });
     };
 
     timerId = setTimeout(tick, intervalMs);
-    return () => clearTimeout(timerId);
+    return () => {
+      stopped = true;
+      clearTimeout(timerId);
+    };
   };
   return {
     getPresets,

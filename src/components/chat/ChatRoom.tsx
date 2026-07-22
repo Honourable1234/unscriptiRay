@@ -4,8 +4,10 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
+import { ChatGuestLimitPrompt } from './ChatGuestLimitPrompt';
 import { ChatInputBar } from './ChatInputBar';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatRatingPrompt } from './ChatRatingPrompt';
@@ -13,9 +15,10 @@ import { ChatRightPanel, ChatRightPanelToggle } from './ChatRightPanel';
 
 export const ChatRoom = () => {
   const t = useTranslations('ChatRoom');
-  const { activeChat, setActiveChat, bumpChatList } = useChatNavigation();
-  const { messages, setMessages } = useChatMessages();
+  const { activeChat, setActiveChat, setVoiceId, bumpChatList } = useChatNavigation();
+  const { messages, setMessages, guestLimitReached } = useChatMessages();
   const { clearMessages, deleteRoom, getSettings } = useChatService();
+  const { isAuthenticated } = useAuth();
   const [showClearConfirmId, setShowClearConfirmId] = useState<string | null>(null);
   const [lastRatedCycles, setLastRatedCycles] = useState<Record<string, number>>({});
   const [backgroundDisplays, setBackgroundDisplays] = useState<Record<string, boolean>>({});
@@ -30,9 +33,14 @@ export const ChatRoom = () => {
       return;
     }
     getSettings(chatroomId).then((res) => {
-      const ws = res?.content?.web_settings;
+      const content = res?.content;
+      const ws = content?.web_settings;
       if (ws && typeof ws.background_display === 'boolean') {
         setBackgroundDisplays(prev => ({ ...prev, [chatroomId]: ws.background_display as boolean }));
+      }
+      const currentVoiceId = (content?.voice_id ?? ws?.voice_id) as string | undefined;
+      if (currentVoiceId) {
+        setVoiceId(currentVoiceId);
       }
     }).catch(() => {});
   }, [chatroomId]);
@@ -135,7 +143,9 @@ export const ChatRoom = () => {
             <ChatRatingPrompt onDone={() => setLastRatedCycles(prev => ({ ...prev, [chatroomId!]: ratingCycle }))} />
           )}
 
-          <ChatInputBar key={activeChat.chatroomId} />
+          {guestLimitReached && !isAuthenticated
+            ? <ChatGuestLimitPrompt />
+            : <ChatInputBar key={activeChat.chatroomId} />}
         </div>
       </div>
 

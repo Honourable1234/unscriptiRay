@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
+import { guestToken } from '@/libs/guestToken';
+import { returnUrl } from '@/libs/returnUrl';
 import { supabase } from '@/libs/supabase';
 import { createAuthService } from '@/services/useAuthService';
 
@@ -14,9 +16,13 @@ export default function AuthCallbackPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         subscription.unsubscribe();
-        await register(session.user.id, session.user.email, session.access_token);
+        const savedGuestToken = guestToken.get();
+        await register({ id: session.user.id, email: session.user.email, token: session.access_token, guestToken: savedGuestToken ?? undefined });
+        if (savedGuestToken) {
+          guestToken.clear();
+        }
         const provider = session.user.app_metadata.provider;
-        router.push(provider === 'email' ? '/sign-in' : '/');
+        router.push(provider === 'email' ? '/sign-in' : (returnUrl.consume() ?? '/'));
         return;
       }
 

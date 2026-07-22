@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { FeedLimitError, useFeedService } from '@/services/useFeedService';
 import { FeedCard } from './FeedCard';
+import { FeedCardSkeleton } from './FeedCardSkeleton';
 import { FeedPaywall } from './FeedPaywall';
 
 export const FeedSection = () => {
@@ -73,8 +74,8 @@ export const FeedSection = () => {
 
   if (loading && items.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-white/50">Loading feed...</p>
+      <div className="h-full">
+        <FeedCardSkeleton />
       </div>
     );
   }

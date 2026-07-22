@@ -3,12 +3,14 @@ import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { CreateSignUpPrompt } from '@/components/create/CreateSignUpPrompt';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
 import { CreateStep3 } from '@/components/create/CreateStep3';
 import { CreateStep4 } from '@/components/create/CreateStep4';
 import { CreateStepper } from '@/components/create/CreateStepper';
 import { ForwardArrowIcon, SpinnerIcon, StackedCoinIcon } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
 import { CreateProvider, useCreate } from '@/context/CreateContext';
 import { useCharacterService } from '@/services/useCharacterService';
 
@@ -64,10 +66,16 @@ function CreatePageContent() {
   const [generating, setGenerating] = useState(false);
   const [character, setCharacter] = useState<CreatedCharacter | null>(getInitialCharacter);
   const [generationId, setGenerationId] = useState<string | null>(getInitialGenerationId);
+  const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
+  const { isAuthenticated } = useAuth();
   const { data } = useCreate();
   const { createCharacter, generateCharacterImage, updateCharacter } = useCharacterService();
 
   const handleGenerate = () => {
+    if (!isAuthenticated) {
+      setShowSignUpPrompt(true);
+      return;
+    }
     setGenerating(true);
     createCharacter({
       style: data.style ?? '',
@@ -105,7 +113,12 @@ function CreatePageContent() {
       setStepValid(false);
       setStep(4);
     }).catch((error) => {
-      toast.error(error instanceof Error ? error.message : t('create_failed'));
+      const message = error instanceof Error ? error.message : '';
+      if (message.toLowerCase().includes('authoriz') || message.toLowerCase().includes('authent')) {
+        setShowSignUpPrompt(true);
+      } else {
+        toast.error(message || t('create_failed'));
+      }
       setGenerating(false);
     });
   };
@@ -204,6 +217,10 @@ function CreatePageContent() {
                 )}
           </button>
         </div>
+      )}
+
+      {showSignUpPrompt && (
+        <CreateSignUpPrompt onClose={() => setShowSignUpPrompt(false)} />
       )}
     </div>
   );

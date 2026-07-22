@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { ChevronRightIcon, CoinIcon, ShareIcon } from '@/components/icons';
+import { ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
@@ -78,49 +78,6 @@ export const ProfileSection = () => {
           <RightChevron />
         </Link>
         <PlaceholderRow label="Redeem Code" />
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-black-40 bg-black-100">
-        <div className="bg-gradient-to-br from-premium-100/30 via-primary-200/10 to-transparent px-4 py-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold text-premium-100 italic">GIVE 1,000 · GET 1,000</p>
-              <p className="mt-1 text-sm font-semibold text-white">Share the dream, earn coins</p>
-            </div>
-            <button
-              onClick={() => toast.info('Coming soon.')}
-              className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-semibold text-black-100 hover:opacity-90 [&_svg]:size-3.5 [&_svg_path]:fill-black-100"
-            >
-              <ShareIcon />
-              Invite
-            </button>
-          </div>
-          <p className="mt-3 text-xs text-white-75">
-            You both get 1,000 when they subscribe. Hit 10 referrals and unlock a 10,000 bonus.
-          </p>
-          <div className="mt-4 flex gap-1.5">
-            {Array.from({ length: 10 }, (_, i) => `seg-${i}`).map(key => (
-              <div key={key} className="h-1.5 flex-1 rounded-full bg-black-40" />
-            ))}
-          </div>
-          <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-white-75">
-              <span className="font-semibold text-white">0</span>
-              {' '}
-              referred
-            </span>
-            <span className="text-white-50">
-              <span className="font-semibold text-white">10</span>
-              {' '}
-              to go for
-              {' '}
-              <span className="font-semibold text-white">10k</span>
-              {' '}
-              bonus
-            </span>
-          </div>
-        </div>
-        <PlaceholderRow label="Have a referral code?" />
       </div>
 
       <div className="flex flex-col divide-y divide-black-40 rounded-2xl border border-black-40 bg-black-100">

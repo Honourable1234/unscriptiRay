@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
 
-const PUBLIC_PATHS = ['/'];
+const PUBLIC_PATHS = ['/', '/feed', '/create'];
 
 export const AuthGuard = (props: { children: React.ReactNode }) => {
   const { isAuthenticated, authLoading } = useAuth();

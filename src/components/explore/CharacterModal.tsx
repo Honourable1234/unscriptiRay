@@ -21,6 +21,7 @@ import {
   VideoIcon,
 } from '@/components/icons';
 import { useCharacterService } from '@/services/useCharacterService';
+import { CharacterModalSkeleton } from './CharacterModalSkeleton';
 
 const MAX_TAGS_VISIBLE = 3;
 
@@ -118,11 +119,7 @@ export const CharacterModal = (props: {
         </button>
 
         {loading
-          ? (
-              <div className="flex h-80 items-center justify-center text-white-75">
-                <BouncingDots />
-              </div>
-            )
+          ? <CharacterModalSkeleton />
           : (
               <>
                 {/* Header */}

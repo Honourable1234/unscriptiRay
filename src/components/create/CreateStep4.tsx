@@ -159,7 +159,6 @@ export const CreateStep4 = (props: {
   const [imageUrl, setImageUrl] = useState(props.character?.image_url ?? '');
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
-  const startedForRef = useRef<string | null>(null);
   const stopPollingRef = useRef<(() => void) | null>(null);
 
   const onFieldSaved = (apiKey: string, value: string) => {
@@ -197,13 +196,9 @@ export const CreateStep4 = (props: {
 
   useEffect(() => {
     const characterId = props.character?.id;
-    if (imageUrl || !characterId || !token || startedForRef.current === characterId) {
+    if (imageUrl || !characterId || !token || !props.generationId) {
       return;
     }
-    if (!props.generationId) {
-      return;
-    }
-    startedForRef.current = characterId;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void runImageGeneration(characterId, props.generationId);
     return () => stopPollingRef.current?.();

@@ -9,6 +9,7 @@ import { Divider } from '@/components/auth/Divider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
+import { guestToken } from '@/libs/guestToken';
 import { supabase } from '@/libs/supabase';
 import { createAuthService } from '@/services/useAuthService';
 
@@ -55,7 +56,11 @@ export default function SignUpPage() {
       return;
     }
 
-    await register(data.user.id, data.user.email, data.session.access_token);
+    const savedGuestToken = guestToken.get();
+    await register({ id: data.user.id, email: data.user.email, token: data.session.access_token, guestToken: savedGuestToken ?? undefined });
+    if (savedGuestToken) {
+      guestToken.clear();
+    }
     setIsLoading(false);
     router.push('/sign-in');
   };

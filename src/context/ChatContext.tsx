@@ -18,6 +18,8 @@ type ChatNavigationContextValue = {
   setActiveView: (view: ChatView) => void;
   activeChat: ActiveChat;
   setActiveChat: (chat: ActiveChat) => void;
+  voiceId: string | null;
+  setVoiceId: (voiceId: string | null) => void;
   chatListVersion: number;
   bumpChatList: () => void;
 };
@@ -31,6 +33,8 @@ type ChatMessagesContextValue = {
   setNextCursor: (cursor: string | null) => void;
   hasMoreMessages: boolean;
   setHasMoreMessages: (has: boolean) => void;
+  guestLimitReached: boolean;
+  setGuestLimitReached: (reached: boolean) => void;
 };
 
 const ChatNavigationContext = createContext<ChatNavigationContextValue>({
@@ -38,6 +42,8 @@ const ChatNavigationContext = createContext<ChatNavigationContextValue>({
   setActiveView: () => {},
   activeChat: null,
   setActiveChat: () => {},
+  voiceId: null,
+  setVoiceId: () => {},
   chatListVersion: 0,
   bumpChatList: () => {},
 });
@@ -51,21 +57,25 @@ const ChatMessagesContext = createContext<ChatMessagesContextValue>({
   setNextCursor: () => {},
   hasMoreMessages: false,
   setHasMoreMessages: () => {},
+  guestLimitReached: false,
+  setGuestLimitReached: () => {},
 });
 
 export const ChatProvider = (props: { children: React.ReactNode }) => {
   const [activeView, setActiveView] = useState<ChatView>('chat');
   const [activeChat, setActiveChat] = useState<ActiveChat>(null);
+  const [voiceId, setVoiceId] = useState<string | null>(null);
   const [chatListVersion, setChatListVersion] = useState(0);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [guestLimitReached, setGuestLimitReached] = useState(false);
   const bumpChatList = () => setChatListVersion(v => v + 1);
 
   return (
-    <ChatNavigationContext value={{ activeView, setActiveView, activeChat, setActiveChat, chatListVersion, bumpChatList }}>
-      <ChatMessagesContext value={{ messages, setMessages, isTyping, setIsTyping, nextCursor, setNextCursor, hasMoreMessages, setHasMoreMessages }}>
+    <ChatNavigationContext value={{ activeView, setActiveView, activeChat, setActiveChat, voiceId, setVoiceId, chatListVersion, bumpChatList }}>
+      <ChatMessagesContext value={{ messages, setMessages, isTyping, setIsTyping, nextCursor, setNextCursor, hasMoreMessages, setHasMoreMessages, guestLimitReached, setGuestLimitReached }}>
         {props.children}
       </ChatMessagesContext>
     </ChatNavigationContext>

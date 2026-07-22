@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AddIcon, GroupIcon, NewChatIcon, OpenIcon, SearchIcon } from '@/components/icons';
 import {
   Sidebar,
@@ -22,6 +22,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
+import { isValidImageSrc } from '@/utils/isValidImageSrc';
 
 type ChatView = 'chat' | 'group' | 'scenario';
 
@@ -49,7 +50,7 @@ const ChatSideBarTrigger = (props: { className?: string }) => {
   );
 };
 
-const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
+const ChatHistoryList = (props: { search: string; onSelect: () => void; scrollRoot: React.RefObject<HTMLDivElement | null> }) => {
   const t = useTranslations('ChatSideBar');
   const { token } = useAuth();
   const { chatListVersion, setActiveChat } = useChatNavigation();
@@ -60,6 +61,8 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const bottomSentinelRef = useRef<HTMLDivElement>(null);
+  const loadingMoreRef = useRef(false);
 
   useEffect(() => {
     if (!token) {
@@ -71,26 +74,42 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
       if (Array.isArray(items)) {
         setRooms(items as ChatRoom[]);
       }
+      setPage(1);
       if (pagination) {
         setPages((pagination.pages as number) ?? 1);
       }
     }).catch(() => {});
   }, [token, chatListVersion]);
 
-  const loadMore = () => {
-    if (!token) {
+  useEffect(() => {
+    const sentinel = bottomSentinelRef.current;
+    if (!sentinel || !token || page >= pages) {
       return;
     }
-    const nextPage = page + 1;
-    setLoadingMore(true);
-    getChatList(nextPage).then((res) => {
-      const items = res?.content?.items;
-      if (Array.isArray(items)) {
-        setRooms(prev => [...prev, ...(items as ChatRoom[])]);
-        setPage(nextPage);
-      }
-    }).catch(() => {}).finally(() => setLoadingMore(false));
-  };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || loadingMoreRef.current) {
+          return;
+        }
+        const nextPage = page + 1;
+        loadingMoreRef.current = true;
+        setLoadingMore(true);
+        getChatList(nextPage).then((res) => {
+          const items = res?.content?.items;
+          if (Array.isArray(items)) {
+            setRooms(prev => [...prev, ...(items as ChatRoom[])]);
+            setPage(nextPage);
+          }
+        }).catch(() => {}).finally(() => {
+          loadingMoreRef.current = false;
+          setLoadingMore(false);
+        });
+      },
+      { root: props.scrollRoot.current, threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [token, page, pages, props.scrollRoot]);
 
   const visibleRooms = useMemo(() => {
     const query = props.search.trim().toLowerCase();
@@ -133,6 +152,7 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
                         const ts = m.timestamp ? new Date(m.timestamp as number) : null;
                         return {
                           id: i,
+                          messageId: (m.id ?? m.message_id ?? m._id) as string | undefined,
                           text: (m.text ?? m.content ?? m.message) as string | undefined,
                           sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
                           time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
@@ -152,7 +172,7 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
                 className="h-auto py-2 text-white hover:bg-black-40"
               >
                 <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
-                  {room.character.image_url && (
+                  {isValidImageSrc(room.character.image_url) && (
                     <Image src={room.character.image_url} alt={room.character.name} fill sizes="32px" className="object-cover" />
                   )}
                 </div>
@@ -162,13 +182,9 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void }) => {
           ))}
 
           {page < pages && (
-            <button
-              onClick={loadMore}
-              disabled={loadingMore}
-              className="mt-1 cursor-pointer rounded-lg px-2 py-1.5 text-xs text-white-75 hover:text-white disabled:opacity-50"
-            >
-              {loadingMore ? t('loading_more') : t('load_more')}
-            </button>
+            <div ref={bottomSentinelRef} className="flex items-center justify-center py-2">
+              {loadingMore && <span className="text-xs text-white-75">{t('loading_more')}</span>}
+            </div>
           )}
         </SidebarMenu>
       </SidebarGroupContent>
@@ -181,6 +197,7 @@ const ChatSideBarContent = () => {
   const { activeView, setActiveView, activeChat, setActiveChat } = useChatNavigation();
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const navItems: NavItem[] = [
     { label: t('new_chat'), icon: <NewChatIcon />, view: 'chat' },
@@ -211,7 +228,7 @@ const ChatSideBarContent = () => {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent ref={scrollRef}>
         <SidebarGroup>
           <SidebarMenu className="gap-1">
             {navItems.map(item => (
@@ -236,7 +253,7 @@ const ChatSideBarContent = () => {
 
         <SidebarSeparator className="bg-black-40" />
 
-        <ChatHistoryList search={search} onSelect={() => {}} />
+        <ChatHistoryList search={search} onSelect={() => {}} scrollRoot={scrollRef} />
       </SidebarContent>
     </Sidebar>
   );

@@ -8,6 +8,7 @@ export const CharacterInfoCard = (props: {
   value?: string;
   icon?: React.ReactNode;
   iconColor?: string;
+  hideIcon?: boolean;
   onClick?: () => void;
 }) => {
   const t = useTranslations('CharacterInfoCard');
@@ -30,7 +31,7 @@ export const CharacterInfoCard = (props: {
           {props.value || t('select', { title: props.title })}
         </span>
       </div>
-      {props.value && (
+      {props.value && !props.hideIcon && (
         <button type="button">
           {props.icon ?? <PlayIcon color={props.iconColor} />}
         </button>

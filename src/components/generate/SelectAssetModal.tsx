@@ -2,10 +2,13 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { CloseIcon, SpinnerIcon } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useGenerateService } from '@/services/generateService';
 
 type SelectedAsset = { id: string; url: string; type: string };
+
+const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
 
 export const SelectAssetModal = (props: {
   title: string;
@@ -60,8 +63,8 @@ export const SelectAssetModal = (props: {
         <div className="max-h-[60vh] overflow-y-auto px-5 py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {isLoading
             ? (
-                <div className="flex items-center justify-center py-16">
-                  <span className="animate-spin text-white-50"><SpinnerIcon /></span>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {skeletonKeys.map(key => <Skeleton key={key} className="h-65 rounded-2xl" />)}
                 </div>
               )
             : assets.length === 0

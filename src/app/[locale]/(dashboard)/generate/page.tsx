@@ -5,6 +5,7 @@ import type { GeneratedAssetsResponse } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { CardSkeleton } from '@/components/general/CardSkeleton';
 import { GenerateResultGrid } from '@/components/generate/GenerateResultGrid';
 import { GenerateTypeToggle } from '@/components/generate/GenerateTypeToggle';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
@@ -18,6 +19,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
 
 type Tab = 'All' | 'Images' | 'Videos';
+
+const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
 
 export default function GeneratePage() {
   const t = useTranslations('GeneratePage');
@@ -112,7 +115,11 @@ export default function GeneratePage() {
       </div>
       <MediaStyleTab tab={mediaTab} onTabChange={setMediaTab} />
       {isLoading
-        ? <div className="flex justify-center py-12"><span className="text-sm text-white/50">Loading...</span></div>
+        ? (
+            <div className="flex flex-wrap gap-2">
+              {skeletonKeys.map(key => <CardSkeleton key={key} />)}
+            </div>
+          )
         : <GenerateResultGrid assets={filteredAssets} pendingIds={pendingIds} />}
     </div>
   );

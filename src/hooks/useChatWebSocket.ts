@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
 import { Env } from '@/libs/Env';
+import { guestToken } from '@/libs/guestToken';
 import { supabase } from '@/libs/supabase';
 import { useChatService } from '@/services/useChatService';
 
@@ -38,8 +39,8 @@ const waitForOpen = (ws: WebSocket): Promise<void> =>
 /** Manages a persistent WebSocket connection for streaming chat responses. */
 export const useChatWebSocket = () => {
   const { token, user } = useAuth();
-  const { activeChat } = useChatNavigation();
-  const { setMessages, setIsTyping } = useChatMessages();
+  const { activeChat, voiceId } = useChatNavigation();
+  const { setMessages, setIsTyping, setGuestLimitReached } = useChatMessages();
   const { startChat } = useChatService();
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -64,7 +65,7 @@ export const useChatWebSocket = () => {
       return current;
     }
     const { data } = await supabase.auth.getSession();
-    const freshToken = data.session?.access_token;
+    const freshToken = data.session?.access_token ?? guestToken.get();
     if (!freshToken) {
       throw new Error('no_token');
     }
@@ -76,7 +77,7 @@ export const useChatWebSocket = () => {
   };
 
   const send = async (content: string): Promise<void> => {
-    if (!activeChat || !user || !token) {
+    if (!activeChat || (!token && !guestToken.get())) {
       return;
     }
 
@@ -105,8 +106,9 @@ export const useChatWebSocket = () => {
       const payload = {
         action: 'web_chat',
         chatroomId: activeChat.chatroomId,
-        userId: user.id,
+        userId: user?.id,
         content,
+        ...(voiceId ? { voiceId } : {}),
       };
       ws.send(JSON.stringify(payload));
 
@@ -156,6 +158,14 @@ export const useChatWebSocket = () => {
           } else {
             setIsTyping(false);
           }
+        }
+
+        if (msg.type === 'error' && msg.code === 'GUEST_LIMIT_REACHED') {
+          setIsTyping(false);
+          // Roll back the rejected message and surface the sign-up prompt.
+          setMessages((prev: Message[]) => prev.filter((m: Message) => m.id !== userMsg.id));
+          setGuestLimitReached(true);
+          return;
         }
 
         if (msg.type === 'error' && msg.code !== 'CREDITS_NOT_CACHED') {
