@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
+import { guestToken } from '@/libs/guestToken';
 
 export type Asset = {
   id: string;
@@ -7,6 +8,8 @@ export type Asset = {
   type: string;
   width: number | null;
   height: number | null;
+  /** Orientation the asset was generated with, e.g. `4:5`. */
+  orientation: string | null;
   created_at: string;
 };
 
@@ -15,6 +18,16 @@ type RawImageAsset = {
   character_id: string | null;
   image_url: string;
   prompt: string | null;
+  width: number | null;
+  height: number | null;
+  misc: Record<string, unknown> | null;
+  created_at: string;
+};
+
+type RawVideoAsset = {
+  id: string;
+  character_id: string | null;
+  video_url: string;
   width: number | null;
   height: number | null;
   misc: Record<string, unknown> | null;
@@ -35,6 +48,17 @@ type PresetsResponse = {
   message: string;
   content: Preset[];
 };
+
+/** Preset types the presets endpoint accepts as a `type` filter; anything else is rejected. */
+type PresetType
+  = | 'action'
+    | 'setting'
+    | 'mood'
+    | 'voice'
+    | 'style_preset'
+    | 'web-image-gen-location'
+    | 'web-image-gen-outfit'
+    | 'web-image-gen-pose';
 
 /**
  * Filters presets by type (singular or plural) and sorts them by display order.
@@ -59,7 +83,7 @@ type RawGeneratedAssetsResponse = {
   message: string;
   content: {
     images: RawImageAsset[];
-    videos: Asset[];
+    videos: RawVideoAsset[];
     pagination: Pagination;
   };
 };
@@ -75,6 +99,14 @@ export type GeneratedAssetsResponse = {
 };
 
 /**
+ * Reads the orientation an asset was generated with from its misc payload.
+ * @param misc - Generation metadata attached to the asset.
+ * @returns The orientation string, or null when the payload has none.
+ */
+const miscOrientation = (misc: Record<string, unknown> | null | undefined) =>
+  typeof misc?.orientation === 'string' ? misc.orientation : null;
+
+/**
  * Normalizes a raw image asset into the shared asset shape used across the generate UI.
  * @param image - Image entry as returned by the assets endpoint.
  * @returns The image as a normalized asset.
@@ -85,8 +117,38 @@ const toAsset = (image: RawImageAsset): Asset => ({
   type: 'image',
   width: image.width,
   height: image.height,
+  orientation: miscOrientation(image.misc),
   created_at: image.created_at,
 });
+
+/**
+ * Normalizes a raw video asset into the shared asset shape used across the generate UI.
+ * @param video - Video entry as returned by the assets endpoint.
+ * @returns The video as a normalized asset.
+ */
+const toVideoAsset = (video: RawVideoAsset): Asset => ({
+  id: video.id,
+  url: video.video_url,
+  type: 'video',
+  width: video.width,
+  height: video.height,
+  orientation: miscOrientation(video.misc),
+  created_at: video.created_at,
+});
+
+/**
+ * Resolves the CSS aspect ratio of a generated asset, preferring its real pixel
+ * dimensions and falling back to the orientation it was generated with.
+ * @param asset - Asset to size.
+ * @returns An `aspect-ratio` value such as `1568 / 1960`.
+ */
+export const assetAspectRatio = (asset: Pick<Asset, 'width' | 'height' | 'orientation'>) => {
+  if (asset.width && asset.height) {
+    return `${asset.width} / ${asset.height}`;
+  }
+  const [width, height] = asset.orientation?.split(':') ?? [];
+  return width && height ? `${width} / ${height}` : '4 / 5';
+};
 
 type GenerationStatus = {
   generation_id: string;
@@ -111,9 +173,12 @@ type GenerateResult = Promise<{
 
 export const useGenerateService = () => {
   const { token } = useAuth();
+  // Reads fall back to the guest session so signed-out visitors can browse;
+  // writes stay signed-in only and surface the sign-up prompt instead.
+  const readToken = () => token ?? guestToken.get() ?? undefined;
 
-  const getPresets = (type?: string) =>
-    api.get(`/generate/presets${type ? `?type=${type}` : ''}`, token ?? undefined) as Promise<PresetsResponse>;
+  const getPresets = (type?: PresetType) =>
+    api.get(`/generate/presets${type ? `?type=${type}` : ''}`, readToken()) as Promise<PresetsResponse>;
 
   const getGeneratedAssets = (params?: GetGeneratedAssetsParams) => {
     const query = new URLSearchParams();
@@ -133,17 +198,21 @@ export const useGenerateService = () => {
       query.set('limit', String(params.limit));
     }
     const qs = query.toString();
-    return (api.get(`/generate/assets${qs ? `?${qs}` : ''}`, token ?? undefined) as Promise<RawGeneratedAssetsResponse>)
+    return (api.get(`/generate/assets${qs ? `?${qs}` : ''}`, readToken()) as Promise<RawGeneratedAssetsResponse>)
       .then(res => ({
         ...res,
-        content: { ...res.content, images: res.content.images.map(toAsset) },
+        content: {
+          ...res.content,
+          images: res.content.images.map(toAsset),
+          videos: res.content.videos.map(toVideoAsset),
+        },
       }));
   };
 
-  const getGeneratedAsset = (assetId: string) => api.get(`/generate/assets/${assetId}`, token ?? undefined);
+  const getGeneratedAsset = (assetId: string) => api.get(`/generate/assets/${assetId}`, readToken());
 
   const getGenerationStatus = (generationId: string) =>
-    api.get(`/generate/status/${generationId}`, token ?? undefined) as Promise<{
+    api.get(`/generate/status/${generationId}`, readToken()) as Promise<{
       success: boolean;
       content: GenerationStatus;
     }>;

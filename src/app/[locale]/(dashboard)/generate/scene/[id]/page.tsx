@@ -12,7 +12,7 @@ import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
 import { CloseIcon, VideoIcon } from '@/components/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/context/AuthContext';
-import { useGenerateService } from '@/services/generateService';
+import { assetAspectRatio, useGenerateService } from '@/services/generateService';
 
 type ThumbnailItem = { id: string; url: string; type: string };
 
@@ -44,6 +44,7 @@ export default function GenerateScenePage() {
   const activeAsset = assets.find(a => a.id === activeId) ?? null;
   const displaySrc = activeAsset?.url ?? '';
   const isVideo = activeAsset?.type === 'video';
+  const aspectRatio = activeAsset ? assetAspectRatio(activeAsset) : undefined;
 
   const thumbnails: ThumbnailItem[] = assets.map(a => ({ id: a.id, url: a.url, type: a.type }));
 
@@ -105,18 +106,22 @@ export default function GenerateScenePage() {
                       src={displaySrc}
                       controls
                       playsInline
-                      className="h-full max-h-123 w-full max-w-105 rounded-lg object-cover"
+                      style={{ aspectRatio }}
+                      className="max-h-full w-full max-w-105 rounded-lg object-contain"
                     >
                       <track kind="captions" />
                     </video>
                   )
                 : (
-                    <div className="relative h-full max-h-123 w-full max-w-105 overflow-hidden rounded-lg">
+                    <div
+                      style={{ aspectRatio }}
+                      className="relative max-h-full w-full max-w-105 overflow-hidden rounded-lg"
+                    >
                       <Image
                         src={displaySrc}
                         alt={t('scene_alt')}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         sizes="512px"
                       />
                     </div>
@@ -131,7 +136,7 @@ export default function GenerateScenePage() {
       </div>
 
       {/* Thumbnails — scrollable row on mobile, column top-right on sm+ */}
-      <div className="absolute top-4 right-0 left-0 overflow-x-auto [scrollbar-width:none] sm:right-4 sm:left-auto sm:overflow-x-visible [&::-webkit-scrollbar]:hidden">
+      <div className="absolute top-4 right-0 left-0 overflow-x-auto [scrollbar-width:none] sm:right-4 sm:left-auto sm:max-h-[calc(100dvh-2rem)] sm:overflow-x-hidden sm:overflow-y-auto [&::-webkit-scrollbar]:hidden">
         <div className="flex gap-2 px-4 sm:flex-col sm:px-0">
           {thumbnails.map(item => (
             <button
@@ -141,9 +146,21 @@ export default function GenerateScenePage() {
             >
               {item.type === 'video'
                 ? (
-                    <div className="flex h-full w-full items-center justify-center bg-black-60 text-white-50">
-                      <VideoIcon />
-                    </div>
+                    <>
+                      {/* Assets carry no poster, so the first frame stands in as the thumbnail. */}
+                      <video
+                        src={`${item.url}#t=0.1`}
+                        preload="metadata"
+                        muted
+                        playsInline
+                        className="h-full w-full bg-black-60 object-cover"
+                      >
+                        <track kind="captions" />
+                      </video>
+                      <span className="absolute right-1.5 bottom-1.5 rounded-full bg-black-60 p-1 text-white">
+                        <VideoIcon />
+                      </span>
+                    </>
                   )
                 : (
                     <Image src={item.url} alt={t('thumbnail_alt')} fill className="object-cover" sizes="124px" />
