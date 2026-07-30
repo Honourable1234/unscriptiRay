@@ -16,6 +16,7 @@ import { AnimatedTalking } from '@/components/generate/modes/AnimatedTalking';
 import { StillEditStyle } from '@/components/generate/modes/StillEditStyle';
 import { StillStylePresent } from '@/components/generate/modes/StillStylePresent';
 import { useAuth } from '@/context/AuthContext';
+import { guestToken } from '@/libs/guestToken';
 import { useGenerateService } from '@/services/generateService';
 
 type Tab = 'All' | 'Images' | 'Videos';
@@ -60,7 +61,7 @@ export default function GeneratePage() {
   };
 
   useEffect(() => {
-    if (!token) {
+    if (!token && !guestToken.get()) {
       return;
     }
     const fetch = async () => {

@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
+import { guestToken } from '@/libs/guestToken';
 
 export type MyCharacter = {
   id: string;
@@ -46,7 +47,9 @@ export const useMyAiService = () => {
       query.set('limit', String(params.limit));
     }
     const qs = query.toString();
-    return api.get(`/my-ai/characters${qs ? `?${qs}` : ''}`, token ?? undefined) as Promise<MyCharactersResponse>;
+    // Falls back to the guest session so signed-out visitors see whatever the
+    // guest user owns instead of a bare 401.
+    return api.get(`/my-ai/characters${qs ? `?${qs}` : ''}`, token ?? guestToken.get() ?? undefined) as Promise<MyCharactersResponse>;
   };
 
   return { getMyCharacters };

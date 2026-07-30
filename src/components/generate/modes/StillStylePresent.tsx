@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateControls } from '@/components/generate/GenerateControls';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
@@ -26,7 +27,7 @@ export const StillStylePresent = (props: {
 }) => {
   const t = useTranslations('StillStylePresent');
   const { generateImage } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
   const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
@@ -100,6 +101,12 @@ export const StillStylePresent = (props: {
         isLoading={isGenerating}
         disabled={stars.length === 0}
       />
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
+        />
+      )}
     </div>
   );
 };

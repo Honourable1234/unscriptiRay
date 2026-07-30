@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { CreativeInputModal } from '@/components/generate/CreativeInputModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
@@ -20,7 +21,7 @@ export const AnimatedExtendVideo = (props: {
 }) => {
   const t = useTranslations('AnimatedExtendVideo');
   const { generateVideo } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
@@ -124,6 +125,12 @@ export const AnimatedExtendVideo = (props: {
           value={creativePrompt}
           onSave={value => setCreativePrompt(value.trim())}
           onClose={() => setCreativeOpen(false)}
+        />
+      )}
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

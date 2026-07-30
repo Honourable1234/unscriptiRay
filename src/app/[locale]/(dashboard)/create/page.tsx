@@ -3,12 +3,12 @@ import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { CreateSignUpPrompt } from '@/components/create/CreateSignUpPrompt';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
 import { CreateStep3 } from '@/components/create/CreateStep3';
 import { CreateStep4 } from '@/components/create/CreateStep4';
 import { CreateStepper } from '@/components/create/CreateStepper';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { ForwardArrowIcon, SpinnerIcon, StackedCoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { CreateProvider, useCreate } from '@/context/CreateContext';
@@ -220,7 +220,10 @@ function CreatePageContent() {
       )}
 
       {showSignUpPrompt && (
-        <CreateSignUpPrompt onClose={() => setShowSignUpPrompt(false)} />
+        <SignUpPromptModal
+          description="Sign up to bring your companion to life — your creation will be saved to your account."
+          onClose={() => setShowSignUpPrompt(false)}
+        />
       )}
     </div>
   );

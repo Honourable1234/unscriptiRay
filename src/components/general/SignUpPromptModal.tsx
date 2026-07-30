@@ -4,7 +4,7 @@ import { CloseIcon } from '@/components/icons';
 import { Link } from '@/libs/I18nNavigation';
 import { returnUrl } from '@/libs/returnUrl';
 
-export const CreateSignUpPrompt = (props: { onClose: () => void }) => {
+export const SignUpPromptModal = (props: { description: string; onClose: () => void }) => {
   const saveReturnUrl = () => returnUrl.save(window.location.pathname);
 
   return (
@@ -31,7 +31,7 @@ export const CreateSignUpPrompt = (props: { onClose: () => void }) => {
           </button>
         </div>
 
-        <p className="mb-5 text-sm text-white-75">Sign up to bring your companion to life — your creation will be saved to your account.</p>
+        <p className="mb-5 text-sm text-white-75">{props.description}</p>
 
         <div className="mt-5 flex flex-col gap-2.5">
           <Link

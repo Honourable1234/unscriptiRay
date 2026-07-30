@@ -11,6 +11,7 @@ import {
 
 export const ChatMessageActions = (props: {
   onCopy: () => void;
+
   onEdit: () => void;
   onDuplicate: () => void;
   onDelete: () => void;

@@ -3,6 +3,7 @@
 import type { Scene } from '@/components/generate/AudioModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
@@ -28,7 +29,7 @@ export const AnimatedStylePresent = (props: {
 }) => {
   const t = useTranslations('AnimatedStylePresent');
   const { generateVideo } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
@@ -127,6 +128,12 @@ export const AnimatedStylePresent = (props: {
           voiceType={audio.voiceType}
           onSave={values => setAudio(values)}
           onClose={() => setAudioOpen(false)}
+        />
+      )}
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

@@ -4,6 +4,7 @@ import type { Scene } from '@/components/generate/AudioModal';
 import type { SelectedVoice } from '@/components/generate/VoiceModal';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
@@ -29,7 +30,7 @@ export const AnimatedTalking = (props: {
 }) => {
   const t = useTranslations('AnimatedTalking');
   const { generateSpeech } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
@@ -176,6 +177,13 @@ export const AnimatedTalking = (props: {
           max={MAX_STARS}
           onConfirm={setStars}
           onClose={() => setStarModalOpen(false)}
+        />
+      )}
+
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

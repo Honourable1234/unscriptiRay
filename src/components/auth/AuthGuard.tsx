@@ -1,10 +1,11 @@
 'use client';
-import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
+import { usePathname, useRouter } from '@/libs/I18nNavigation';
 
-const PUBLIC_PATHS = ['/', '/feed', '/create'];
+// Guests may browse these; the gated actions inside them prompt for sign-up.
+const PUBLIC_PATHS = ['/', '/feed', '/create', '/generate', '/my-ai'];
 
 export const AuthGuard = (props: { children: React.ReactNode }) => {
   const { isAuthenticated, authLoading } = useAuth();

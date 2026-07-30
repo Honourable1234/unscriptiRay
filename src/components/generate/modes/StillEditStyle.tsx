@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { EditStyle } from '@/components/generate/EditStyle';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { SelectVisualModal } from '@/components/generate/SelectVisualModal';
@@ -29,7 +30,7 @@ export const StillEditStyle = (props: {
 }) => {
   const t = useTranslations('StillEditStyle');
   const { generateImage, uploadReference } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
   const [orientation, setOrientation] = useState('16:9');
   const [modelOpen, setModelOpen] = useState(false);
@@ -189,6 +190,12 @@ export const StillEditStyle = (props: {
             setVisualModalOpen(false);
           }}
           onClose={() => setVisualModalOpen(false)}
+        />
+      )}
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

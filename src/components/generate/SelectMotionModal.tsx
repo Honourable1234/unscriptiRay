@@ -17,7 +17,8 @@ export const SelectMotionModal = (props: {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPresets('motion').then((res) => {
+    // The presets endpoint has no `motion` type; `action` presets are the motion source.
+    getPresets('action').then((res) => {
       const list = Array.isArray(res.content) ? res.content : [];
       setMotions(
         list

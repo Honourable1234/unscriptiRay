@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';
 
 type RunOptions = {
@@ -18,8 +19,10 @@ type RunOptions = {
  */
 export const useGenerationRun = () => {
   const t = useTranslations('GenerationToasts');
+  const { isAuthenticated } = useAuth();
   const { pollGenerationStatus, retryGeneration } = useGenerateService();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [needsSignUp, setNeedsSignUp] = useState(false);
   const stopPollRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -61,6 +64,10 @@ export const useGenerationRun = () => {
     request: () => Promise<{ content: { generation_id: string } }>,
     options?: RunOptions,
   ) => {
+    if (!isAuthenticated) {
+      setNeedsSignUp(true);
+      return;
+    }
     stopPollRef.current?.();
     setIsGenerating(true);
     try {
@@ -76,5 +83,5 @@ export const useGenerationRun = () => {
     }
   };
 
-  return { isGenerating, start };
+  return { isGenerating, needsSignUp, dismissSignUpPrompt: () => setNeedsSignUp(false), start };
 };
