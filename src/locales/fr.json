@@ -284,7 +284,8 @@
     "generate_image": "Generate Image",
     "image_ready": "Image ready!",
     "model_label": "Model:",
-    "orientation_label": "Orientation:"
+    "orientation_label": "Orientation:",
+    "visual_label": "Visual:"
   },
   "AnimatedStylePresent": {
     "generating": "Generating...",
@@ -310,6 +311,8 @@
   "AnimatedExtendVideo": {
     "video": "Video",
     "required": "(Required)",
+    "select_star": "Select Star",
+    "stars_count": "{count} stars",
     "motion": "Motion",
     "creative_input_advanced": "Creative Input (Advanced)",
     "creator_tier_exclusive": "Creator Tier Exclusive",

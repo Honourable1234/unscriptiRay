@@ -24,7 +24,7 @@ const MAX_STARS = 4;
 
 export const AnimatedImageToVideo = (props: {
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedImageToVideo');
@@ -71,7 +71,7 @@ export const AnimatedImageToVideo = (props: {
     }), {
       successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });
   };

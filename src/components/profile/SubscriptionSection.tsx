@@ -1,23 +1,25 @@
 'use client';
 
-import type { SubscriptionStatus } from '@/services/useSubscriptionService';
+import type { Invoice, SubscriptionStatus } from '@/services/useSubscriptionService';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ChevronLeftIcon } from '@/components/icons';
+import { ChevronLeftIcon, DownloadIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useSubscriptionService } from '@/services/useSubscriptionService';
 
 export const SubscriptionSection = () => {
-  const { user } = useAuth();
-  const { getStatus, cancelSubscription } = useSubscriptionService();
+  const { user, isAuthenticated } = useAuth();
+  const { getStatus, cancelSubscription, getInvoices } = useSubscriptionService();
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[] | null>(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     // Fall back to the user data already on screen if the fetch fails.
     getStatus().then(res => setSubscription(res.content)).catch(() => {});
+    getInvoices().then(res => setInvoices(Array.isArray(res.content) ? res.content : [])).catch(() => setInvoices([]));
   }, []);
 
   const status = subscription?.status ?? user?.subscription_status;
@@ -28,15 +30,33 @@ export const SubscriptionSection = () => {
   const expiresLabel = expiresAt ? new Date(expiresAt).toLocaleDateString() : null;
 
   const handleCancel = () => {
+    // Guard against double-submits and cancelling a plan that is not actually active.
+    if (cancelling || !isActivePaid) {
+      return;
+    }
     setCancelling(true);
     cancelSubscription()
-      .then((res) => {
+      .then(async (res) => {
+        // Money-critical: only claim the subscription is cancelled when the API
+        // explicitly confirms it. A 200 with success:false, a missing status, or a
+        // still-active status must be surfaced as a failure, never a success.
+        const cancelledStatus = res?.content?.status;
+        if (res?.success !== true || !cancelledStatus || cancelledStatus === 'active') {
+          toast.error(res?.message || 'Could not cancel subscription. You have not been charged for a cancellation.');
+          return;
+        }
         toast.success(res.message || 'Subscription cancelled.');
         setShowCancelConfirm(false);
-        setSubscription(prev => (prev ? { ...prev, status: res.content.status } : prev));
-        getStatus().then(r => setSubscription(r.content)).catch(() => {});
+        setSubscription(prev => (prev ? { ...prev, status: cancelledStatus } : prev));
+        // Reconcile with the server as the source of truth for billing state.
+        try {
+          const fresh = await getStatus();
+          setSubscription(fresh.content);
+        } catch {
+          // Keep the confirmed cancelled status if the reconcile fetch fails.
+        }
       })
-      .catch(() => toast.error('Failed to cancel subscription.'))
+      .catch(() => toast.error('Failed to cancel subscription. Please try again.'))
       .finally(() => setCancelling(false));
   };
 
@@ -70,17 +90,94 @@ export const SubscriptionSection = () => {
               Cancel Subscription
             </button>
           )
-        : (
-            <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
-              <div>
-                <p className="text-sm font-semibold text-white">Get Started</p>
-                <p className="text-xs text-white-50">Sign up to unlock premium features</p>
+        : isAuthenticated
+          ? (
+              <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
+                <div>
+                  <p className="text-sm font-semibold text-white">Upgrade to Premium</p>
+                  <p className="text-xs text-white-50">Unlock premium features</p>
+                </div>
+                <button className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
+                  Upgrade
+                </button>
               </div>
-              <button className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                Sign Up Now
-              </button>
-            </div>
-          )}
+            )
+          : (
+              <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
+                <div>
+                  <p className="text-sm font-semibold text-white">Get Started</p>
+                  <p className="text-xs text-white-50">Sign up to unlock premium features</p>
+                </div>
+                <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
+                  Sign Up Now
+                </Link>
+              </div>
+            )}
+
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-white">Billing history</p>
+        {invoices === null
+          ? (
+              <div className="flex flex-col gap-2">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="h-14 animate-pulse rounded-2xl bg-black-60" />
+                ))}
+              </div>
+            )
+          : invoices.length === 0
+            ? (
+                <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-6 text-center">
+                  <p className="text-sm text-white-50">No invoices yet.</p>
+                </div>
+              )
+            : (
+                <div className="overflow-x-auto rounded-2xl border border-black-40 bg-black-100">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-black-40 text-xs text-white-50">
+                        <th className="px-4 py-3 font-medium">Amount</th>
+                        <th className="px-4 py-3 font-medium">Date</th>
+                        <th className="px-4 py-3 font-medium">Status</th>
+                        <th className="px-4 py-3 text-right font-medium">Invoice</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {invoices.map((invoice) => {
+                        const link = invoice.pdf_url ?? invoice.invoice_url;
+                        return (
+                          <tr key={invoice.id} className="border-b border-black-40 last:border-0">
+                            <td className="px-4 py-3 font-semibold whitespace-nowrap text-white">
+                              {new Intl.NumberFormat('en-US', { style: 'currency', currency: (invoice.currency || 'usd').toUpperCase() }).format(invoice.amount / 100)}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-white-75">
+                              {new Date(invoice.created * 1000).toLocaleDateString()}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-white-75 capitalize">
+                              {invoice.status}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              {link
+                                ? (
+                                    <a
+                                      href={link}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1.5 rounded-full bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 [&_svg]:size-3.5"
+                                    >
+                                      <DownloadIcon />
+                                      PDF
+                                    </a>
+                                  )
+                                : <span className="text-xs text-white-50">-</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+      </div>
 
       {showCancelConfirm && (
         <div

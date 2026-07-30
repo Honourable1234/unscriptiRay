@@ -10,6 +10,7 @@ export type Asset = {
   height: number | null;
   /** Orientation the asset was generated with, e.g. `4:5`. */
   orientation: string | null;
+  character_id: string | null;
   created_at: string;
 };
 
@@ -118,6 +119,7 @@ const toAsset = (image: RawImageAsset): Asset => ({
   width: image.width,
   height: image.height,
   orientation: miscOrientation(image.misc),
+  character_id: image.character_id,
   created_at: image.created_at,
 });
 
@@ -133,6 +135,7 @@ const toVideoAsset = (video: RawVideoAsset): Asset => ({
   width: video.width,
   height: video.height,
   orientation: miscOrientation(video.misc),
+  character_id: video.character_id,
   created_at: video.created_at,
 });
 

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
 import { useAuth } from '@/context/AuthContext';
+import { assetAspectRatio } from '@/services/generateService';
 import { useCharacterService } from '@/services/useCharacterService';
 import { CharacterContentSkeleton } from './CharacterContentSkeleton';
 import { CharacterHeader } from './CharacterHeader';
@@ -12,7 +13,14 @@ import { CharacterMediaGrid } from './CharacterMediaGrid';
 import { CharacterUnlockButton } from './CharacterUnlockButton';
 
 type Tab = 'All' | 'Images' | 'Videos';
-type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean };
+type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean; aspectRatio: string };
+
+/**
+ * Checks whether a value is a src `next/image` can render: an absolute URL or a root-relative path.
+ * @param src - Candidate media source, e.g. an `image_url` from the API.
+ * @returns True when `next/image` will accept it without throwing.
+ */
+const isRenderableSrc = (src: string) => /^(?:https?:\/\/|\/)/.test(src);
 
 export const CharacterContent = (props: { id: string }) => {
   const t = useTranslations('CharacterContent');
@@ -57,18 +65,23 @@ export const CharacterContent = (props: { id: string }) => {
         const imageUrl = item.image_url as string | null;
         const videoUrl = item.video_url as string | null;
         const blurUrl = item.blur_url as string | null;
+        const aspectRatio = assetAspectRatio({
+          width: (item.width as number | null) ?? null,
+          height: (item.height as number | null) ?? null,
+          orientation: (item.orientation as string | null) ?? null,
+        });
         if (type === 'video') {
           const url = videoUrl ?? blurUrl ?? null;
-          if (!url) {
+          if (!url || !isRenderableSrc(url)) {
             return null;
           }
-          return { type: 'video', url, locked: !videoUrl };
+          return { type: 'video', url, locked: !videoUrl, aspectRatio };
         }
         const url = imageUrl ?? blurUrl ?? null;
-        if (!url) {
+        if (!url || !isRenderableSrc(url)) {
           return null;
         }
-        return { type: 'image', url, locked: !imageUrl };
+        return { type: 'image', url, locked: !imageUrl, aspectRatio };
       }).filter((m): m is MediaItem => m !== null);
     };
 

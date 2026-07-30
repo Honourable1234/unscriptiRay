@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SpinnerIcon } from '@/components/icons';
 import { assetAspectRatio } from '@/services/generateService';
 
-type Card = { kind: 'pending'; id: string } | { kind: 'asset'; asset: Asset };
+type Card = { kind: 'pending'; id: string; orientation: string } | { kind: 'asset'; asset: Asset };
 
 /** Narrowest a column may get before the grid drops to fewer columns. */
 const columnMinWidth = 260;
@@ -18,7 +18,10 @@ const ResultCard = (props: { card: Card }) => {
 
   if (props.card.kind === 'pending') {
     return (
-      <div className="flex aspect-4/5 animate-pulse flex-col items-center justify-center gap-3 rounded-2xl border border-black-40 bg-black-60">
+      <div
+        style={{ aspectRatio: assetAspectRatio({ width: null, height: null, orientation: props.card.orientation }) }}
+        className="flex animate-pulse flex-col items-center justify-center gap-3 rounded-2xl border border-black-40 bg-black-60"
+      >
         <span className="animate-spin text-premium-100">
           <SpinnerIcon />
         </span>
@@ -45,12 +48,12 @@ const ResultCard = (props: { card: Card }) => {
 
 export const GenerateResultGrid = (props: {
   assets: GeneratedAssetsResponse['content'] | null;
-  pendingIds?: string[];
+  pending?: { id: string; orientation: string }[];
 }) => {
   const t = useTranslations('GenerateResultGrid');
   const containerRef = useRef<HTMLDivElement>(null);
   const [columnCount, setColumnCount] = useState(1);
-  const pendingIds = props.pendingIds ?? [];
+  const pending = props.pending ?? [];
   const items = props.assets
     ? [...props.assets.images, ...props.assets.videos]
     : [];
@@ -68,14 +71,14 @@ export const GenerateResultGrid = (props: {
     return () => observer.disconnect();
   }, []);
 
-  if (items.length === 0 && pendingIds.length === 0) {
+  if (items.length === 0 && pending.length === 0) {
     return (
       <p className="py-12 text-center text-xs text-white/40">{t('no_scenes')}</p>
     );
   }
 
   const cards: Card[] = [
-    ...pendingIds.map(id => ({ kind: 'pending' as const, id })),
+    ...pending.map(p => ({ kind: 'pending' as const, id: p.id, orientation: p.orientation })),
     ...items.map(asset => ({ kind: 'asset' as const, asset })),
   ];
 

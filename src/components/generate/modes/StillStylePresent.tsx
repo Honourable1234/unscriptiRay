@@ -22,7 +22,7 @@ type StarCharacter = { id: string; name: string; image: string };
 export const StillStylePresent = (props: {
   initialCharacter?: StarCharacter | null;
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('StillStylePresent');
@@ -73,7 +73,7 @@ export const StillStylePresent = (props: {
     }), {
       successMessage: t('image_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });
   };

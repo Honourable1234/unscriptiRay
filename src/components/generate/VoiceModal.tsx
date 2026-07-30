@@ -17,6 +17,7 @@ export const VoiceModal = (props: {
 }) => {
   const { getVoices } = useVoices();
   const [voices, setVoices] = useState<Voice[] | null>(null);
+  const [loading, setLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playingShortName, setPlayingShortName] = useState<string | null>(null);
 
@@ -37,6 +38,8 @@ export const VoiceModal = (props: {
         }
       } catch (error) {
         console.error('Failed to fetch voices:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchVoices();
@@ -74,35 +77,60 @@ export const VoiceModal = (props: {
           </button>
         </div>
 
-        <div className="flex flex-col gap-6">
-          {([{ label: 'Female', items: female }, { label: 'Male', items: male }] as const).map(group => (
-            <div key={group.label} className="flex flex-col gap-3">
-              <span className="text-sm font-semibold text-white">{group.label}</span>
-              <div className="grid grid-cols-3 gap-2">
-                {group?.items?.map(v => (
-                  <button
-                    key={v.shortName}
-                    onClick={() => {
-                      props.onSelect({ shortName: v.shortName, localName: v.localName, sampleUrl: v.sampleUrl });
-                    }}
-                    className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors ${props.selected === v.shortName ? 'border-primary-100' : 'border-black-40 bg-black-100 hover:border-primary-100'}`}
-                  >
-                    <span className="text-sm font-medium text-white">{v.localName}</span>
-                    {' '}
-                    <div>
-                      <button
-                        onClick={e => handlePlay(v, e)}
-                        className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors ${playingShortName === v.shortName ? 'bg-primary-100' : 'bg-primary-800'}`}
-                      >
-                        {playingShortName === v.shortName ? <VoiceIcon /> : <PlayIcon />}
-                      </button>
+        {loading
+          ? (
+              <div className="flex flex-col gap-6">
+                {[0, 1].map(group => (
+                  <div key={group} className="flex flex-col gap-3">
+                    <div className="h-4 w-16 animate-pulse rounded bg-black-40" />
+                    <div className="grid grid-cols-3 gap-2">
+                      {Array.from({ length: 6 }, (_, i) => `s-${group}-${i}`).map(key => (
+                        <div key={key} className="h-13 animate-pulse rounded-xl bg-black-40" />
+                      ))}
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
+            )
+          : !voices || voices.length === 0
+              ? (
+                  <div className="flex items-center justify-center py-16">
+                    <p className="text-sm text-white-50">No voices available.</p>
+                  </div>
+                )
+              : (
+                  <div className="flex flex-col gap-6">
+                    {([{ label: 'Female', items: female }, { label: 'Male', items: male }] as const)
+                      .filter(group => group.items && group.items.length > 0)
+                      .map(group => (
+                        <div key={group.label} className="flex flex-col gap-3">
+                          <span className="text-sm font-semibold text-white">{group.label}</span>
+                          <div className="grid grid-cols-3 gap-2">
+                            {group.items?.map(v => (
+                              <button
+                                key={v.shortName}
+                                onClick={() => {
+                                  props.onSelect({ shortName: v.shortName, localName: v.localName, sampleUrl: v.sampleUrl });
+                                }}
+                                className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors ${props.selected === v.shortName || props.selected === v.localName ? 'border-primary-100' : 'border-black-40 bg-black-100 hover:border-primary-100'}`}
+                              >
+                                <span className="text-sm font-medium text-white">{v.localName}</span>
+                                {' '}
+                                <div>
+                                  <button
+                                    onClick={e => handlePlay(v, e)}
+                                    className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors ${playingShortName === v.shortName ? 'bg-primary-100' : 'bg-primary-800'}`}
+                                  >
+                                    {playingShortName === v.shortName ? <VoiceIcon /> : <PlayIcon />}
+                                  </button>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
 
         <div className="mt-6">
           <button

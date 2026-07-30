@@ -1,39 +1,42 @@
 'use client';
 
-import { SelectStarIcon, VisualIcon } from '@/components/icons';
+import { SelectStarIcon } from '@/components/icons';
+import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
 import { GenerateOptionCard } from './GenerateOptionCard';
 
 export const EditStyle = (props: {
-  imageName: string | null;
-  isUploading: boolean;
-  visualName: string | null;
+  imageUrl: string | null;
+  starName: string | null;
+  starImage?: string;
+  onStarClick: () => void;
+  onStarClear: () => void;
   onImageClick: () => void;
   onImageClear: () => void;
-  onVisualClick: () => void;
-  onVisualClear: () => void;
 }) => {
   return (
     <div className="mx-auto flex w-full max-w-184 flex-col gap-3">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <GenerateOptionCard
-          label={props.isUploading ? 'Uploading...' : 'Image'}
+          label="Select Star"
           sublabel="Required"
           height="223px"
           icon={<SelectStarIcon />}
-          isSelected={!!props.imageName}
-          selectedName={props.imageName ?? undefined}
-          onClick={props.onImageClick}
-          onDeselect={props.onImageClear}
+          isSelected={!!props.starName}
+          selectedImage={props.starImage}
+          selectedName={props.starName ?? undefined}
+          onClick={props.onStarClick}
+          onDeselect={props.onStarClear}
         />
         <GenerateOptionCard
-          label="Visual"
+          label="Image"
           sublabel="Required"
           height="223px"
-          icon={<VisualIcon />}
-          isSelected={!!props.visualName}
-          selectedName={props.visualName ?? undefined}
-          onClick={props.onVisualClick}
-          onDeselect={props.onVisualClear}
+          icon={<ImageFrameIcon />}
+          isSelected={!!props.imageUrl}
+          selectedImage={props.imageUrl ?? undefined}
+          selectedName="Select Image"
+          onClick={props.onImageClick}
+          onDeselect={props.onImageClear}
         />
       </div>
     </div>

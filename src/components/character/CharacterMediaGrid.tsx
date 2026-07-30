@@ -1,9 +1,12 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PadlockIcon, PlayIcon } from '@/components/icons';
 
-type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean };
+type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean; aspectRatio: string };
+
+/** Narrowest a column may get before the grid drops to fewer columns. */
+const columnMinWidth = 260;
 
 const LockedOverlay = (props: { onReveal: () => void }) => {
   const t = useTranslations('CharacterMediaGrid');
@@ -25,7 +28,7 @@ const LockedOverlay = (props: { onReveal: () => void }) => {
   );
 };
 
-const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void }) => {
+const VideoItem = (props: { url: string; aspectRatio: string; isLocked: boolean; onReveal: () => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -43,7 +46,7 @@ const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void
   };
 
   return (
-    <div className="group relative aspect-[3/4] max-w-80 min-w-60 flex-1 overflow-hidden rounded-xl">
+    <div style={{ aspectRatio: props.aspectRatio }} className="group relative overflow-hidden rounded-xl">
       <video
         ref={videoRef}
         src={props.url}
@@ -67,32 +70,69 @@ const VideoItem = (props: { url: string; isLocked: boolean; onReveal: () => void
   );
 };
 
-export const CharacterMediaGrid = (props: { name: string; media: MediaItem[]; isPremium: boolean }) => (
-  <div className="flex flex-wrap gap-2.5">
-    {props.media.map((item) => {
-      const isLocked = !props.isPremium && item.locked;
-      if (item.type === 'video') {
-        return (
-          <VideoItem
-            key={item.url}
-            url={item.url}
-            isLocked={isLocked}
-            onReveal={() => {}}
-          />
-        );
-      }
-      return (
-        <div key={item.url} className="group relative aspect-[3/4] max-w-80 min-w-60 flex-1 overflow-hidden rounded-xl">
-          <Image
-            src={item.url}
-            alt={props.name}
-            fill
-            sizes="(max-width: 640px) 100vw, 320px"
-            className={`object-cover ${isLocked ? 'blur-sm brightness-50' : ''}`}
-          />
-          {isLocked && <LockedOverlay onReveal={() => {}} />}
+const MediaCard = (props: { name: string; item: MediaItem; isLocked: boolean }) => {
+  if (props.item.type === 'video') {
+    return (
+      <VideoItem
+        url={props.item.url}
+        aspectRatio={props.item.aspectRatio}
+        isLocked={props.isLocked}
+        onReveal={() => {}}
+      />
+    );
+  }
+  return (
+    <div style={{ aspectRatio: props.item.aspectRatio }} className="group relative overflow-hidden rounded-xl">
+      <Image
+        src={props.item.url}
+        alt={props.name}
+        fill
+        sizes="(max-width: 640px) 100vw, 320px"
+        className={`object-cover ${props.isLocked ? 'blur-sm brightness-50' : ''}`}
+      />
+      {props.isLocked && <LockedOverlay onReveal={() => {}} />}
+    </div>
+  );
+};
+
+export const CharacterMediaGrid = (props: { name: string; media: MediaItem[]; isPremium: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [columnCount, setColumnCount] = useState(1);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry?.contentRect.width ?? 0;
+      setColumnCount(Math.max(1, Math.floor(width / columnMinWidth)));
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  // Cards are dealt across the columns in order, so reading left to right and
+  // top to bottom keeps the ordering while each column packs tightly.
+  const columns = Array.from({ length: columnCount }, (_, column) => ({
+    position: column,
+    items: props.media.filter((_, index) => index % columnCount === column),
+  }));
+
+  return (
+    <div ref={containerRef} className="flex items-start gap-2.5">
+      {columns.map(column => (
+        <div key={column.position} className="flex min-w-0 flex-1 flex-col gap-2.5">
+          {column.items.map(item => (
+            <MediaCard
+              key={item.url}
+              name={props.name}
+              item={item}
+              isLocked={!props.isPremium && item.locked}
+            />
+          ))}
         </div>
-      );
-    })}
-  </div>
-);
+      ))}
+    </div>
+  );
+};

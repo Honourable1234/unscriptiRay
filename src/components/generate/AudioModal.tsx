@@ -103,6 +103,7 @@ export const AudioModal = (props: {
             <button
               onClick={() => {
                 props.onSave({ script, sceneEmotion, voiceType });
+                props.onClose();
               }}
               className="w-full cursor-pointer rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
@@ -115,7 +116,10 @@ export const AudioModal = (props: {
       {voiceOpen && (
         <VoiceModal
           selected={voiceType}
-          onSelect={v => setVoiceType(v.shortName)}
+          onSelect={(v) => {
+            setVoiceType(v.localName);
+            setVoiceOpen(false);
+          }}
           onClose={() => setVoiceOpen(false)}
         />
       )}

@@ -25,7 +25,7 @@ const sceneEmotions: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', '
 
 export const AnimatedTalking = (props: {
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedTalking');
@@ -69,7 +69,7 @@ export const AnimatedTalking = (props: {
     }), {
       successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, '16:9'),
       onSettled: props.onGenerationEnd,
     });
   };

@@ -22,6 +22,22 @@ type CancelSubscriptionResponse = {
   content: { status: string };
 };
 
+export type Invoice = {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  created: number;
+  invoice_url: string | null;
+  pdf_url: string | null;
+};
+
+type InvoicesResponse = {
+  success: boolean;
+  message: string;
+  content: Invoice[];
+};
+
 export const useSubscriptionService = () => {
   const { token } = useAuth();
 
@@ -31,5 +47,8 @@ export const useSubscriptionService = () => {
   const cancelSubscription = () =>
     api.post('/subscriptions/cancel', {}, token ?? undefined) as Promise<CancelSubscriptionResponse>;
 
-  return { getStatus, cancelSubscription };
+  const getInvoices = () =>
+    api.get('/subscriptions/invoices', token ?? undefined) as Promise<InvoicesResponse>;
+
+  return { getStatus, cancelSubscription, getInvoices };
 };

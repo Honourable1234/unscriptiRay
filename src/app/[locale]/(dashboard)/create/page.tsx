@@ -1,7 +1,7 @@
 'use client';
 import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
@@ -70,6 +70,26 @@ function CreatePageContent() {
   const { isAuthenticated } = useAuth();
   const { data } = useCreate();
   const { createCharacter, generateCharacterImage, updateCharacter } = useCharacterService();
+
+  const characterRef = useRef(character);
+
+  useEffect(() => {
+    characterRef.current = character;
+  }, [character]);
+
+  useEffect(() => {
+    return () => {
+      // Leaving after a character was created means the flow is done — clear
+      // the saved draft so returning to /create starts a fresh form instead
+      // of resuming this finished one.
+      if (characterRef.current) {
+        sessionStorage.removeItem('create_form');
+        sessionStorage.removeItem('create_character');
+        sessionStorage.removeItem('create_character_response');
+        sessionStorage.removeItem('create_generation_id');
+      }
+    };
+  }, []);
 
   const handleGenerate = () => {
     if (!isAuthenticated) {
