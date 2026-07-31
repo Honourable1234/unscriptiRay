@@ -2,6 +2,23 @@ import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 import { guestToken } from '@/libs/guestToken';
 
+/** Generation settings stored with an asset, used to seed the scene action modals. */
+export type AssetSettings = {
+  /** Star the asset was generated from, when it came from one. */
+  characterId: string | null;
+  action: string | null;
+  setting: string | null;
+  mood: string | null;
+  visual: string | null;
+  motion: string | null;
+  quality: string | null;
+  model: string | null;
+  duration: number | null;
+  advancedPrompt: string | null;
+  /** Image a video was animated from, when it came from one. */
+  sourceImageId: string | null;
+};
+
 export type Asset = {
   id: string;
   url: string;
@@ -11,6 +28,7 @@ export type Asset = {
   /** Orientation the asset was generated with, e.g. `4:5`. */
   orientation: string | null;
   character_id: string | null;
+  settings: AssetSettings;
   created_at: string;
 };
 
@@ -100,12 +118,64 @@ export type GeneratedAssetsResponse = {
 };
 
 /**
- * Reads the orientation an asset was generated with from its misc payload.
+ * Reads a string field from the generation metadata attached to an asset.
  * @param misc - Generation metadata attached to the asset.
- * @returns The orientation string, or null when the payload has none.
+ * @param key - Field to read, named after the generate request body.
+ * @returns The value, or null when the payload has none.
  */
-const miscOrientation = (misc: Record<string, unknown> | null | undefined) =>
-  typeof misc?.orientation === 'string' ? misc.orientation : null;
+const miscString = (misc: Record<string, unknown> | null | undefined, key: string) => {
+  const value = misc?.[key];
+  return typeof value === 'string' ? value : null;
+};
+
+/**
+ * Reads a numeric field from the generation metadata attached to an asset.
+ * @param misc - Generation metadata attached to the asset.
+ * @param key - Field to read, named after the generate request body.
+ * @returns The value, or null when the payload has none or holds a non-number.
+ */
+const miscNumber = (misc: Record<string, unknown> | null | undefined, key: string) => {
+  const raw = misc?.[key];
+  const value = Number(raw);
+  return raw != null && Number.isFinite(value) ? value : null;
+};
+
+/**
+ * Collects the settings an asset was generated with so a scene action modal can
+ * reopen on those same choices.
+ * @param raw - Asset entry as returned by the assets endpoint.
+ * @returns The stored generation settings, with nulls where the payload is silent.
+ */
+const toSettings = (raw: Pick<RawImageAsset, 'character_id' | 'misc'>): AssetSettings => ({
+  characterId: raw.character_id,
+  action: miscString(raw.misc, 'action'),
+  setting: miscString(raw.misc, 'setting'),
+  mood: miscString(raw.misc, 'mood'),
+  visual: miscString(raw.misc, 'visual'),
+  motion: miscString(raw.misc, 'motion'),
+  quality: miscString(raw.misc, 'quality'),
+  model: miscString(raw.misc, 'model'),
+  duration: miscNumber(raw.misc, 'duration'),
+  advancedPrompt: miscString(raw.misc, 'advanced_prompt'),
+  sourceImageId: miscString(raw.misc, 'source_image_id'),
+});
+
+/**
+ * Turns a stored generation value such as `zoom_in` into a display label.
+ * @param value - Raw value the backend stored with the asset.
+ * @returns The value in title case, with separators as spaces.
+ */
+export const settingLabel = (value: string) =>
+  value.replace(/[_-]+/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+
+/**
+ * Matches a stored generation value against the labels a control offers.
+ * @param value - Raw value stored with the asset.
+ * @param options - Labels the control can display.
+ * @returns The matching label, or null when the value is unknown to the control.
+ */
+export const matchSetting = (value: string | null | undefined, options: string[]) =>
+  options.find(option => option.toLowerCase() === value?.toLowerCase()) ?? null;
 
 /**
  * Normalizes a raw image asset into the shared asset shape used across the generate UI.
@@ -118,8 +188,9 @@ const toAsset = (image: RawImageAsset): Asset => ({
   type: 'image',
   width: image.width,
   height: image.height,
-  orientation: miscOrientation(image.misc),
+  orientation: miscString(image.misc, 'orientation'),
   character_id: image.character_id,
+  settings: toSettings(image),
   created_at: image.created_at,
 });
 
@@ -134,8 +205,9 @@ const toVideoAsset = (video: RawVideoAsset): Asset => ({
   type: 'video',
   width: video.width,
   height: video.height,
-  orientation: miscOrientation(video.misc),
+  orientation: miscString(video.misc, 'orientation'),
   character_id: video.character_id,
+  settings: toSettings(video),
   created_at: video.created_at,
 });
 

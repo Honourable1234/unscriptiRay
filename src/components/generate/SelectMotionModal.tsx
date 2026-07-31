@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { CloseIcon, SearchIcon } from '@/components/icons';
 import { useGenerateService } from '@/services/generateService';
 
-type Motion = { id: string; name: string; value: string; imageUrl?: string | null };
+export type Motion = { id: string; name: string; value: string; imageUrl: string | null };
 
 export const SelectMotionModal = (props: {
-  onSelect: (motion: { id: string; name: string; value: string }) => void;
+  onSelect: (motion: Motion) => void;
   onClose: () => void;
 }) => {
   const { getPresets } = useGenerateService();
@@ -42,7 +42,7 @@ export const SelectMotionModal = (props: {
   return (
     <div
       role="presentation"
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       onClick={props.onClose}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -100,7 +100,7 @@ export const SelectMotionModal = (props: {
                     {filtered.map((motion, i) => (
                       <button
                         key={motion.id}
-                        onClick={() => props.onSelect({ id: motion.id, name: motion.name, value: motion.value })}
+                        onClick={() => props.onSelect(motion)}
                         className="relative flex h-65 max-w-50 min-w-40 flex-1 cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-white-25 bg-black-100 transition-colors hover:border-primary-100"
                       >
                         {motion.imageUrl

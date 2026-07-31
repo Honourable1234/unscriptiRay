@@ -7,12 +7,15 @@ export type SceneActionKey = 'Remix' | 'Video' | 'Edit' | 'Speech' | 'Enhance' |
 
 export type SceneMoreActionKey = 'Download' | 'Share' | 'Add to Profile' | 'Report' | 'Delete';
 
-const actions: { label: SceneActionKey; icon: React.ReactNode }[] = [
+type SceneAssetType = 'image' | 'video';
+
+// `only` limits an action to the asset type it can run on; the rest apply to both.
+const actions: { label: SceneActionKey; icon: React.ReactNode; only?: SceneAssetType }[] = [
   { label: 'Remix', icon: <RemixIcon /> },
-  { label: 'Video', icon: <VideoIcon /> },
+  { label: 'Video', icon: <VideoIcon />, only: 'image' },
   { label: 'Edit', icon: <EditIcon /> },
-  { label: 'Speech', icon: <SpeechIcon /> },
-  { label: 'Enhance', icon: <AiIcon /> },
+  { label: 'Speech', icon: <SpeechIcon />, only: 'video' },
+  { label: 'Enhance', icon: <AiIcon />, only: 'image' },
   { label: 'More', icon: <MoreIcon /> },
 ];
 
@@ -25,16 +28,20 @@ const moreItems: { label: SceneMoreActionKey; icon: React.ReactNode; danger?: bo
 ];
 
 export const GenerateSceneActions = (props: {
+  assetType: SceneAssetType;
   onAction: (key: SceneActionKey) => void;
   onMoreAction?: (key: SceneMoreActionKey) => void;
 }) => {
   const [showMore, setShowMore] = useState(false);
   const [popupPos, setPopupPos] = useState({ bottom: 0, left: 0 });
   const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Scoped to the wrapper, not the button: closing on a mousedown inside the
+    // popup would unmount the item before its click could run.
     const handler = (e: MouseEvent) => {
-      if (moreButtonRef.current && !moreButtonRef.current.contains(e.target as Node)) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
         setShowMore(false);
       }
     };
@@ -54,10 +61,10 @@ export const GenerateSceneActions = (props: {
 
   return (
     <div className="flex items-center gap-2">
-      {actions.map(action =>
+      {actions.filter(action => !action.only || action.only === props.assetType).map(action =>
         action.label === 'More'
           ? (
-              <div key="More">
+              <div key="More" ref={moreRef}>
                 <button
                   ref={moreButtonRef}
                   onClick={openMore}

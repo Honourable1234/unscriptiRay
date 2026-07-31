@@ -1,6 +1,7 @@
 'use client';
 
 import type { SceneActionKey } from './GenerateSceneActions';
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { CloseIcon } from '@/components/icons';
 import { EditContent } from './EditContent';
@@ -12,13 +13,13 @@ import { VideoContent } from './VideoContent';
 export const GenerateSceneModal = (props: {
   action: SceneActionKey;
   onClose: () => void;
-  imageSrc?: string;
+  asset: Asset | null;
+  /** Image a video asset was animated from, when it is already loaded. */
+  sourceAsset?: Asset | null;
   imageName?: string;
-  assetId?: string;
   onSuccess?: () => void;
 }) => {
   const t = useTranslations('GenerateSceneModal');
-  const assetId = props.assetId ?? '';
 
   const titleMap: Record<SceneActionKey, string> = {
     Remix: t('title_remix'),
@@ -30,11 +31,18 @@ export const GenerateSceneModal = (props: {
   };
 
   const contentMap: Record<SceneActionKey, React.ReactNode> = {
-    Remix: <RemixContent onSuccess={props.onSuccess} />,
-    Video: <VideoContent assetId={assetId} onSuccess={props.onSuccess} />,
-    Edit: <EditContent assetId={assetId} onSuccess={props.onSuccess} />,
-    Speech: <SpeechContent assetId={assetId} onSuccess={props.onSuccess} />,
-    Enhance: <EnhanceContent imageSrc={props.imageSrc ?? ''} imageName={props.imageName} assetId={assetId} onSuccess={props.onSuccess} />,
+    Remix: <RemixContent asset={props.asset} sourceAsset={props.sourceAsset} onSuccess={props.onSuccess} />,
+    Video: <VideoContent asset={props.asset} onSuccess={props.onSuccess} />,
+    Edit: <EditContent asset={props.asset} onSuccess={props.onSuccess} />,
+    Speech: <SpeechContent asset={props.asset} onSuccess={props.onSuccess} />,
+    Enhance: (
+      <EnhanceContent
+        imageSrc={props.asset?.url ?? ''}
+        imageName={props.imageName}
+        assetId={props.asset?.id ?? ''}
+        onSuccess={props.onSuccess}
+      />
+    ),
     More: <div />,
   };
 

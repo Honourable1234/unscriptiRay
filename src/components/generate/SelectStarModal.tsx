@@ -64,7 +64,7 @@ export const SelectStarModal = (props: SelectStarModalProps) => {
   return (
     <div
       role="presentation"
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       onClick={props.onClose}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {

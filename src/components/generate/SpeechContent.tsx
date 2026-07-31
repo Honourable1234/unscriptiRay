@@ -1,6 +1,7 @@
 'use client';
 
 import type { SelectedVoice } from './VoiceModal';
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -16,10 +17,13 @@ import { VoiceModal } from './VoiceModal';
 type Scene = 'Happy' | 'Natural' | 'Sad' | 'Angry' | 'Fearful' | 'Disgusted' | 'Surprised';
 const scenes: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', 'Disgusted', 'Surprised'];
 
-export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }) => {
+export const SpeechContent = (props: { asset: Asset | null; onSuccess?: () => void }) => {
   const t = useTranslations('SpeechContent');
   const { generateSpeech } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
+  // The speech endpoint rejects a body without these, so they come from the
+  // settings the source asset was generated with.
+  const settings = props.asset?.settings;
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [voice, setVoice] = useState<SelectedVoice | null>(null);
@@ -47,8 +51,12 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
       return;
     }
     void start(() => generateSpeech({
-      source_image_id: props.assetId,
+      character_ids: settings?.characterId ? [settings.characterId] : [],
+      source_image_id: props.asset?.id ?? '',
       mode: 'talking',
+      orientation: props.asset?.orientation ?? '16:9',
+      quality: settings?.quality ?? 'balance',
+      duration: settings?.duration ?? 5,
       voice_type: voice.shortName,
       script,
       scene_emotion: sceneEmotion.toLowerCase(),
@@ -93,6 +101,7 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
         height="105px"
         icon={<VoiceIcon />}
         isSelected={!!script}
+        selectedName={script}
         onClick={() => setScriptModalOpen(true)}
       />
 
@@ -100,7 +109,7 @@ export const SpeechContent = (props: { assetId: string; onSuccess?: () => void }
         label={isGenerating ? t('generating') : t('generate_speech')}
         coins={30}
         onClick={handleGenerate}
-        isLoading={isGenerating || !props.assetId}
+        isLoading={isGenerating || !props.asset}
         py="py-2"
         px="px-4"
         textSize="text-xs"

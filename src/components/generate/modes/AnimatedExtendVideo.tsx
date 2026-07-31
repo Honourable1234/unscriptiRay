@@ -1,6 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
+import type { Motion } from '@/components/generate/SelectMotionModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
@@ -33,7 +34,7 @@ export const AnimatedExtendVideo = (props: {
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
   const [sourceVideo, setSourceVideo] = useState<{ id: string; url: string } | null>(null);
-  const [motion, setMotion] = useState<string | null>(null);
+  const [motion, setMotion] = useState<Motion | null>(null);
   const [stars, setStars] = useState<StarCharacter[]>([]);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [motionModalOpen, setMotionModalOpen] = useState(false);
@@ -55,7 +56,7 @@ export const AnimatedExtendVideo = (props: {
       character_ids: stars.map(s => s.id),
       mode: 'extend_video',
       source_image_id: sourceVideo.id,
-      motion: motion.toLowerCase(),
+      motion: motion.value,
       orientation,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       duration: Number(duration.replace('s', '')),
@@ -101,7 +102,8 @@ export const AnimatedExtendVideo = (props: {
           sublabel={t('required')}
           icon={<MotionIcon />}
           isSelected={!!motion}
-          selectedName={motion ?? undefined}
+          selectedImage={motion?.imageUrl ?? undefined}
+          selectedName={motion?.name}
           onClick={() => setMotionModalOpen(true)}
           onDeselect={() => setMotion(null)}
         />
@@ -145,7 +147,7 @@ export const AnimatedExtendVideo = (props: {
       {motionModalOpen && (
         <SelectMotionModal
           onSelect={(m) => {
-            setMotion(m.name);
+            setMotion(m);
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}

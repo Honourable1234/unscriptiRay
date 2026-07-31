@@ -1,14 +1,16 @@
 'use client';
 
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { useState } from 'react';
-import { SelectStarIcon, VisualIcon } from '@/components/icons';
+import { SelectStarIcon } from '@/components/icons';
+import { useAssetStar } from '@/hooks/useAssetStar';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
-import { useGenerateService } from '@/services/generateService';
+import { matchSetting, useGenerateService } from '@/services/generateService';
 import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
 import { SelectStarModal } from './SelectStarModal';
-import { SelectVisualModal } from './SelectVisualModal';
 
 const orientationOptions = [
   { value: '4:5', boxW: 'w-10', boxH: 'h-12' },
@@ -30,58 +32,96 @@ const modelOptions = [
   { value: 'Pro', description: 'High-fidelity detailed edits' },
 ];
 
-type PickedItem = { id: string; name: string };
+const visualOptions = [
+  { value: 'Cinematic', description: 'High-quality results with strong prompt accuracy' },
+  { value: 'Realistic', description: 'Ultra-realistic visuals with enhanced lighting' },
+];
 
-export const EditContent = (props: { assetId: string; onSuccess?: () => void }) => {
+export const EditContent = (props: { asset: Asset | null; onSuccess?: () => void }) => {
   const t = useTranslations('EditContent');
   const { editImage } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
-  const [model, setModel] = useState('Spark');
-  const [orientation, setOrientation] = useState('16:9');
+  // The modal opens on the settings the asset was generated with, so an edit
+  // starts from the current scene instead of a blank form.
+  const settings = props.asset?.settings;
+  const [model, setModel] = useState(() => matchSetting(settings?.model, modelOptions.map(o => o.value)) ?? 'Spark');
+  const [orientation, setOrientation] = useState(props.asset?.orientation ?? '16:9');
   const [modelOpen, setModelOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
-  const [starCharacter, setStarCharacter] = useState<PickedItem | null>(null);
-  const [visual, setVisual] = useState<PickedItem | null>(null);
+  const [starCharacter, setStarCharacter] = useAssetStar(settings?.characterId ?? null);
+  const [visual, setVisual] = useState(() => matchSetting(settings?.visual, visualOptions.map(o => o.value)) ?? 'Cinematic');
+  const [visualOpen, setVisualOpen] = useState(false);
   const [starModalOpen, setStarModalOpen] = useState(false);
-  const [visualModalOpen, setVisualModalOpen] = useState(false);
 
   const handleGenerate = () => {
     void start(() => editImage({
-      asset_id: props.assetId,
+      asset_id: props.asset?.id ?? '',
       model: model.toLowerCase(),
       orientation,
-      visual: visual?.name.toLowerCase(),
+      visual: visual.toLowerCase(),
     }), { successMessage: t('edit_complete'), onComplete: props.onSuccess });
   };
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Cards */}
+      {/* Cards — the scene being edited, next to the star it came from */}
       <div className="grid grid-cols-2 gap-3">
+        <div className="relative h-50 overflow-hidden rounded-xl border border-white-25 bg-black-100">
+          {props.asset && (props.asset.type === 'video'
+            ? (
+                // Edit is offered on videos too, and the image optimizer cannot read those.
+                <video src={`${props.asset.url}#t=0.1`} preload="metadata" muted playsInline className="h-full w-full object-cover">
+                  <track kind="captions" />
+                </video>
+              )
+            : <Image src={props.asset.url} alt={t('scene_alt')} fill sizes="320px" className="object-cover" />)}
+        </div>
         <GenerateOptionCard
           label={t('select_star')}
           sublabel={t('required')}
           icon={<SelectStarIcon />}
           height="200px"
           isSelected={!!starCharacter}
+          selectedImage={starCharacter?.image}
           selectedName={starCharacter?.name}
           onClick={() => setStarModalOpen(true)}
           onDeselect={() => setStarCharacter(null)}
-        />
-        <GenerateOptionCard
-          label={t('visual')}
-          sublabel={t('required')}
-          icon={<VisualIcon />}
-          height="200px"
-          isSelected={!!visual}
-          selectedName={visual?.name}
-          onClick={() => setVisualModalOpen(true)}
-          onDeselect={() => setVisual(null)}
         />
       </div>
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-2">
+        {/* Visual */}
+        <div className="relative">
+          <button
+            onClick={() => setVisualOpen(prev => !prev)}
+            className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-3 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
+          >
+            {t('visual_label')}
+            <span className="font-bold text-white">{visual}</span>
+          </button>
+          {visualOpen && (
+            <div className="absolute top-full left-0 z-50 mt-1 w-screen max-w-72 rounded-xl border border-white-25 bg-black-100 py-1 shadow-lg">
+              {visualOptions.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setVisual(opt.value);
+                    setVisualOpen(false);
+                  }}
+                  className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left hover:bg-black-60"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold text-white">{opt.value}</span>
+                    <span className="text-xs text-white-75">{opt.description}</span>
+                  </div>
+                  {visual === opt.value && <CheckMark />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Model */}
         <div className="relative">
           <button
@@ -147,7 +187,7 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
         label={isGenerating ? t('editing') : t('edit_scene')}
         coins={10}
         onClick={handleGenerate}
-        isLoading={isGenerating || !props.assetId}
+        isLoading={isGenerating || !props.asset}
         py="py-2"
         px="px-4"
         textSize="text-xs"
@@ -156,20 +196,10 @@ export const EditContent = (props: { assetId: string; onSuccess?: () => void }) 
       {starModalOpen && (
         <SelectStarModal
           onSelect={(character) => {
-            setStarCharacter({ id: character.id, name: character.name });
+            setStarCharacter(character);
             setStarModalOpen(false);
           }}
           onClose={() => setStarModalOpen(false)}
-        />
-      )}
-
-      {visualModalOpen && (
-        <SelectVisualModal
-          onSelect={(v) => {
-            setVisual(v);
-            setVisualModalOpen(false);
-          }}
-          onClose={() => setVisualModalOpen(false)}
         />
       )}
     </div>

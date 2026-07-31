@@ -238,7 +238,8 @@
     "video_ready": "Video ready!"
   },
   "EditContent": {
-    "visual": "Visual",
+    "visual_label": "Visual:",
+    "scene_alt": "Scene being edited",
     "model_label": "Model:",
     "orientation_label": "Orientation:",
     "spark_desc": "Fast and efficient editing",
@@ -346,6 +347,9 @@
     "scene_alt": "Generated scene"
   },
   "GenerateScenePage": {
+    "download_started": "Preparing download...",
+    "download_saved": "Download saved.",
+    "download_failed": "Could not save the file. Opening it instead.",
     "link_copied": "Link copied to clipboard!",
     "copy_failed": "Could not copy the link.",
     "scene_deleted": "Scene deleted.",

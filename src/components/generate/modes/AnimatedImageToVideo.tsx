@@ -1,6 +1,7 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
+import type { Motion } from '@/components/generate/SelectMotionModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
@@ -44,7 +45,7 @@ export const AnimatedImageToVideo = (props: {
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [stars, setStars] = useState<StarCharacter[]>([]);
   const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
-  const [motion, setMotion] = useState<{ name: string; value: string } | null>(null);
+  const [motion, setMotion] = useState<Motion | null>(null);
   const [creativeOpen, setCreativeOpen] = useState(false);
   const [creativePrompt, setCreativePrompt] = useState('');
 
@@ -105,6 +106,7 @@ export const AnimatedImageToVideo = (props: {
           sublabel={t('required')}
           icon={<MotionIcon />}
           isSelected={!!motion}
+          selectedImage={motion?.imageUrl ?? undefined}
           selectedName={motion?.name}
           onClick={() => setMotionModalOpen(true)}
           onDeselect={() => setMotion(null)}
@@ -158,7 +160,7 @@ export const AnimatedImageToVideo = (props: {
       {motionModalOpen && (
         <SelectMotionModal
           onSelect={(m) => {
-            setMotion({ name: m.name, value: m.value });
+            setMotion(m);
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}

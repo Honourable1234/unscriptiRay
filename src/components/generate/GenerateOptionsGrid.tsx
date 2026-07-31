@@ -2,8 +2,9 @@
 
 import type { PickOption, PickOptionType } from './PickOptionModal';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActionIcon, EmojiIcon, InputIcon, SelectStarIcon, SettingIcon } from '@/components/icons';
+import { presetsOfType, settingLabel, useGenerateService } from '@/services/generateService';
 import { CreativeInputModal } from './CreativeInputModal';
 import { GenerateOptionCard } from './GenerateOptionCard';
 import { GenerateOptionCardWide } from './GenerateOptionCardWide';
@@ -24,6 +25,24 @@ type StarCharacter = { id: string; name: string; image: string };
 
 const MAX_STARS = 4;
 
+const pickKeys: PickKey[] = ['action', 'setting', 'mood'];
+
+/**
+ * Turns a value stored with an asset into the option shape the pick cards render.
+ * @param value - Stored value such as `rooftop_at_sunset`.
+ * @returns The option to show as already picked, or null when there is none.
+ */
+const toPickedOption = (value: string | null | undefined): PickOption | null =>
+  value ? { value, label: settingLabel(value) } : null;
+
+/**
+ * Loosens a preset name for comparison, since stored values separate words with
+ * underscores or spaces depending on when they were generated.
+ * @param value - Preset name or a value stored with an asset.
+ * @returns The value lowercased with single spaces between words.
+ */
+const looseName = (value: string) => value.toLowerCase().replace(/[\s_-]+/g, ' ').trim();
+
 export const GenerateOptionsGrid = (props: {
   selected: SelectedOptions;
   onToggle: (key: keyof SelectedOptions) => void;
@@ -32,17 +51,47 @@ export const GenerateOptionsGrid = (props: {
   starCharacters?: StarCharacter[];
   onStarsChange?: (characters: StarCharacter[]) => void;
   multipleStars?: boolean;
+  /** Values the source asset was generated with, shown as already picked. */
+  initialOptions?: Partial<Record<PickKey, string | null>>;
+  /** Advanced prompt the source asset was generated with. */
+  initialCreative?: string | null;
 }) => {
   const t = useTranslations('GenerateOptionsGrid');
+  const { getPresets } = useGenerateService();
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [openPickModal, setOpenPickModal] = useState<PickKey | null>(null);
   const [creativeModalOpen, setCreativeModalOpen] = useState(false);
-  const [creativePrompt, setCreativePrompt] = useState('');
-  const [optionValues, setOptionValues] = useState<Record<PickKey, PickOption | null>>({
-    action: null,
-    setting: null,
-    mood: null,
-  });
+  const [creativePrompt, setCreativePrompt] = useState(props.initialCreative ?? '');
+  const [optionValues, setOptionValues] = useState<Record<PickKey, PickOption | null>>(() => ({
+    action: toPickedOption(props.initialOptions?.action),
+    setting: toPickedOption(props.initialOptions?.setting),
+    mood: toPickedOption(props.initialOptions?.mood),
+  }));
+
+  // Prefilled values arrive as bare names, so their preset thumbnails are looked
+  // up once to match how a card looks after picking it from the modal.
+  useEffect(() => {
+    if (!pickKeys.some(key => props.initialOptions?.[key])) {
+      return;
+    }
+    getPresets().then((res) => {
+      const presets = res.content ?? [];
+      setOptionValues((prev) => {
+        const next = { ...prev };
+        for (const key of pickKeys) {
+          const current = next[key];
+          if (!current || current.image) {
+            continue;
+          }
+          const preset = presetsOfType(presets, key).find(p => looseName(p.name) === looseName(current.value));
+          if (preset?.image_url) {
+            next[key] = { ...current, label: preset.display_name || current.label, image: preset.image_url };
+          }
+        }
+        return next;
+      });
+    }).catch(() => {});
+  }, []);
 
   const stars = props.starCharacters ?? [];
 
