@@ -37,7 +37,9 @@
     "email_label": "Email",
     "email_placeholder": "Enter your email",
     "submit": "Submit",
-    "check_email": "Check your email for a reset link."
+    "check_email": "Check your email for a reset link.",
+    "remember_password": "Remember your password?",
+    "sign_in_link": "Sign in"
   },
   "NewPasswordPage": {
     "title": "New password",
