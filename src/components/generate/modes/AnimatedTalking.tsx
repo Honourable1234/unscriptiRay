@@ -4,6 +4,7 @@ import type { Scene } from '@/components/generate/AudioModal';
 import type { SelectedVoice } from '@/components/generate/VoiceModal';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateOptionCard } from '@/components/generate/GenerateOptionCard';
 import { GenerateOptionCardWide } from '@/components/generate/GenerateOptionCardWide';
@@ -24,12 +25,12 @@ const sceneEmotions: Scene[] = ['Happy', 'Natural', 'Sad', 'Angry', 'Fearful', '
 
 export const AnimatedTalking = (props: {
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedTalking');
   const { generateSpeech } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
@@ -68,7 +69,7 @@ export const AnimatedTalking = (props: {
     }), {
       successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, '16:9'),
       onSettled: props.onGenerationEnd,
     });
   };
@@ -176,6 +177,13 @@ export const AnimatedTalking = (props: {
           max={MAX_STARS}
           onConfirm={setStars}
           onClose={() => setStarModalOpen(false)}
+        />
+      )}
+
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

@@ -1,13 +1,17 @@
 'use client';
 
 import type { Scene } from './AudioModal';
+import type { Motion } from './SelectMotionModal';
+import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CaptureIcon, MotionIcon, SelectStarIcon } from '@/components/icons';
+import { useAssetStar } from '@/hooks/useAssetStar';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
-import { useGenerateService } from '@/services/generateService';
+import { settingLabel, useGenerateService } from '@/services/generateService';
 import { AudioModal } from './AudioModal';
+import { CreativeInputModal } from './CreativeInputModal';
 import { GenerateButton } from './GenerateButton';
 import { GenerateOptionCard } from './GenerateOptionCard';
 import { GenerateOptionCardWide } from './GenerateOptionCardWide';
@@ -15,23 +19,27 @@ import { GenerateVideoControls } from './GenerateVideoControls';
 import { SelectMotionModal } from './SelectMotionModal';
 import { SelectStarModal } from './SelectStarModal';
 
-type StarCharacter = { id: string; name: string; image: string };
-type MotionItem = { id: string; name: string; value: string };
 type AudioData = { script: string; sceneEmotion: Scene; voiceType: string };
 
-export const VideoContent = (props: { assetId: string; onSuccess?: () => void }) => {
+export const VideoContent = (props: { asset: Asset | null; onSuccess?: () => void }) => {
   const t = useTranslations('VideoContent');
   const { generateVideo } = useGenerateService();
   const { isGenerating, start } = useGenerationRun();
-  const [quality, setQuality] = useState('Balanced');
-  const [orientation, setOrientation] = useState('16:9');
-  const [duration, setDuration] = useState('5s');
-  const [starCharacter, setStarCharacter] = useState<StarCharacter | null>(null);
-  const [motion, setMotion] = useState<MotionItem | null>(null);
+  // The modal opens on the settings the source asset was generated with, so the
+  // video starts from the current scene instead of a blank form.
+  const settings = props.asset?.settings;
+  const [quality, setQuality] = useState(settings?.quality === 'ultra' ? 'Ultra' : 'Balanced');
+  const [orientation, setOrientation] = useState(props.asset?.orientation ?? '16:9');
+  const [duration, setDuration] = useState(settings?.duration ? `${settings.duration}s` : '5s');
+  const [starCharacter, setStarCharacter] = useAssetStar(settings?.characterId ?? null);
+  const [motion, setMotion] = useState<Motion | null>(() =>
+    settings?.motion ? { id: '', name: settingLabel(settings.motion), value: settings.motion, imageUrl: null } : null);
   const [audioData, setAudioData] = useState<AudioData | null>(null);
+  const [creativePrompt, setCreativePrompt] = useState(settings?.advancedPrompt ?? '');
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [motionModalOpen, setMotionModalOpen] = useState(false);
   const [audioModalOpen, setAudioModalOpen] = useState(false);
+  const [creativeModalOpen, setCreativeModalOpen] = useState(false);
 
   const handleGenerate = () => {
     if (!starCharacter) {
@@ -39,13 +47,14 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
       return;
     }
     void start(() => generateVideo({
-      source_image_id: props.assetId,
+      source_image_id: props.asset?.id ?? '',
       character_ids: [starCharacter.id],
       mode: 'image_to_video',
       motion: motion?.value,
       quality: quality === 'Balanced' ? 'balance' : 'ultra',
       orientation,
       duration: Number.parseInt(duration, 10),
+      ...(creativePrompt && { advanced_prompt: creativePrompt }),
       ...(audioData && {
         voice_type: audioData.voiceType,
         script: audioData.script,
@@ -74,6 +83,7 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
           height="200px"
           icon={<MotionIcon />}
           isSelected={!!motion}
+          selectedImage={motion?.imageUrl ?? undefined}
           selectedName={motion?.name}
           onClick={() => setMotionModalOpen(true)}
           onDeselect={() => setMotion(null)}
@@ -85,6 +95,9 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
         sublabel={t('creator_tier')}
         height="107px"
         icon={<CaptureIcon />}
+        isSelected={!!creativePrompt}
+        selectedName={creativePrompt || undefined}
+        onClick={() => setCreativeModalOpen(true)}
       />
 
       <GenerateVideoControls
@@ -102,7 +115,7 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
         label={isGenerating ? t('generating') : t('generate_video')}
         coins={30}
         onClick={handleGenerate}
-        isLoading={isGenerating || !props.assetId}
+        isLoading={isGenerating || !props.asset}
         py="py-2"
         px="px-4"
         textSize="text-xs"
@@ -125,6 +138,15 @@ export const VideoContent = (props: { assetId: string; onSuccess?: () => void })
             setStarModalOpen(false);
           }}
           onClose={() => setStarModalOpen(false)}
+        />
+      )}
+
+      {creativeModalOpen && (
+        <CreativeInputModal
+          value={creativePrompt}
+          characterId={starCharacter?.id}
+          onSave={value => setCreativePrompt(value.trim())}
+          onClose={() => setCreativeModalOpen(false)}
         />
       )}
 

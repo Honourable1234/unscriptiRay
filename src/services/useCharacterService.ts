@@ -1,6 +1,40 @@
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 
+/** One media entry; the API sends only `blur_url` for items the viewer cannot see. */
+export type CharacterMediaItem = {
+  id: string;
+  image_url?: string | null;
+  video_url?: string | null;
+  blur_url?: string | null;
+  width?: number | null;
+  height?: number | null;
+  orientation?: string | null;
+  locked?: boolean;
+};
+
+type CharacterMediaResponse = {
+  success: boolean;
+  message: string;
+  content: {
+    items: CharacterMediaItem[];
+    nextCursor: string | null;
+    /** Whether the viewer owns this character's collection. */
+    hasFullAccess: boolean;
+  };
+};
+
+type PurchaseCollectionResponse = {
+  success: boolean;
+  message: string;
+  content: {
+    /** True when the viewer already owned the collection and was not charged again. */
+    already_purchased: boolean;
+    coin_cost: number;
+    remaining_balance: number;
+  };
+};
+
 type CreateCharacterBody = {
   style: string;
   appearance: Partial<Record<string, string>>;
@@ -66,7 +100,7 @@ export const useCharacterService = () => {
   const getCharacter = (id: string) => api.get(`/characters/${id}`);
 
   const getCharacterMedia = (id: string, type: 'images' | 'videos') =>
-    api.get(`/characters/${id}/media?type=${type}`, token ?? undefined);
+    api.get(`/characters/${id}/media?type=${type}`, token ?? undefined) as Promise<CharacterMediaResponse>;
 
   const likeCharacter = (id: string) => {
     if (!token) {
@@ -86,7 +120,7 @@ export const useCharacterService = () => {
     if (!token) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post(`/characters/${id}/purchase-collection`, {}, token);
+    return api.post(`/characters/${id}/purchase-collection`, {}, token) as Promise<PurchaseCollectionResponse>;
   };
 
   const getCreationOptions = () => api.get('/characters/creation-options');

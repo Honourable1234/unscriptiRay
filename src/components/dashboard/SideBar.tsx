@@ -46,14 +46,13 @@ const SideBarTrigger = (props: { className?: string }) => {
 
 const SideBarContent = () => {
   const { isAuthenticated, isPremium, user } = useAuth();
+  const { setOpenMobile } = useSidebar();
   const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon" className="border-black-40 bg-black-100">
-      <SideBarTrigger className="fixed top-4 left-4 z-50 bg-black-100/40 text-white/40 md:hidden" />
-
       <SidebarHeader className="pt-5">
-        <SideBarTrigger className="hidden md:flex" />
+        <SideBarTrigger />
       </SidebarHeader>
 
       <SidebarContent>
@@ -64,6 +63,7 @@ const SideBarContent = () => {
               <SidebarMenuItem key={item.href}>
                 <SidebarMenuButton
                   render={<Link href={item.href} />}
+                  onClick={() => setOpenMobile(false)}
                   isActive={isActive}
                   tooltip={item.label}
                   className="h-auto rounded-xl p-3 text-sm font-medium text-white hover:bg-black-40 hover:text-white/75 data-active:bg-primary-100/20 data-active:text-primary-100"
@@ -81,10 +81,10 @@ const SideBarContent = () => {
         {!isPremium && (
           isAuthenticated
             ? (
-                <button className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
+                <Link href="/profile/subscription" className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
                   <UpgradeIcon />
                   <span className="group-data-[collapsible=icon]:hidden">Upgrade</span>
-                </button>
+                </Link>
               )
             : (
                 <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-center text-sm font-semibold text-primary-100 transition-opacity group-data-[collapsible=icon]:px-2 hover:opacity-80">
@@ -132,6 +132,10 @@ export const SideBar = () => {
     // fixed-position panel, so it docks to this column instead of the viewport
     // edge — required when stacking more than one Sidebar side by side.
     <SidebarProvider className="h-screen min-h-0 w-fit transform-[translateZ(0)]">
+      {/* The mobile panel is a sheet that only exists while it is open, so its
+          trigger sits outside the sidebar to stay reachable. It floats in the
+          gutter the templates reserve at the start of the top bar. */}
+      <SideBarTrigger className="fixed top-3 left-2 z-40 md:hidden" />
       <SideBarContent />
     </SidebarProvider>
   );

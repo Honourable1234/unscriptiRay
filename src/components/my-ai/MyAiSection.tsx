@@ -1,11 +1,13 @@
 'use client';
 
 import type { MyCharacter } from '@/services/useMyAiService';
-import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { FilterDropdown } from '@/components/explore/FilterDropdown';
 import { SearchIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
+import { guestToken } from '@/libs/guestToken';
+import { Link } from '@/libs/I18nNavigation';
+import { returnUrl } from '@/libs/returnUrl';
 import { useMyAiService } from '@/services/useMyAiService';
 import { MyAiCard } from './MyAiCard';
 import { MyAiCardSkeleton } from './MyAiCardSkeleton';
@@ -15,15 +17,17 @@ type Filter = 'All' | 'Approved' | 'Pending';
 const skeletonKeys = ['a', 'b', 'c'];
 
 export const MyAiSection = () => {
-  const { token } = useAuth();
+  const { isAuthenticated, token } = useAuth();
   const { getMyCharacters } = useMyAiService();
   const [characters, setCharacters] = useState<MyCharacter[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Skeletons only make sense when a request is actually going out; a visitor
+  // without any session has nothing to load.
+  const [isLoading, setIsLoading] = useState(() => !!(token ?? guestToken.get()));
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>('All');
 
   useEffect(() => {
-    if (!token) {
+    if (!token && !guestToken.get()) {
       return;
     }
     getMyCharacters({ limit: 50 })
@@ -49,6 +53,30 @@ export const MyAiSection = () => {
   }, [characters, search, filter]);
 
   if (!isLoading && characters.length === 0) {
+    if (!isAuthenticated) {
+      return (
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <p className="text-sm font-semibold text-white">Sign up to start your collection</p>
+          <p className="max-w-80 text-xs text-white-75">Every AI character you create is saved here to your account.</p>
+          <div className="mt-1 flex items-center gap-2">
+            <Link
+              href="/sign-up"
+              onClick={() => returnUrl.save(window.location.pathname)}
+              className="rounded-xl bg-primary-100 px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            >
+              Sign up free
+            </Link>
+            <Link
+              href="/create"
+              className="rounded-xl border border-white-25 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100"
+            >
+              Start creating
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col items-center gap-3 py-16">
         <p className="text-sm text-white/50">You haven't created any AI characters yet.</p>

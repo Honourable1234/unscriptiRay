@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
 import { GenerateControls } from '@/components/generate/GenerateControls';
 import { GenerateOptionsGrid } from '@/components/generate/GenerateOptionsGrid';
@@ -21,12 +22,12 @@ type StarCharacter = { id: string; name: string; image: string };
 export const StillStylePresent = (props: {
   initialCharacter?: StarCharacter | null;
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('StillStylePresent');
   const { generateImage } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
   const [orientation, setOrientation] = useState('16:9');
   const [advancedPrompt, setAdvancedPrompt] = useState<string | null>(null);
@@ -72,7 +73,7 @@ export const StillStylePresent = (props: {
     }), {
       successMessage: t('image_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });
   };
@@ -100,6 +101,12 @@ export const StillStylePresent = (props: {
         isLoading={isGenerating}
         disabled={stars.length === 0}
       />
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
+        />
+      )}
     </div>
   );
 };

@@ -102,6 +102,7 @@ export const ExploreSection = () => {
       <SearchBar
         onChange={setRawQuery}
         onSearch={setRawQuery}
+        hideFilter
       />
       {filters
         ? (

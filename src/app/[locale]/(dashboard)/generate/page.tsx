@@ -16,6 +16,7 @@ import { AnimatedTalking } from '@/components/generate/modes/AnimatedTalking';
 import { StillEditStyle } from '@/components/generate/modes/StillEditStyle';
 import { StillStylePresent } from '@/components/generate/modes/StillStylePresent';
 import { useAuth } from '@/context/AuthContext';
+import { guestToken } from '@/libs/guestToken';
 import { useGenerateService } from '@/services/generateService';
 
 type Tab = 'All' | 'Images' | 'Videos';
@@ -37,15 +38,15 @@ export default function GeneratePage() {
   const [mode, setMode] = useState<GenerateMode>('style_present');
   const [mediaTab, setMediaTab] = useState<Tab>('All');
   const [assets, setAssets] = useState<GeneratedAssetsResponse['content'] | null>(null);
-  const [pendingIds, setPendingIds] = useState<string[]>([]);
+  const [pending, setPending] = useState<{ id: string; orientation: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGenerationStart = (generationId: string) => {
-    setPendingIds(prev => [...prev, generationId]);
+  const handleGenerationStart = (generationId: string, orientation: string) => {
+    setPending(prev => [...prev, { id: generationId, orientation }]);
   };
 
   const handleGenerationEnd = (generationId: string) => {
-    setPendingIds(prev => prev.filter(id => id !== generationId));
+    setPending(prev => prev.filter(p => p.id !== generationId));
   };
 
   const refreshAssets = async () => {
@@ -60,7 +61,7 @@ export default function GeneratePage() {
   };
 
   useEffect(() => {
-    if (!token) {
+    if (!token && !guestToken.get()) {
       return;
     }
     const fetch = async () => {
@@ -120,7 +121,7 @@ export default function GeneratePage() {
               {skeletonKeys.map(key => <CardSkeleton key={key} />)}
             </div>
           )
-        : <GenerateResultGrid assets={filteredAssets} pendingIds={pendingIds} />}
+        : <GenerateResultGrid assets={filteredAssets} pending={pending} />}
     </div>
   );
 }

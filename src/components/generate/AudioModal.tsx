@@ -43,7 +43,7 @@ export const AudioModal = (props: {
 
   return (
     <>
-      <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="my-auto w-full max-w-160 rounded-2xl border border-white-25 bg-black-80 px-4 py-6 md:px-7.5">
           <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
             <h2 className="text-base font-semibold text-white">Audio</h2>
@@ -103,6 +103,7 @@ export const AudioModal = (props: {
             <button
               onClick={() => {
                 props.onSave({ script, sceneEmotion, voiceType });
+                props.onClose();
               }}
               className="w-full cursor-pointer rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
@@ -115,7 +116,10 @@ export const AudioModal = (props: {
       {voiceOpen && (
         <VoiceModal
           selected={voiceType}
-          onSelect={v => setVoiceType(v.shortName)}
+          onSelect={(v) => {
+            setVoiceType(v.localName);
+            setVoiceOpen(false);
+          }}
           onClose={() => setVoiceOpen(false)}
         />
       )}

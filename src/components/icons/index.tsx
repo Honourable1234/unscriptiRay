@@ -71,5 +71,4 @@ export { StarIcon } from './StarIcon';
 export { TrashIcon } from './TrashIcon';
 export { UpgradeIcon } from './UpgradeIcon';
 export { VideoIcon } from './VideoIcon';
-export { VisualIcon } from './VisualIcon';
 export { VoiceIcon } from './VoiceIcon';

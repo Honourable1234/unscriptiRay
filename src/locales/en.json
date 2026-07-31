@@ -38,7 +38,9 @@
     "email_label": "Email",
     "email_placeholder": "Enter your email",
     "submit": "Submit",
-    "check_email": "Check your email for a reset link."
+    "check_email": "Check your email for a reset link.",
+    "remember_password": "Remember your password?",
+    "sign_in_link": "Sign in"
   },
   "NewPasswordPage": {
     "title": "New password",
@@ -93,13 +95,12 @@
     "error": "Failed to load character."
   },
   "CharacterUnlockButton": {
-    "unlock": "Unlock {name} — 50 coins",
+    "unlock": "Unlock {name}",
+    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
+    "unlocked": "Collection unlocked",
+    "already_unlocked": "You already own this collection",
     "purchase_failed": "Purchase failed",
     "error": "Something went wrong"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "Secrets locked",
-    "tap_to_reveal": "Tap to reveal"
   },
   "ChatRoom": {
     "clear_confirm": "Clear all messages?",
@@ -239,7 +240,8 @@
     "video_ready": "Video ready!"
   },
   "EditContent": {
-    "visual": "Visual",
+    "visual_label": "Visual:",
+    "scene_alt": "Scene being edited",
     "model_label": "Model:",
     "orientation_label": "Orientation:",
     "spark_desc": "Fast and efficient editing",
@@ -285,7 +287,8 @@
     "generate_image": "Generate Image",
     "image_ready": "Image ready!",
     "model_label": "Model:",
-    "orientation_label": "Orientation:"
+    "orientation_label": "Orientation:",
+    "visual_label": "Visual:"
   },
   "AnimatedStylePresent": {
     "generating": "Generating...",
@@ -311,6 +314,8 @@
   "AnimatedExtendVideo": {
     "video": "Video",
     "required": "(Required)",
+    "select_star": "Select Star",
+    "stars_count": "{count} stars",
     "motion": "Motion",
     "creative_input_advanced": "Creative Input (Advanced)",
     "creator_tier_exclusive": "Creator Tier Exclusive",
@@ -344,6 +349,9 @@
     "scene_alt": "Generated scene"
   },
   "GenerateScenePage": {
+    "download_started": "Preparing download...",
+    "download_saved": "Download saved.",
+    "download_failed": "Could not save the file. Opening it instead.",
     "link_copied": "Link copied to clipboard!",
     "copy_failed": "Could not copy the link.",
     "scene_deleted": "Scene deleted.",

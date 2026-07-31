@@ -24,12 +24,12 @@ export const GenerateControls = (props: {
   const [visualOptions, setVisualOptions] = useState<{ value: string; description: string }[]>(() => [
     { value: 'Cinematic', description: t('cinematic_desc') },
     { value: 'Realistic', description: t('realistic_desc') },
-    { value: 'Anime', description: t('anime_desc') },
   ]);
 
   useEffect(() => {
     getPresets().then((res) => {
       const visuals = presetsOfType(res.content ?? [], 'visual')
+        .filter(p => (p.display_name || p.name).toLowerCase() !== 'anime')
         .map(p => ({ value: p.display_name || p.name, description: '' }));
       if (visuals.length > 0) {
         setVisualOptions(visuals);

@@ -1,17 +1,18 @@
 'use client';
 import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { CreateSignUpPrompt } from '@/components/create/CreateSignUpPrompt';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
 import { CreateStep3 } from '@/components/create/CreateStep3';
 import { CreateStep4 } from '@/components/create/CreateStep4';
 import { CreateStepper } from '@/components/create/CreateStepper';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { ForwardArrowIcon, SpinnerIcon, StackedCoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { CreateProvider, useCreate } from '@/context/CreateContext';
+import { useWallet } from '@/context/WalletContext';
 import { useCharacterService } from '@/services/useCharacterService';
 
 const steps = [CreateStep1, CreateStep2, CreateStep3];
@@ -68,8 +69,29 @@ function CreatePageContent() {
   const [generationId, setGenerationId] = useState<string | null>(getInitialGenerationId);
   const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
   const { isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const { data } = useCreate();
   const { createCharacter, generateCharacterImage, updateCharacter } = useCharacterService();
+
+  const characterRef = useRef(character);
+
+  useEffect(() => {
+    characterRef.current = character;
+  }, [character]);
+
+  useEffect(() => {
+    return () => {
+      // Leaving after a character was created means the flow is done — clear
+      // the saved draft so returning to /create starts a fresh form instead
+      // of resuming this finished one.
+      if (characterRef.current) {
+        sessionStorage.removeItem('create_form');
+        sessionStorage.removeItem('create_character');
+        sessionStorage.removeItem('create_character_response');
+        sessionStorage.removeItem('create_generation_id');
+      }
+    };
+  }, []);
 
   const handleGenerate = () => {
     if (!isAuthenticated) {
@@ -109,6 +131,8 @@ function CreatePageContent() {
           toast.error(t('image_gen_failed'));
         }
       }
+      // Creating a character and its image both spend coins.
+      refreshWallet();
       setGenerating(false);
       setStepValid(false);
       setStep(4);
@@ -220,7 +244,10 @@ function CreatePageContent() {
       )}
 
       {showSignUpPrompt && (
-        <CreateSignUpPrompt onClose={() => setShowSignUpPrompt(false)} />
+        <SignUpPromptModal
+          description="Sign up to bring your companion to life — your creation will be saved to your account."
+          onClose={() => setShowSignUpPrompt(false)}
+        />
       )}
     </div>
   );

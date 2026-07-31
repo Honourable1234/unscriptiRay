@@ -6,7 +6,7 @@ import { CloseIcon } from '@/components/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGenerateService } from '@/services/generateService';
 
-type SelectedAsset = { id: string; url: string; type: string };
+type SelectedAsset = { id: string; url: string; type: string; character_id: string | null };
 
 const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
 

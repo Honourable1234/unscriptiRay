@@ -1,8 +1,10 @@
 'use client';
 
 import type { Scene } from '@/components/generate/AudioModal';
+import type { Motion } from '@/components/generate/SelectMotionModal';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { AudioModal } from '@/components/generate/AudioModal';
 import { CreativeInputModal } from '@/components/generate/CreativeInputModal';
 import { GenerateButton } from '@/components/generate/GenerateButton';
@@ -23,12 +25,12 @@ const MAX_STARS = 4;
 
 export const AnimatedImageToVideo = (props: {
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedImageToVideo');
   const { generateVideo } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
   const [orientation, setOrientation] = useState('16:9');
   const [duration, setDuration] = useState('5s');
@@ -43,7 +45,7 @@ export const AnimatedImageToVideo = (props: {
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [stars, setStars] = useState<StarCharacter[]>([]);
   const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
-  const [motion, setMotion] = useState<{ name: string; value: string } | null>(null);
+  const [motion, setMotion] = useState<Motion | null>(null);
   const [creativeOpen, setCreativeOpen] = useState(false);
   const [creativePrompt, setCreativePrompt] = useState('');
 
@@ -70,7 +72,7 @@ export const AnimatedImageToVideo = (props: {
     }), {
       successMessage: t('scene_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });
   };
@@ -104,6 +106,7 @@ export const AnimatedImageToVideo = (props: {
           sublabel={t('required')}
           icon={<MotionIcon />}
           isSelected={!!motion}
+          selectedImage={motion?.imageUrl ?? undefined}
           selectedName={motion?.name}
           onClick={() => setMotionModalOpen(true)}
           onDeselect={() => setMotion(null)}
@@ -157,7 +160,7 @@ export const AnimatedImageToVideo = (props: {
       {motionModalOpen && (
         <SelectMotionModal
           onSelect={(m) => {
-            setMotion({ name: m.name, value: m.value });
+            setMotion(m);
             setMotionModalOpen(false);
           }}
           onClose={() => setMotionModalOpen(false)}
@@ -178,6 +181,12 @@ export const AnimatedImageToVideo = (props: {
           voiceType={audio.voiceType}
           onSave={values => setAudio(values)}
           onClose={() => setAudioOpen(false)}
+        />
+      )}
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>

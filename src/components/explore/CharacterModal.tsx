@@ -25,6 +25,13 @@ import { CharacterModalSkeleton } from './CharacterModalSkeleton';
 
 const MAX_TAGS_VISIBLE = 3;
 
+/**
+ * Checks whether a value is a src `next/image` can render: an absolute URL or a root-relative path.
+ * @param src - Candidate image source, e.g. an `image_url` from the API.
+ * @returns True when `next/image` will accept it without throwing.
+ */
+const isRenderableSrc = (src: string) => /^(?:https?:\/\/|\/)/.test(src);
+
 export const CharacterModal = (props: {
   character: Character;
   onClose: () => void;
@@ -61,7 +68,7 @@ export const CharacterModal = (props: {
       if (Array.isArray(imgs)) {
         (imgs as { image_url: string | null; blur_url?: string | null }[]).forEach((i) => {
           const u = i.image_url ?? i.blur_url ?? null;
-          if (u && !seen.has(u)) {
+          if (u && isRenderableSrc(u) && !seen.has(u)) {
             seen.add(u);
             urls.push(u);
           }
@@ -209,13 +216,14 @@ export const CharacterModal = (props: {
                       className="absolute top-1/2 -left-2.5 z-30 -translate-y-1/2 cursor-pointer"
                       onClick={() => {
                         setImageIndex(i => (i - 1 + images.length) % images.length);
-                        setNavClicks(n => n + 1);
+                        setNavClicks(n => Math.max(n - 1, 0));
                       }}
                     >
                       <ChevronLeftIcon />
                     </button>
                     <button
-                      className="absolute top-1/2 -right-2.5 z-30 -translate-y-1/2 cursor-pointer"
+                      className="absolute top-1/2 -right-2.5 z-30 -translate-y-1/2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
+                      disabled={navClicks >= 3}
                       onClick={() => {
                         setImageIndex(i => (i + 1) % images.length);
                         setNavClicks(n => n + 1);
@@ -226,9 +234,9 @@ export const CharacterModal = (props: {
                   </div>
 
                   {navClicks >= 3 && (
-                    <div className="absolute left-1/2 z-40 flex h-full w-[70%] -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
+                    <div className="pointer-events-none absolute left-1/2 z-40 flex h-full w-[70%] -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
                       <p className="text-sm font-bold text-white sm:text-[20px]">{t('want_more')}</p>
-                      <Link href={`/character/${props.character.id}`} className="rounded-xl bg-primary-100 px-2 py-2 text-xs font-semibold text-white sm:px-8">
+                      <Link href={`/character/${props.character.id}`} className="pointer-events-auto rounded-xl bg-primary-100 px-2 py-2 text-xs font-semibold text-white sm:px-8">
                         {t('view_content')}
                       </Link>
                     </div>

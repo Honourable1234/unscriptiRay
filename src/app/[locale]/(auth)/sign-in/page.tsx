@@ -9,7 +9,6 @@ import { Divider } from '@/components/auth/Divider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { InputField } from '@/components/auth/InputField';
 import { AuthTitle } from '@/components/auth/Title';
-import { BouncingDots } from '@/components/general/BouncingDots';
 import { guestToken } from '@/libs/guestToken';
 import { Link } from '@/libs/I18nNavigation';
 import { returnUrl } from '@/libs/returnUrl';
@@ -25,7 +24,6 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [forgotLoading, setForgotLoading] = useState(false);
 
   const handleSubmit = async () => {
     setError('');
@@ -58,12 +56,8 @@ export default function SignInPage() {
       <InputField id="password" label={t('password_label')} isPassword value={password} onChange={setPassword} />
       {error && <p className="text-xs text-red-400">{error}</p>}
       <p className="text-right">
-        <Link
-          href="/forgot-password"
-          onClick={() => setForgotLoading(true)}
-          className={`inline-flex items-center text-xs font-medium text-white ${forgotLoading ? 'pointer-events-none' : ''}`}
-        >
-          {forgotLoading ? <BouncingDots /> : t('forgot_password')}
+        <Link href="/forgot-password" className="text-xs font-medium text-white">
+          {t('forgot_password')}
         </Link>
       </p>
       <div>

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
+import { AuthLink } from '@/components/auth/AuthLink';
 import { InputField } from '@/components/auth/InputField';
 import { KeyIcon } from '@/components/icons';
 import { supabase } from '@/libs/supabase';
@@ -45,7 +46,10 @@ export default function ForgotPasswordPage() {
       <InputField id="email" label={t('email_label')} placeholder={t('email_placeholder')} value={email} onChange={setEmail} />
       {error && <p className="text-xs text-red-400">{error}</p>}
       {success && <p className="text-xs text-green-400">{success}</p>}
-      <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
+      <div className="w-full">
+        <AuthButton text={t('submit')} isLoading={isLoading} onClick={handleSubmit} />
+        <AuthLink text={t('remember_password')} linkText={t('sign_in_link')} href="/sign-in" />
+      </div>
     </div>
   );
 }

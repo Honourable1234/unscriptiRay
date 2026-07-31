@@ -1,14 +1,17 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { EditStyle } from '@/components/generate/EditStyle';
 import { GenerateButton } from '@/components/generate/GenerateButton';
-import { SelectVisualModal } from '@/components/generate/SelectVisualModal';
+import { SelectAssetModal } from '@/components/generate/SelectAssetModal';
+import { SelectStarModal } from '@/components/generate/SelectStarModal';
 import { StackedCoinIcon } from '@/components/icons';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
-import { useGenerateService } from '@/services/generateService';
+import { presetsOfType, useGenerateService } from '@/services/generateService';
+
+type StarCharacter = { id: string; name: string; image: string };
 
 const modelOptions = [
   { value: 'Spark', description: 'Best for outfits, backgrounds and effects', coins: 10 },
@@ -24,54 +27,56 @@ const orientationOptions = [
 
 export const StillEditStyle = (props: {
   onGenerated?: () => void;
-  onGenerationStart?: (generationId: string) => void;
+  onGenerationStart?: (generationId: string, orientation: string) => void;
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('StillEditStyle');
-  const { generateImage, uploadReference } = useGenerateService();
-  const { isGenerating, start } = useGenerationRun();
+  const { generateImage, getPresets } = useGenerateService();
+  const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
   const [orientation, setOrientation] = useState('16:9');
   const [modelOpen, setModelOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
-  const [reference, setReference] = useState<{ key: string; name: string } | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [visual, setVisual] = useState<{ id: string; name: string } | null>(null);
-  const [visualModalOpen, setVisualModalOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [visual, setVisual] = useState('Cinematic');
+  const [visualOpen, setVisualOpen] = useState(false);
+  const [visualOptions, setVisualOptions] = useState<{ value: string; description: string }[]>([
+    { value: 'Cinematic', description: '' },
+    { value: 'Realistic', description: '' },
+  ]);
+  const [star, setStar] = useState<StarCharacter | null>(null);
+  const [starModalOpen, setStarModalOpen] = useState(false);
 
   const activeModel = modelOptions.find(m => m.value === model) ?? modelOptions[0]!;
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) {
-      return;
-    }
-    setIsUploading(true);
-    try {
-      const uploaded = await uploadReference(file);
-      setReference({ key: uploaded.key, name: file.name });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : t('upload_failed'));
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  useEffect(() => {
+    getPresets().then((res) => {
+      const visuals = presetsOfType(res.content ?? [], 'visual')
+        .filter(p => (p.display_name || p.name).toLowerCase() !== 'anime')
+        .map(p => ({ value: p.display_name || p.name, description: '' }));
+      if (visuals.length > 0) {
+        setVisualOptions(visuals);
+        if (!visuals.some(v => v.value.toLowerCase() === visual.toLowerCase())) {
+          setVisual(visuals[0]!.value);
+        }
+      }
+    }).catch(() => {});
+  }, []);
 
   const handleGenerate = () => {
-    if (!reference || !visual) {
+    if (!sourceImage || !star) {
       return;
     }
     void start(() => generateImage({
-      reference_image_key: reference.key,
-      visual: visual.name.toLowerCase(),
+      character_ids: [star.id],
+      visual: visual.toLowerCase(),
       orientation,
       quality: model === 'Eclipse' ? 'ultra' : 'balance',
     }), {
       successMessage: t('image_ready'),
       onComplete: props.onGenerated,
-      onStart: props.onGenerationStart,
+      onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });
   };
@@ -79,28 +84,63 @@ export const StillEditStyle = (props: {
   return (
     <div className="flex flex-col gap-4">
       <EditStyle
-        imageName={reference?.name ?? null}
-        isUploading={isUploading}
-        visualName={visual?.name ?? null}
-        onImageClick={() => fileInputRef.current?.click()}
-        onImageClear={() => setReference(null)}
-        onVisualClick={() => setVisualModalOpen(true)}
-        onVisualClear={() => setVisual(null)}
-      />
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={e => void handleFileChange(e)}
+        imageUrl={sourceImage?.url ?? null}
+        starName={star?.name ?? null}
+        starImage={star?.image}
+        onStarClick={() => setStarModalOpen(true)}
+        onStarClear={() => setStar(null)}
+        onImageClick={() => setImageModalOpen(true)}
+        onImageClear={() => setSourceImage(null)}
       />
 
       <div className="mx-auto flex w-full max-w-184 flex-wrap items-center gap-3">
+        {/* Visual dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => {
+              setVisualOpen(prev => !prev);
+              setModelOpen(false);
+              setOrientationOpen(false);
+            }}
+            className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
+          >
+            {t('visual_label')}
+            <span className="text-white">{visual}</span>
+          </button>
+          {visualOpen && (
+            <div className="absolute top-full left-0 z-50 mt-1 w-65 max-w-100 rounded-xl border border-white-25 bg-black-100 py-1 shadow-lg">
+              {visualOptions.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setVisual(opt.value);
+                    setVisualOpen(false);
+                  }}
+                  className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left hover:bg-black-60"
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold text-white">{opt.value}</span>
+                    {opt.description && <span className="text-xs text-white-75">{opt.description}</span>}
+                  </div>
+                  {visual === opt.value && (
+                    <div className="shrink-0 rounded-full bg-primary-100 p-1">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="text-white">
+                        <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Model dropdown */}
         <div className="relative">
           <button
             onClick={() => {
               setModelOpen(prev => !prev);
+              setVisualOpen(false);
               setOrientationOpen(false);
             }}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
@@ -146,6 +186,7 @@ export const StillEditStyle = (props: {
           <button
             onClick={() => {
               setOrientationOpen(prev => !prev);
+              setVisualOpen(false);
               setModelOpen(false);
             }}
             className="flex cursor-pointer items-center gap-1 rounded-xl border border-black-40 bg-black-100 px-6 py-3 text-sm font-medium text-white-50 transition-colors hover:border-primary-100"
@@ -179,16 +220,33 @@ export const StillEditStyle = (props: {
         coins={activeModel.coins}
         onClick={handleGenerate}
         isLoading={isGenerating}
-        disabled={!reference || !visual || isUploading}
+        disabled={!sourceImage || !visual || !star}
       />
 
-      {visualModalOpen && (
-        <SelectVisualModal
-          onSelect={(v) => {
-            setVisual(v);
-            setVisualModalOpen(false);
+      {imageModalOpen && (
+        <SelectAssetModal
+          title="Select Image"
+          filter="image"
+          onSelect={(asset) => {
+            setSourceImage({ id: asset.id, url: asset.url });
+            setImageModalOpen(false);
           }}
-          onClose={() => setVisualModalOpen(false)}
+          onClose={() => setImageModalOpen(false)}
+        />
+      )}
+      {starModalOpen && (
+        <SelectStarModal
+          onSelect={(character) => {
+            setStar(character);
+            setStarModalOpen(false);
+          }}
+          onClose={() => setStarModalOpen(false)}
+        />
+      )}
+      {needsSignUp && (
+        <SignUpPromptModal
+          description="Sign up to generate scenes — your creations will be saved to your account."
+          onClose={dismissSignUpPrompt}
         />
       )}
     </div>
