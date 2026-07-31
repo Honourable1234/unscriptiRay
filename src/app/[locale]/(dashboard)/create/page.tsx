@@ -12,6 +12,7 @@ import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { ForwardArrowIcon, SpinnerIcon, StackedCoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { CreateProvider, useCreate } from '@/context/CreateContext';
+import { useWallet } from '@/context/WalletContext';
 import { useCharacterService } from '@/services/useCharacterService';
 
 const steps = [CreateStep1, CreateStep2, CreateStep3];
@@ -68,6 +69,7 @@ function CreatePageContent() {
   const [generationId, setGenerationId] = useState<string | null>(getInitialGenerationId);
   const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
   const { isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const { data } = useCreate();
   const { createCharacter, generateCharacterImage, updateCharacter } = useCharacterService();
 
@@ -129,6 +131,8 @@ function CreatePageContent() {
           toast.error(t('image_gen_failed'));
         }
       }
+      // Creating a character and its image both spend coins.
+      refreshWallet();
       setGenerating(false);
       setStepValid(false);
       setStep(4);

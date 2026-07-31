@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useNotificationService } from '@/services/useNotificationService';
 import { BellIcon, CoinIcon, UpgradeIcon } from '../icons';
@@ -17,7 +18,8 @@ type Notification = {
 };
 
 export const NavBar = (props: { className?: string }) => {
-  const { isAuthenticated, isPremium, authLoading, user } = useAuth();
+  const { isAuthenticated, isPremium, authLoading } = useAuth();
+  const { balance } = useWallet();
   const { getUnreadCount, getNotifications } = useNotificationService();
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -54,21 +56,25 @@ export const NavBar = (props: { className?: string }) => {
         )}
         {!authLoading && isAuthenticated && (
           <div className="flex h-fit items-center gap-2 sm:gap-6">
-            <div className="flex cursor-pointer items-center justify-center gap-1 rounded-md bg-black-60 px-3 py-2 font-semibold hover:bg-black-40">
+            <Link
+              href="/profile/wallet"
+              className="flex cursor-pointer items-center justify-center gap-1 rounded-md bg-black-60 px-3 py-2 font-semibold hover:bg-black-40"
+            >
               <CoinIcon />
               <span className="text-xs whitespace-nowrap text-white">
-                {user?.coin_balance ?? 0}
+                {balance.toLocaleString()}
                 {' '}
                 Coins
               </span>
-            </div>
+            </Link>
             {!isPremium && (
-              <button
+              <Link
+                href="/profile/subscription"
                 className="hidden cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 px-3 py-2 text-xs font-semibold text-white sm:flex"
               >
                 <UpgradeIcon />
                 <span>Upgrade</span>
-              </button>
+              </Link>
             )}
             <div className="relative">
               <button

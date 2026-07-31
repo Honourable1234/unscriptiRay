@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/context/AuthContext';
+import { useWallet } from '@/context/WalletContext';
 import { useGenerateService } from '@/services/generateService';
 
 type RunOptions = {
@@ -20,6 +21,7 @@ type RunOptions = {
 export const useGenerationRun = () => {
   const t = useTranslations('GenerationToasts');
   const { isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const { pollGenerationStatus, retryGeneration } = useGenerateService();
   const [isGenerating, setIsGenerating] = useState(false);
   const [needsSignUp, setNeedsSignUp] = useState(false);
@@ -36,6 +38,7 @@ export const useGenerationRun = () => {
         setIsGenerating(false);
         options?.onSettled?.(generationId);
         toast.success(options?.successMessage ?? t('complete'));
+        refreshWallet();
         options?.onComplete?.();
       },
       (message) => {
@@ -73,6 +76,9 @@ export const useGenerationRun = () => {
     try {
       const res = await request();
       toast.info(t('started'));
+      // Coins are charged when the request is accepted, so the balance is stale
+      // from here until the generation settles and it is read again.
+      refreshWallet();
       options?.onStart?.(res.content.generation_id);
       track(res.content.generation_id, options);
     } catch (error) {

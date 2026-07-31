@@ -1,6 +1,7 @@
 'use client';
 
-import type { Invoice, SubscriptionStatus } from '@/services/useSubscriptionService';
+import type { Invoice, SubscriptionStatus, SubscriptionTier } from '@/services/useSubscriptionService';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ChevronLeftIcon, DownloadIcon } from '@/components/icons';
@@ -8,18 +9,56 @@ import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useSubscriptionService } from '@/services/useSubscriptionService';
 
+// Stripe owns the pricing, so plans are listed by billing period and the amount
+// to charge is settled at checkout. Free has no tier: it is what an account
+// falls back to, reached by cancelling rather than by checkout.
+const plans: { tier: SubscriptionTier | null; label: string; caption: string }[] = [
+  { tier: null, label: 'Free', caption: 'Limited access' },
+  { tier: 'monthly', label: 'Monthly', caption: 'Billed every month' },
+  { tier: 'yearly', label: 'Yearly', caption: 'Billed once a year' },
+];
+
+/**
+ * Decides whether a URL the billing API returned actually leads to Stripe.
+ * Endpoints that are not wired up yet echo back the URL they were given and
+ * flag it, and following one navigates nowhere while looking like a payment
+ * that went through.
+ * @param url - The checkout or portal URL from the response.
+ * @param stub - Whether the response marked itself as a stub.
+ * @returns True when the URL leaves the app and can be redirected to.
+ */
+const leadsToStripe = (url: string, stub?: boolean) =>
+  !stub && new URL(url, window.location.origin).origin !== window.location.origin;
+
 export const SubscriptionSection = () => {
   const { user, isAuthenticated } = useAuth();
-  const { getStatus, cancelSubscription, getInvoices } = useSubscriptionService();
+  const { getStatus, cancelSubscription, getInvoices, createCheckout, changeTier, openPortal } = useSubscriptionService();
+  const searchParams = useSearchParams();
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [invoices, setInvoices] = useState<Invoice[] | null>(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [pendingTier, setPendingTier] = useState<SubscriptionTier | null>(null);
+  const [openingPortal, setOpeningPortal] = useState(false);
 
   useEffect(() => {
     // Fall back to the user data already on screen if the fetch fails.
     getStatus().then(res => setSubscription(res.content)).catch(() => {});
     getInvoices().then(res => setInvoices(Array.isArray(res.content) ? res.content : [])).catch(() => setInvoices([]));
+  }, []);
+
+  // Stripe sends the buyer back here, so the outcome is reported once on return.
+  // The status fetch above doubles as the reconcile with the server.
+  useEffect(() => {
+    const outcome = searchParams.get('subscription');
+    if (outcome === 'success') {
+      toast.success('Payment received. Your plan updates once Stripe confirms it.');
+    } else if (outcome === 'cancelled') {
+      toast.info('Upgrade cancelled.');
+    } else if (outcome === 'portal') {
+      // Coming back from the portal looks like a bare page reload otherwise.
+      toast.info('Back from the billing portal.');
+    }
   }, []);
 
   const status = subscription?.status ?? user?.subscription_status;
@@ -28,6 +67,76 @@ export const SubscriptionSection = () => {
   const isActivePaid = !!tier && status === 'active';
   const tierLabel = tier || 'Free';
   const expiresLabel = expiresAt ? new Date(expiresAt).toLocaleDateString() : null;
+  const currentTier = tier?.toLowerCase();
+  const actionLabel = isActivePaid ? 'Switch' : 'Upgrade';
+
+  const handleSelectTier = (nextTier: SubscriptionTier) => {
+    // Guard against double-submits while a checkout session is being opened.
+    if (pendingTier) {
+      return;
+    }
+    setPendingTier(nextTier);
+    const returnUrl = `${window.location.origin}${window.location.pathname}`;
+    const body = {
+      tier: nextTier,
+      success_url: `${returnUrl}?subscription=success`,
+      cancel_url: `${returnUrl}?subscription=cancelled`,
+    };
+    // Checkout opens a first subscription; an active one moves period via change-tier.
+    const request = isActivePaid ? changeTier(body) : createCheckout(body);
+    request
+      .then((res) => {
+        // Money-critical: only leave the page when the API actually returns a
+        // checkout session, never on a 200 that carries no URL.
+        const checkoutUrl = res?.content?.checkout_url;
+        if (res?.success !== true || !checkoutUrl) {
+          toast.error(res?.message || 'Could not start checkout. You have not been charged.');
+          setPendingTier(null);
+          return;
+        }
+        // A stubbed URL would bounce back to the success page and claim a
+        // payment that never happened.
+        if (!leadsToStripe(checkoutUrl, res.content.stub)) {
+          toast.error('Payments are not available yet. You have not been charged.');
+          setPendingTier(null);
+          return;
+        }
+        window.location.href = checkoutUrl;
+      })
+      .catch((error) => {
+        toast.error(error instanceof Error ? error.message : 'Could not start checkout. You have not been charged.');
+        setPendingTier(null);
+      });
+  };
+
+  const handleOpenPortal = () => {
+    if (openingPortal) {
+      return;
+    }
+    setOpeningPortal(true);
+    openPortal({ return_url: `${window.location.origin}${window.location.pathname}?subscription=portal` })
+      .then((res) => {
+        // Only leave the page when Stripe actually hands back a portal session.
+        const portalUrl = res?.content?.portal_url;
+        if (res?.success !== true || !portalUrl) {
+          toast.error(res?.message || 'Could not open the billing portal.');
+          setOpeningPortal(false);
+          return;
+        }
+        // The endpoint is still a stub that echoes the return URL back, which
+        // would read as an unexplained page reload.
+        if (!leadsToStripe(portalUrl, res.content.stub)) {
+          toast.info('The billing portal is not available yet.');
+          setOpeningPortal(false);
+          return;
+        }
+        window.location.href = portalUrl;
+      })
+      .catch((error) => {
+        toast.error(error instanceof Error ? error.message : 'Could not open the billing portal.');
+        setOpeningPortal(false);
+      });
+  };
 
   const handleCancel = () => {
     // Guard against double-submits and cancelling a plan that is not actually active.
@@ -81,38 +190,74 @@ export const SubscriptionSection = () => {
         )}
       </div>
 
-      {isActivePaid
+      {isAuthenticated
         ? (
-            <button
-              onClick={() => setShowCancelConfirm(true)}
-              className="cursor-pointer rounded-2xl border border-error-200 px-4 py-3 text-sm font-semibold text-error-200 hover:bg-error-200/10"
-            >
-              Cancel Subscription
-            </button>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-semibold text-white">{isActivePaid ? 'Change plan' : 'Upgrade to Premium'}</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {plans.map((plan) => {
+                  const planTier = plan.tier;
+                  // Free is the current plan whenever no paid tier is active.
+                  const isCurrent = planTier ? isActivePaid && currentTier === planTier : !isActivePaid;
+                  return (
+                    <div
+                      key={plan.label}
+                      className={`flex items-center justify-between gap-3 rounded-2xl border bg-black-100 px-4 py-3.5 ${isCurrent ? 'border-primary-100' : 'border-black-40'}`}
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-white">{plan.label}</p>
+                        <p className="text-xs text-white-50">{plan.caption}</p>
+                      </div>
+                      {isCurrent && (
+                        <span className="rounded-full bg-black-60 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white-75">
+                          Current
+                        </span>
+                      )}
+                      {/* Free is reached by cancelling, so only paid plans get a checkout button. */}
+                      {!isCurrent && planTier && (
+                        <button
+                          onClick={() => handleSelectTier(planTier)}
+                          disabled={!!pendingTier}
+                          className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold whitespace-nowrap text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {pendingTier === planTier ? 'Opening…' : actionLabel}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           )
-        : isAuthenticated
-          ? (
-              <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
-                <div>
-                  <p className="text-sm font-semibold text-white">Upgrade to Premium</p>
-                  <p className="text-xs text-white-50">Unlock premium features</p>
-                </div>
-                <button className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                  Upgrade
-                </button>
+        : (
+            <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
+              <div>
+                <p className="text-sm font-semibold text-white">Get Started</p>
+                <p className="text-xs text-white-50">Sign up to unlock premium features</p>
               </div>
-            )
-          : (
-              <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
-                <div>
-                  <p className="text-sm font-semibold text-white">Get Started</p>
-                  <p className="text-xs text-white-50">Sign up to unlock premium features</p>
-                </div>
-                <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                  Sign Up Now
-                </Link>
-              </div>
-            )}
+              <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
+                Sign Up Now
+              </Link>
+            </div>
+          )}
+
+      {isActivePaid && (
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            onClick={handleOpenPortal}
+            disabled={openingPortal}
+            className="flex-1 cursor-pointer rounded-2xl border border-black-40 px-4 py-3 text-sm font-semibold text-white hover:bg-black-60 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {openingPortal ? 'Opening…' : 'Manage billing'}
+          </button>
+          <button
+            onClick={() => setShowCancelConfirm(true)}
+            className="flex-1 cursor-pointer rounded-2xl border border-error-200 px-4 py-3 text-sm font-semibold text-error-200 hover:bg-error-200/10"
+          >
+            Cancel Subscription
+          </button>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <p className="text-sm font-semibold text-white">Billing history</p>

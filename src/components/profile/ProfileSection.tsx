@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
+import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
 
@@ -30,6 +31,7 @@ const PlaceholderRow = (props: { label: string; value?: string }) => (
 
 export const ProfileSection = () => {
   const { user } = useAuth();
+  const { balance } = useWallet();
   const tierLabel = user?.subscription_tier || 'Free';
   const avatarInitial = (user?.display_name ?? user?.username ?? user?.email ?? '?').charAt(0).toUpperCase();
 
@@ -62,11 +64,21 @@ export const ProfileSection = () => {
         <div className="flex items-center gap-2 px-4 py-3.5">
           <CoinIcon />
           <span className="text-sm text-white">
-            <span className="font-semibold">{user?.coin_balance ?? 0}</span>
+            <span className="font-semibold">{balance.toLocaleString()}</span>
             {' '}
             Dreamcoins
           </span>
         </div>
+        <Link
+          href="/profile/wallet"
+          className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5 text-left hover:bg-black-40"
+        >
+          <div>
+            <p className="text-sm font-semibold text-white">Wallet</p>
+            <p className="text-xs text-white-50">Buy Dreamcoins and review your transactions</p>
+          </div>
+          <RightChevron />
+        </Link>
         <Link
           href="/profile/subscription"
           className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5 text-left hover:bg-black-40"

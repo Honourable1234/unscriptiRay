@@ -94,13 +94,12 @@
     "error": "Failed to load character."
   },
   "CharacterUnlockButton": {
-    "unlock": "Unlock {name} — 50 coins",
+    "unlock": "Unlock {name}",
+    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
+    "unlocked": "Collection unlocked",
+    "already_unlocked": "You already own this collection",
     "purchase_failed": "Purchase failed",
     "error": "Something went wrong"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "Secrets locked",
-    "tap_to_reveal": "Tap to reveal"
   },
   "ChatRoom": {
     "clear_confirm": "Clear all messages?",

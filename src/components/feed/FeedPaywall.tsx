@@ -1,6 +1,7 @@
 'use client';
 
 import { CoinIcon, CommentIcon, FeedIcon, MediaIcon, PhoneIcon } from '@/components/icons';
+import { Link } from '@/libs/I18nNavigation';
 
 const features = [
   { icon: <CoinIcon />, label: '+1,000 Dreamcoins Monthly', action: null },
@@ -60,9 +61,12 @@ export const FeedPaywall = () => {
             </div>
           </div>
 
-          <button className="w-full cursor-pointer rounded-xl bg-[#EF54A1] py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
+          <Link
+            href="/profile/subscription"
+            className="block w-full cursor-pointer rounded-xl bg-[#EF54A1] py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-90"
+          >
             ♡ Click Here To Upgrade Now ♡
-          </button>
+          </Link>
         </div>
       </div>
     </div>

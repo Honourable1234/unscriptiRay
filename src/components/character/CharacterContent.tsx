@@ -1,10 +1,10 @@
 'use client';
 
 import type { Character } from '@/data/characters';
+import type { CharacterMediaItem } from '@/services/useCharacterService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
-import { useAuth } from '@/context/AuthContext';
 import { assetAspectRatio } from '@/services/generateService';
 import { useCharacterService } from '@/services/useCharacterService';
 import { CharacterContentSkeleton } from './CharacterContentSkeleton';
@@ -24,9 +24,10 @@ const isRenderableSrc = (src: string) => /^(?:https?:\/\/|\/)/.test(src);
 
 export const CharacterContent = (props: { id: string }) => {
   const t = useTranslations('CharacterContent');
-  const { isPremium } = useAuth();
   const { getCharacter, getCharacterMedia } = useCharacterService();
   const [character, setCharacter] = useState<Character | null>(null);
+  // The character payload reports whether this viewer owns the collection.
+  const [hasFullAccess, setHasFullAccess] = useState(false);
   const [allMedia, setAllMedia] = useState<MediaItem[]>([]);
   const [imageCount, setImageCount] = useState(0);
   const [videoCount, setVideoCount] = useState(0);
@@ -57,43 +58,28 @@ export const CharacterContent = (props: { id: string }) => {
       }
     });
 
-    const parseMedia = (items: unknown, type: 'image' | 'video'): MediaItem[] => {
-      if (!Array.isArray(items)) {
-        return [];
-      }
-      return (items as Record<string, unknown>[]).map((item): MediaItem | null => {
-        const imageUrl = item.image_url as string | null;
-        const videoUrl = item.video_url as string | null;
-        const blurUrl = item.blur_url as string | null;
+    const parseMedia = (items: CharacterMediaItem[] | undefined, type: 'image' | 'video'): MediaItem[] =>
+      (items ?? []).map((item): MediaItem | null => {
         const aspectRatio = assetAspectRatio({
-          width: (item.width as number | null) ?? null,
-          height: (item.height as number | null) ?? null,
-          orientation: (item.orientation as string | null) ?? null,
+          width: item.width ?? null,
+          height: item.height ?? null,
+          orientation: item.orientation ?? null,
         });
-        if (type === 'video') {
-          const url = videoUrl ?? blurUrl ?? null;
-          if (!url || !isRenderableSrc(url)) {
-            return null;
-          }
-          return { type: 'video', url, locked: !videoUrl, aspectRatio };
-        }
-        const url = imageUrl ?? blurUrl ?? null;
+        // A locked item arrives without its real asset, leaving only the blur.
+        const source = type === 'video' ? item.video_url : item.image_url;
+        const url = source ?? item.blur_url ?? null;
         if (!url || !isRenderableSrc(url)) {
           return null;
         }
-        return { type: 'image', url, locked: !imageUrl, aspectRatio };
+        return { type, url, locked: item.locked ?? !source, aspectRatio };
       }).filter((m): m is MediaItem => m !== null);
-    };
 
-    const imagesReq = getCharacterMedia(props.id, 'images').then((res) => {
-      return parseMedia(res?.content?.items ?? res?.content ?? res?.data ?? res, 'image');
-    });
+    const imagesReq = getCharacterMedia(props.id, 'images');
+    const videosReq = getCharacterMedia(props.id, 'videos');
 
-    const videosReq = getCharacterMedia(props.id, 'videos').then((res) => {
-      return parseMedia(res?.content?.items ?? res?.content ?? res?.data ?? res, 'video');
-    });
-
-    const mediaReq = Promise.all([imagesReq, videosReq]).then(([imgs, vids]) => {
+    const mediaReq = Promise.all([imagesReq, videosReq]).then(([imageRes, videoRes]) => {
+      const imgs = parseMedia(imageRes?.content?.items, 'image');
+      const vids = parseMedia(videoRes?.content?.items, 'video');
       const sorted = [
         ...imgs.filter(m => !m.locked),
         ...vids.filter(m => !m.locked),
@@ -103,6 +89,8 @@ export const CharacterContent = (props: { id: string }) => {
       setAllMedia(sorted);
       setImageCount(imgs.length);
       setVideoCount(vids.length);
+      // The media endpoint, not the character one, reports collection ownership.
+      setHasFullAccess(imageRes?.content?.hasFullAccess === true || videoRes?.content?.hasFullAccess === true);
     });
 
     Promise.all([characterReq, mediaReq])
@@ -135,9 +123,9 @@ export const CharacterContent = (props: { id: string }) => {
   return (
     <div className="w-full py-2.5">
       <CharacterHeader character={character} imageCount={imageCount} videoCount={videoCount} />
-      {!isPremium && <CharacterUnlockButton character={character} onUnlocked={handleUnlocked} />}
+      {!hasFullAccess && <CharacterUnlockButton character={character} onUnlocked={handleUnlocked} />}
       <MediaStyleTab tab={tab} onTabChange={setTab} />
-      <CharacterMediaGrid name={character.name} media={filtered} isPremium={isPremium} />
+      <CharacterMediaGrid name={character.name} media={filtered} />
     </div>
   );
 };

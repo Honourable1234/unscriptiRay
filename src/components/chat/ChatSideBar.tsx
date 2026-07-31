@@ -195,6 +195,7 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void; scrollRo
 const ChatSideBarContent = () => {
   const t = useTranslations('ChatSideBar');
   const { activeView, setActiveView, activeChat, setActiveChat } = useChatNavigation();
+  const { setOpenMobile } = useSidebar();
   const router = useRouter();
   const [search, setSearch] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -207,12 +208,10 @@ const ChatSideBarContent = () => {
 
   return (
     <Sidebar collapsible="icon" className="border-black-40 bg-black-100">
-      <ChatSideBarTrigger className="fixed top-4 left-16 z-50 bg-black-100/40 text-white/40 md:hidden" />
-
       <SidebarHeader className="gap-3 pt-5">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold text-white group-data-[collapsible=icon]:hidden">Chats</span>
-          <ChatSideBarTrigger className="hidden md:flex" />
+          <ChatSideBarTrigger />
         </div>
 
         <div className="relative group-data-[collapsible=icon]:hidden">
@@ -237,6 +236,7 @@ const ChatSideBarContent = () => {
                   onClick={() => {
                     setActiveView(item.view);
                     setActiveChat(null);
+                    setOpenMobile(false);
                     router.push('/chat');
                   }}
                   isActive={!activeChat && activeView === item.view}
@@ -253,7 +253,7 @@ const ChatSideBarContent = () => {
 
         <SidebarSeparator className="bg-black-40" />
 
-        <ChatHistoryList search={search} onSelect={() => {}} scrollRoot={scrollRef} />
+        <ChatHistoryList search={search} onSelect={() => setOpenMobile(false)} scrollRoot={scrollRef} />
       </SidebarContent>
     </Sidebar>
   );
@@ -265,6 +265,10 @@ export const ChatSideBar = () => {
     // fixed-position panel, so it docks to this column (right after the main
     // nav rail) instead of overlaying the viewport's left edge.
     <SidebarProvider className="h-screen min-h-0 w-fit transform-[translateZ(0)]">
+      {/* The mobile panel is a sheet that only exists while it is open, so its
+          trigger sits outside the sidebar to stay reachable, next to the main
+          nav trigger in the gutter the chat template reserves. */}
+      <ChatSideBarTrigger className="fixed top-3 left-11 z-40 md:hidden" />
       <ChatSideBarContent />
     </SidebarProvider>
   );

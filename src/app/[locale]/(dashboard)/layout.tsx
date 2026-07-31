@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { AuthProvider } from '@/context/AuthContext';
+import { WalletProvider } from '@/context/WalletContext';
 import { DashboardTemplate } from '@/templates/DashboardTemplate';
 
 export default async function Layout(props: {
@@ -12,11 +13,13 @@ export default async function Layout(props: {
 
   return (
     <AuthProvider>
-      <DashboardTemplate>
-        <AuthGuard>
-          {props.children}
-        </AuthGuard>
-      </DashboardTemplate>
+      <WalletProvider>
+        <DashboardTemplate>
+          <AuthGuard>
+            {props.children}
+          </AuthGuard>
+        </DashboardTemplate>
+      </WalletProvider>
     </AuthProvider>
   );
 }

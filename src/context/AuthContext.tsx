@@ -37,12 +37,7 @@ const AuthContext = createContext<AuthContextValue>({
 
 const fetchUserData = async (accessToken: string): Promise<UserData | null> => {
   const res = await api.get('/users/me', accessToken);
-  const userData = res?.content ?? null;
-  // TODO: remove coin override when real balances are available for testing
-  if (userData) {
-    userData.coin_balance = 999999;
-  }
-  return userData;
+  return res?.content ?? null;
 };
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
@@ -51,7 +46,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [authLoading, setAuthLoading] = useState(true);
   const [isPremium] = useState(true);
 
-  const isAuthenticated = !!user;
+  // The Supabase session is what signs someone in; the profile fetched from the
+  // API is detail on top of it, so losing that must not sign them out.
+  const isAuthenticated = !!token;
 
   useEffect(() => {
     // TODO: remove setIsPremium override when premium accounts are available for testing
@@ -63,10 +60,16 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     // same Web Lock.
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setToken(session?.access_token ?? null);
-      if (session) {
-        updateUser(await fetchUserData(session.access_token));
-      } else {
+      if (!session) {
         updateUser(null);
+        setAuthLoading(false);
+        return;
+      }
+      // An unreachable API must neither reject here, which would leave the app
+      // pinned on its loading state, nor clear a profile already on screen.
+      const userData = await fetchUserData(session.access_token).catch(() => null);
+      if (userData) {
+        updateUser(userData);
       }
       setAuthLoading(false);
     });
