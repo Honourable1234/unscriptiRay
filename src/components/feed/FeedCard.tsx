@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { CommentIcon, HeartIcon, HeartIconFilled, ShareIcon } from '@/components/icons';
+import { Link } from '@/libs/I18nNavigation';
 import { useFeedService } from '@/services/useFeedService';
 
 export type DiscoverItem = {
@@ -83,17 +84,17 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent" />
 
       {/* Character info */}
-      <div className="absolute right-20 bottom-8 left-4 flex items-center gap-3">
+      <Link href={`/character/${props.item.character.id}`} className="absolute right-20 bottom-8 left-4 flex items-center gap-3">
         {props.item.character.image_url && (
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
             <Image src={props.item.character.image_url} alt={props.item.character.name} fill sizes="40px" className="object-cover" />
           </div>
         )}
         <span className="text-base font-bold text-white drop-shadow">{props.item.character.name}</span>
-      </div>
+      </Link>
 
       {/* Right action bar */}
-      <div className="absolute right-3 bottom-10 flex flex-col items-center gap-6">
+      <div className="absolute right-3 bottom-10 flex w-14 flex-col items-center gap-6">
         <button
           onClick={() => {
             const video = videoRef.current;
@@ -129,10 +130,10 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
           <span className="text-xs font-semibold">{likeCount}</span>
         </button>
 
-        <button className="flex cursor-pointer flex-col items-center gap-1 text-white hover:text-primary-100">
+        <Link href={`/chat/${props.item.character.id}`} className="flex cursor-pointer flex-col items-center gap-1 text-white hover:text-primary-100">
           <CommentIcon />
           <span className="text-xs font-semibold">Chat</span>
-        </button>
+        </Link>
 
         <button
           onClick={() => {

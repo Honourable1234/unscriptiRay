@@ -13,7 +13,7 @@ export type CharacterMediaItem = {
   locked?: boolean;
 };
 
-export type CharacterMediaResponse = {
+type CharacterMediaResponse = {
   success: boolean;
   message: string;
   content: {
