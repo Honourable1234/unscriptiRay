@@ -91,7 +91,7 @@ export const CreateStep1 = (props: { onValidChange?: (valid: boolean) => void })
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 pl-0.5 lg:grid-cols-4">
         {styles.map(style => (
           <CreateStyleCard
             key={style.value}

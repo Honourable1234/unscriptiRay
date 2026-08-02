@@ -42,9 +42,9 @@ export const CharacterEditForm = (props: { character: CharacterDetail }) => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-209 flex-col gap-6 pb-10">
-      <div className="sticky top-0 z-20 flex items-center justify-between gap-3 bg-black-80 py-4">
-        <Link href={`/character/${props.character.id}`} className="flex w-fit items-center gap-1 text-xs font-medium text-white-75 transition-colors hover:text-white">
+    <div className="flex w-full flex-col gap-6 pb-10">
+      <div className="sticky top-0 z-20 flex flex-col gap-3 bg-black-80 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <Link href={`/character/${props.character.id}`} className="flex w-fit items-center gap-1 text-xs font-medium whitespace-nowrap text-white-75 transition-colors hover:text-white">
           <span className="[&>svg]:h-4 [&>svg]:w-3.5"><ChevronLeftIcon /></span>
           Back to profile
         </Link>
@@ -55,28 +55,28 @@ export const CharacterEditForm = (props: { character: CharacterDetail }) => {
             type="button"
             onClick={handleSave}
             disabled={!canSave}
-            className={`rounded-xl px-5 py-2.5 text-xs font-semibold transition-colors ${canSave ? 'cursor-pointer bg-primary-100 text-white' : 'cursor-not-allowed bg-primary-100/40 text-white/40'}`}
+            className={`rounded-xl px-5 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors ${canSave ? 'cursor-pointer bg-primary-100 text-white' : 'cursor-not-allowed bg-primary-100/40 text-white/40'}`}
           >
             {saving ? <SpinnerIcon /> : 'Save changes'}
           </button>
         </div>
       </div>
 
-      <div className="flex gap-6 md:gap-8">
-        {/* Docks to the right on wide screens; on narrow ones it is the first
-            thing shown and the picked section replaces it. */}
-        <div className={`min-w-0 flex-1 md:order-2 md:w-64 md:flex-none ${section ? 'hidden md:block' : 'block'}`}>
-          <CharacterEditNav active={section} onSelect={setSection} />
+      <div className="flex gap-6 lg:gap-8">
+        {/* Docks to the right on wide screens; on narrow/tablet ones it is the
+            first thing shown and the picked section replaces it. */}
+        <div className={`min-w-0 flex-1 lg:sticky lg:top-20 lg:order-2 lg:w-64 lg:flex-none lg:self-start ${section ? 'hidden lg:block' : 'block'}`}>
+          <CharacterEditNav active={openSection} onSelect={setSection} />
         </div>
 
-        <div className={`min-w-0 flex-1 flex-col gap-4 md:order-1 ${section ? 'flex' : 'hidden md:flex'}`}>
+        <div className={`min-w-0 flex-1 flex-col gap-4 lg:order-1 ${section ? 'flex' : 'hidden lg:flex'}`}>
           <div className="flex flex-col gap-1 border-b border-black-40 pb-3">
             <button
               type="button"
               onClick={() => setSection(null)}
-              className="flex w-fit cursor-pointer items-center gap-1 text-base font-semibold text-white md:cursor-default"
+              className="flex w-fit cursor-pointer items-center gap-1 text-base font-semibold text-white lg:cursor-default"
             >
-              <span className="md:hidden [&>svg]:h-4 [&>svg]:w-3.5"><ChevronLeftIcon /></span>
+              <span className="lg:hidden [&>svg]:h-4 [&>svg]:w-3.5"><ChevronLeftIcon /></span>
               {editSectionMeta[openSection].label}
             </button>
             <p className="text-xs text-white-75">{editSectionMeta[openSection].description}</p>

@@ -28,7 +28,7 @@ export const CharacterDeleteButton = (props: { id: string; name: string }) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex cursor-pointer items-center gap-2 rounded-xl border border-error-200/60 px-4 py-2.5 text-xs font-semibold text-error-200 transition-colors hover:bg-error-200/10"
+        className="flex cursor-pointer items-center gap-2 rounded-xl border border-error-200/60 px-4 py-2.5 text-xs font-semibold whitespace-nowrap text-error-200 transition-colors hover:bg-error-200/10"
       >
         <TrashIcon />
         Delete

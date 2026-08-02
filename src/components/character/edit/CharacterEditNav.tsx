@@ -34,7 +34,7 @@ export const CharacterEditNav = (props: { active: EditSection | null; onSelect: 
         >
           {icons[section]}
           <span className="flex-1 text-left">{editSectionMeta[section].label}</span>
-          <span className="h-6 w-6 overflow-hidden md:hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+          <span className="h-6 w-6 overflow-hidden lg:hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
         </button>
       );
     })}
