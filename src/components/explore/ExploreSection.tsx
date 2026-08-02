@@ -133,6 +133,7 @@ export const ExploreSection = () => {
                     value={active.vibe}
                     options={['All', ...filters.vibes]}
                     onChange={v => setActive(prev => ({ ...prev, vibe: v }))}
+                    menuClassName="min-w-64"
                   />
                   <FilterDropdown
                     label={t('filter_sort')}

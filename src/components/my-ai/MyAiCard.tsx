@@ -3,13 +3,14 @@
 import type { MyCharacter } from '@/services/useMyAiService';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ChatIcon2, ProfileIcon } from '@/components/icons';
 
 export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) => {
   const c = props.character;
   const total = c.image_count + c.video_count;
 
   return (
-    <Link href={`/chat/${c.id}`} className="relative block cursor-pointer overflow-hidden rounded-2xl bg-black-80">
+    <div className="relative overflow-hidden rounded-2xl bg-black-80">
       {/* Image */}
       <div className="relative h-116 w-full lg:h-136">
         {c.image_url
@@ -83,6 +84,22 @@ export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) 
         </div>
       </div>
 
-    </Link>
+      <div className="flex gap-3 p-4">
+        <Link
+          href={`/character/${c.id}`}
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black-20 py-3 text-sm font-semibold text-white"
+        >
+          <ProfileIcon />
+          Profile
+        </Link>
+        <Link
+          href={`/chat/${c.id}`}
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white md:flex-2"
+        >
+          <ChatIcon2 />
+          Chat
+        </Link>
+      </div>
+    </div>
   );
 };
