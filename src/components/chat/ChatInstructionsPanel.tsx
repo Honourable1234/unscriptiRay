@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useChatService } from '@/services/useChatService';
 import { ExpandableTextarea } from './ExpandableTextarea';
 

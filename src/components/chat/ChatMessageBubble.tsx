@@ -4,7 +4,7 @@ import type { Message } from './types';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SpinnerIcon, VoiceIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';

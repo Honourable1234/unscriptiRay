@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { GenerateSceneActions } from '@/components/generate/GenerateSceneActions';
 import { GenerateSceneModal } from '@/components/generate/GenerateSceneModal';
@@ -104,14 +104,15 @@ export default function GenerateScenePage() {
   const thumbnails: ThumbnailItem[] = assets.map(a => ({ id: a.id, url: a.url, type: a.type }));
 
   const handleDownload = async (asset: Asset) => {
+    // Sonner replaces a toast by reusing its id rather than a separate update call.
     const toastId = toast.loading(t('download_started'));
     try {
       await downloadFile(asset.url, `unscripti-${asset.id}.${assetExtension(asset)}`);
-      toast.update(toastId, { render: t('download_saved'), type: 'success', isLoading: false, autoClose: 2000 });
+      toast.success(t('download_saved'), { id: toastId, duration: 2000 });
     } catch {
       // Buckets that refuse cross-origin reads leave opening the file as the
       // only way for the user to save it by hand.
-      toast.update(toastId, { render: t('download_failed'), type: 'error', isLoading: false, autoClose: 4000 });
+      toast.error(t('download_failed'), { id: toastId, duration: 4000 });
       window.open(asset.url, '_blank', 'noopener');
     }
   };

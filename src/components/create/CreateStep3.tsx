@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useCreate } from '@/context/CreateContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { CreateAccordionField } from './CreateAccordionField';

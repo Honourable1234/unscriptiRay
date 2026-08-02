@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { InputField } from '@/components/auth/InputField';
 import { CloseIcon, SpinnerIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';

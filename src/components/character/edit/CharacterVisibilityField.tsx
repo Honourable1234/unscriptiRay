@@ -3,7 +3,7 @@
 import type { CharacterVisibility } from '@/services/useCharacterService';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useCharacterService } from '@/services/useCharacterService';
 
 export const CharacterVisibilityField = (props: { id: string; visibility: CharacterVisibility }) => {

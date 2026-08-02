@@ -4,7 +4,7 @@ import type { Invoice, SubscriptionStatus, SubscriptionTier } from '@/services/u
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { ChevronLeftIcon, DownloadIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';

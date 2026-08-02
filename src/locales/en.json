@@ -382,7 +382,7 @@
     "retry_failed": "Retry failed.",
     "started": "Generation started, processing...",
     "failed": "Generation failed.",
-    "tap_to_retry": "{message} — tap here to retry"
+    "retry": "Retry"
   },
   "CreatePage": {
     "title": "Create a",

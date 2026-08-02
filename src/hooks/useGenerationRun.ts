@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { ApiError } from '@/libs/api';
@@ -45,19 +45,23 @@ export const useGenerationRun = () => {
       (message) => {
         setIsGenerating(false);
         options?.onSettled?.(generationId);
-        toast.error(t('tap_to_retry', { message }), {
-          onClick: () => {
-            setIsGenerating(true);
-            retryGeneration(generationId)
-              .then((res) => {
-                toast.info(t('restarted'));
-                options?.onStart?.(res.content.generation_id);
-                track(res.content.generation_id, options);
-              })
-              .catch((error) => {
-                setIsGenerating(false);
-                toast.error(error instanceof Error ? error.message : t('retry_failed'));
-              });
+        // Sonner has no click target on the toast body, so the retry is an action button.
+        toast.error(message, {
+          action: {
+            label: t('retry'),
+            onClick: () => {
+              setIsGenerating(true);
+              retryGeneration(generationId)
+                .then((res) => {
+                  toast.info(t('restarted'));
+                  options?.onStart?.(res.content.generation_id);
+                  track(res.content.generation_id, options);
+                })
+                .catch((error) => {
+                  setIsGenerating(false);
+                  toast.error(error instanceof Error ? error.message : t('retry_failed'));
+                });
+            },
           },
         });
       },

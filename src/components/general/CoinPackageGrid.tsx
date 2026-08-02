@@ -3,7 +3,7 @@
 import type { CoinPackage } from '@/services/useWalletService';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CoinIcon } from '@/components/icons';
 import { useWallet } from '@/context/WalletContext';
 import { useWalletService } from '@/services/useWalletService';

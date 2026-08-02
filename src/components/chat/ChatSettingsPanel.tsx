@@ -3,7 +3,7 @@
 import type { WebSettings } from '@/services/useChatService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { ChevronDownIcon } from '@/components/icons';
 import { useChatService } from '@/services/useChatService';
 

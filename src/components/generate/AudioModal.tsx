@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
 import { useGenerateService } from '@/services/generateService';
 import { VoiceModal } from './VoiceModal';

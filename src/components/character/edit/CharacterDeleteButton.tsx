@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CloseIcon, SpinnerIcon, TrashIcon } from '@/components/icons';
 import { useRouter } from '@/libs/I18nNavigation';
 import { useCharacterService } from '@/services/useCharacterService';

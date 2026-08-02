@@ -2,7 +2,7 @@
 import type { CreatedCharacter } from '@/components/create/CreateStep4';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CreateStep1 } from '@/components/create/CreateStep1';
 import { CreateStep2 } from '@/components/create/CreateStep2';
 import { CreateStep3 } from '@/components/create/CreateStep3';

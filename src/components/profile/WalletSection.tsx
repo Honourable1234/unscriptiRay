@@ -4,7 +4,7 @@ import type { WalletTransaction } from '@/services/useWalletService';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CoinPackageGrid } from '@/components/general/CoinPackageGrid';
 import { ChevronLeftIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';

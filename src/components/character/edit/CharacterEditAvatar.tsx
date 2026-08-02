@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SparkleIcon, SpinnerIcon } from '@/components/icons';
 import { useGenerateService } from '@/services/generateService';
 import { useCharacterService } from '@/services/useCharacterService';

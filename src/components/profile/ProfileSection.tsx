@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';

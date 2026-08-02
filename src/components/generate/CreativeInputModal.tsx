@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';

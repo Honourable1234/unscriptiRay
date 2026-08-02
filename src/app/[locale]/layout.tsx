@@ -3,12 +3,11 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { Poppins } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { ToastContainer } from 'react-toastify';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
+import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { routing } from '@/libs/I18nRouting';
 import '@/styles/global.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -70,7 +69,7 @@ export default async function RootLayout(props: {
             <TooltipProvider>
               {props.children}
             </TooltipProvider>
-            <ToastContainer position="bottom-right" theme="dark" />
+            <Toaster position="bottom-right" />
           </NextIntlClientProvider>
         </PostHogProvider>
       </body>

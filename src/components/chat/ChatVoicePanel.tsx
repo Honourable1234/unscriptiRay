@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { PlayIcon, SearchIcon, VoiceIcon } from '@/components/icons';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
