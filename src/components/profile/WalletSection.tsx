@@ -112,6 +112,16 @@ export const WalletSection = () => {
           setPendingPackage(null);
           return;
         }
+        // Without a Stripe key the pack is credited before the response and the
+        // checkout URL is just this page, so the coins land without a round trip.
+        if (res.content.stub) {
+          const added = res.content.coins;
+          toast.success(added ? `${added.toLocaleString()} Dreamcoins added.` : 'Dreamcoins added.');
+          refreshWallet();
+          fetchTransactions(1).catch(() => {});
+          setPendingPackage(null);
+          return;
+        }
         window.location.href = checkoutUrl;
       })
       .catch((error) => {

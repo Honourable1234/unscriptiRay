@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ChevronLeftIcon, DownloadIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
+import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useSubscriptionService } from '@/services/useSubscriptionService';
 
@@ -20,18 +21,17 @@ const plans: { tier: SubscriptionTier | null; label: string; caption: string }[]
 
 /**
  * Decides whether a URL the billing API returned actually leads to Stripe.
- * Endpoints that are not wired up yet echo back the URL they were given and
- * flag it, and following one navigates nowhere while looking like a payment
- * that went through.
+ * A response that echoes back the URL it was given without flagging itself as a
+ * stub would navigate nowhere while looking like a payment that went through.
  * @param url - The checkout or portal URL from the response.
- * @param stub - Whether the response marked itself as a stub.
  * @returns True when the URL leaves the app and can be redirected to.
  */
-const leadsToStripe = (url: string, stub?: boolean) =>
-  !stub && new URL(url, window.location.origin).origin !== window.location.origin;
+const leadsToStripe = (url: string) =>
+  new URL(url, window.location.origin).origin !== window.location.origin;
 
 export const SubscriptionSection = () => {
   const { user, isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const { getStatus, cancelSubscription, getInvoices, createCheckout, changeTier, openPortal } = useSubscriptionService();
   const searchParams = useSearchParams();
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
@@ -94,9 +94,19 @@ export const SubscriptionSection = () => {
           setPendingTier(null);
           return;
         }
-        // A stubbed URL would bounce back to the success page and claim a
-        // payment that never happened.
-        if (!leadsToStripe(checkoutUrl, res.content.stub)) {
+        // Without a Stripe key the plan is provisioned before the response and
+        // the checkout URL is just this page, so the server is the thing to read
+        // the new state from rather than somewhere to redirect to.
+        if (res.content.stub) {
+          toast.success(res.message || 'Subscription active.');
+          getStatus().then(fresh => setSubscription(fresh.content)).catch(() => {});
+          // Subscribing grants coins, so the balance on screen is now stale.
+          refreshWallet();
+          setPendingTier(null);
+          return;
+        }
+        // An unflagged echo of our own URL would claim a payment that never happened.
+        if (!leadsToStripe(checkoutUrl)) {
           toast.error('Payments are not available yet. You have not been charged.');
           setPendingTier(null);
           return;
@@ -123,9 +133,9 @@ export const SubscriptionSection = () => {
           setOpeningPortal(false);
           return;
         }
-        // The endpoint is still a stub that echoes the return URL back, which
-        // would read as an unexplained page reload.
-        if (!leadsToStripe(portalUrl, res.content.stub)) {
+        // The portal has nothing behind it without Stripe: the stub echoes the
+        // return URL back, which would read as an unexplained page reload.
+        if (res.content.stub || !leadsToStripe(portalUrl)) {
           toast.info('The billing portal is not available yet.');
           setOpeningPortal(false);
           return;
@@ -194,7 +204,10 @@ export const SubscriptionSection = () => {
         ? (
             <div className="flex flex-col gap-2">
               <p className="text-sm font-semibold text-white">{isActivePaid ? 'Change plan' : 'Upgrade to Premium'}</p>
-              <div className="grid gap-2 sm:grid-cols-3">
+              {/* Three across only where a card is wide enough for its caption
+                  and action side by side; below that the action sits under the
+                  text so neither has to shrink. */}
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {plans.map((plan) => {
                   const planTier = plan.tier;
                   // Free is the current plan whenever no paid tier is active.
@@ -202,14 +215,14 @@ export const SubscriptionSection = () => {
                   return (
                     <div
                       key={plan.label}
-                      className={`flex items-center justify-between gap-3 rounded-2xl border bg-black-100 px-4 py-3.5 ${isCurrent ? 'border-primary-100' : 'border-black-40'}`}
+                      className={`flex flex-col justify-between gap-3 rounded-2xl border bg-black-100 px-4 py-3.5 ${isCurrent ? 'border-primary-100' : 'border-black-40'}`}
                     >
                       <div>
                         <p className="text-sm font-semibold text-white">{plan.label}</p>
                         <p className="text-xs text-white-50">{plan.caption}</p>
                       </div>
                       {isCurrent && (
-                        <span className="rounded-full bg-black-60 px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white-75">
+                        <span className="rounded-full bg-black-60 px-3 py-1.5 text-center text-xs font-semibold text-white-75">
                           Current
                         </span>
                       )}
@@ -218,7 +231,7 @@ export const SubscriptionSection = () => {
                         <button
                           onClick={() => handleSelectTier(planTier)}
                           disabled={!!pendingTier}
-                          className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold whitespace-nowrap text-white disabled:cursor-not-allowed disabled:opacity-50"
+                          className="w-full cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {pendingTier === planTier ? 'Opening…' : actionLabel}
                         </button>

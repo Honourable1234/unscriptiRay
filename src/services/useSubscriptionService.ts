@@ -26,8 +26,9 @@ type CancelSubscriptionResponse = {
 export type SubscriptionTier = 'monthly' | 'yearly';
 
 /**
- * Set by endpoints that are not wired to Stripe yet: the URL they return is the
- * one they were given, so following it goes nowhere.
+ * Set while the backend has no Stripe key. Checkout and change-tier still take
+ * effect — the subscription is provisioned server-side before the response —
+ * but the URL handed back is the caller's own, so there is no page to visit.
  */
 type Stubbable = { stub?: boolean };
 

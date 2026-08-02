@@ -49,7 +49,19 @@ type TransactionsResponse = {
 type PurchaseResponse = {
   success: boolean;
   message: string;
-  content: { checkout_url: string };
+  content: {
+    /** Real Stripe Checkout session, or the caller's own `success_url` in stub mode. */
+    checkout_url: string;
+    /** Coins the pack added. Stub mode only: Stripe credits via webhook instead. */
+    coins?: number;
+    /** Balance after crediting. Stub mode only. */
+    coin_balance?: number;
+    /**
+     * Set while the backend has no Stripe key. The purchase is still real — the
+     * pack is credited immediately — but there is no payment page to visit.
+     */
+    stub?: boolean;
+  };
 };
 
 export const useWalletService = () => {
