@@ -77,7 +77,7 @@ export const ExploreCharacters = (props: { filters?: ActiveFilters }) => {
 
   return (
     <>
-      <div className="mb-4 flex items-center gap-2">
+      <div className="my-4 flex items-center gap-2">
         <span className="text-xs text-white-75">{t('per_page')}</span>
         {LIMIT_OPTIONS.map(n => (
           <button
