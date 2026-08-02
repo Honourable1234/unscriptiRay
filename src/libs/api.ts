@@ -2,6 +2,28 @@ import { Env } from './Env';
 
 const inFlight = new Map<string, Promise<unknown>>();
 
+export class ApiError extends Error {
+  status: number;
+  code?: string;
+  signupRequired?: boolean;
+
+  constructor(message: string, options: { status: number; code?: string; signupRequired?: boolean }) {
+    super(message);
+    this.status = options.status;
+    this.code = options.code;
+    this.signupRequired = options.signupRequired;
+  }
+}
+
+const throwApiError = async (res: Response): Promise<never> => {
+  const body = await res.json().catch(() => ({})) as { message?: string; detail?: string; error?: string; signup_required?: boolean };
+  throw new ApiError(body.message ?? body.detail ?? `HTTP ${res.status}`, {
+    status: res.status,
+    code: body.error,
+    signupRequired: body.signup_required,
+  });
+};
+
 export const api = {
   get: async (path: string, token?: string) => {
     const key = `${token ?? ''}|${path}`;
@@ -18,8 +40,7 @@ export const api = {
       },
     }).then(async (res) => {
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+        await throwApiError(res);
       }
       return res.json();
     }).finally(() => inFlight.delete(key));
@@ -37,8 +58,7 @@ export const api = {
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+      await throwApiError(res);
     }
     return res.json();
   },
@@ -52,8 +72,7 @@ export const api = {
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+      await throwApiError(res);
     }
 
     return res.json();
@@ -68,8 +87,7 @@ export const api = {
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+      await throwApiError(res);
     }
     return res.json();
   },
@@ -83,8 +101,7 @@ export const api = {
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error((body as { message?: string; detail?: string })?.message ?? (body as { detail?: string })?.detail ?? `HTTP ${res.status}`);
+      await throwApiError(res);
     }
 
     return res.json();

@@ -13,8 +13,18 @@ export type WebSettings = {
 export const useChatService = () => {
   const { token } = useAuth();
 
-  const startChat = (characterId: string) =>
-    api.post('/chat/start', { character_id: characterId }, token ?? guestToken.get() ?? undefined);
+  /**
+   * Starts (or resumes) a chatroom, persisting the guest token returned for anonymous users.
+   * @param characterId - Character to open the chatroom for.
+   */
+  const startChat = async (characterId: string) => {
+    const res = await api.post('/chat/start', { character_id: characterId }, token ?? guestToken.get() ?? undefined);
+    const issued = (res as { content?: { guest_token?: string } })?.content?.guest_token;
+    if (!token && issued) {
+      guestToken.set(issued);
+    }
+    return res;
+  };
 
   const getChatList = (page = 1) =>
     api.get(`/chat/list?page=${page}`, token ?? undefined);
@@ -23,10 +33,11 @@ export const useChatService = () => {
     api.get(`/chat/${chatroomId}/messages${cursor ? `?cursor=${cursor}` : ''}`, token ?? guestToken.get() ?? undefined);
 
   const sendMessage = (chatroomId: string, body: { content?: string; image?: string }) => {
-    if (!token) {
+    const authToken = token ?? guestToken.get();
+    if (!authToken) {
       return Promise.reject(new Error('Not authenticated'));
     }
-    return api.post(`/chat/${chatroomId}/messages`, body, token);
+    return api.post(`/chat/${chatroomId}/messages`, body, authToken);
   };
 
   const getSuggestions = (chatroomId: string) => {

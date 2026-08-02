@@ -11,11 +11,21 @@ import {
 
 export const ChatMessageActions = (props: {
   onCopy: () => void;
-
   onEdit: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
+  copyOnly?: boolean;
 }) => {
+  if (props.copyOnly) {
+    return (
+      <div className="flex items-center gap-3 text-white-75">
+        <button type="button" aria-label="Copy message" onClick={props.onCopy} className="cursor-pointer hover:text-white [&>svg]:size-4">
+          <Copy />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-3 text-white-75">
       <button type="button" aria-label="Copy message" onClick={props.onCopy} className="cursor-pointer hover:text-white [&>svg]:size-4">

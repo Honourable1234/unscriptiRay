@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SpinnerIcon, VoiceIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useChatService } from '@/services/useChatService';
 import { ChatMessageActions } from './ChatMessageActions';
@@ -62,6 +63,7 @@ export const ChatMessageBubble = (props: {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { activeChat } = useChatNavigation();
   const { getMessageSpeech } = useChatService();
+  const { isAuthenticated } = useAuth();
   const isUser = props.message.sender === 'user';
   const messageId = props.message.messageId;
 
@@ -153,8 +155,9 @@ export const ChatMessageBubble = (props: {
                 onEdit={() => setIsEditing(true)}
                 onDuplicate={() => props.onDuplicate(props.message.id)}
                 onDelete={() => props.onDelete(props.message.id)}
+                copyOnly={!isAuthenticated}
               />
-              {!isUser && (
+              {!isUser && isAuthenticated && (
                 <button
                   type="button"
                   aria-label="Play voice"
