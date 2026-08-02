@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useMyAiService } from '@/services/useMyAiService';
 import { MyAiCard } from '../my-ai/MyAiCard';
+import { ProfileEditModal } from './ProfileEditModal';
 
 type Tab = 'Highlighted' | 'Characters' | 'Activity';
 
@@ -22,6 +23,7 @@ export const ProfileView = () => {
   const [tab, setTab] = useState<Tab>('Characters');
   const [style, setStyle] = useState('Any Style');
   const [sort, setSort] = useState('Newest');
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -77,13 +79,13 @@ export const ProfileView = () => {
             </span>
           </div>
         </div>
-        <Link
-          href="/profile"
-          className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-black-60 px-5 py-2.5 text-xs font-semibold text-white hover:bg-black-40 [&_svg]:size-3.5"
+        <button
+          onClick={() => setEditing(true)}
+          className="flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-black-60 px-5 py-2.5 text-xs font-semibold text-white hover:bg-black-40 [&_svg]:size-3.5"
         >
           <EditIcon />
           Edit Profile
-        </Link>
+        </button>
       </div>
 
       {/* Tabs + filters */}
@@ -139,6 +141,8 @@ export const ProfileView = () => {
                 </div>
               </>
             )}
+
+      {editing && <ProfileEditModal onClose={() => setEditing(false)} />}
     </div>
   );
 };

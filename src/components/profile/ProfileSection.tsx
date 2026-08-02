@@ -1,12 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
+import { ChangePasswordModal } from './ChangePasswordModal';
 
 const RightChevron = () => (
   <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
@@ -16,9 +18,9 @@ const SmallChevron = () => (
   <span className="flex h-3 w-3 items-center justify-center overflow-hidden [&>svg]:h-3 [&>svg]:w-1.5"><ChevronRightIcon /></span>
 );
 
-const PlaceholderRow = (props: { label: string; value?: string }) => (
+const SettingsRow = (props: { label: string; value?: string; onClick: () => void }) => (
   <button
-    onClick={() => toast.info('Coming soon.')}
+    onClick={props.onClick}
     className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5 text-left hover:bg-black-40"
   >
     <div>
@@ -29,9 +31,14 @@ const PlaceholderRow = (props: { label: string; value?: string }) => (
   </button>
 );
 
+const PlaceholderRow = (props: { label: string; value?: string }) => (
+  <SettingsRow label={props.label} value={props.value} onClick={() => toast.info('Coming soon.')} />
+);
+
 export const ProfileSection = () => {
   const { user } = useAuth();
   const { balance } = useWallet();
+  const [changingPassword, setChangingPassword] = useState(false);
   const tierLabel = user?.subscription_tier || 'Free';
   const avatarInitial = (user?.display_name ?? user?.username ?? user?.email ?? '?').charAt(0).toUpperCase();
 
@@ -93,6 +100,11 @@ export const ProfileSection = () => {
       </div>
 
       <div className="flex flex-col divide-y divide-black-40 rounded-2xl border border-black-40 bg-black-100">
+        <SettingsRow
+          label="Change password"
+          value="Update the password you sign in with"
+          onClick={() => setChangingPassword(true)}
+        />
         <PlaceholderRow label="Preferences & Notifications" />
         <PlaceholderRow label="Language" value="Français" />
       </div>
@@ -112,6 +124,8 @@ export const ProfileSection = () => {
       >
         Sign Out
       </button>
+
+      {changingPassword && <ChangePasswordModal onClose={() => setChangingPassword(false)} />}
     </div>
   );
 };
