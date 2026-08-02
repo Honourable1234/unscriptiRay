@@ -21,6 +21,7 @@ import {
   SidebarContent,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { useChatService } from '@/services/useChatService';
@@ -50,6 +51,7 @@ export const ChatRightPanel = (props: {
   const t = useTranslations('ChatRightPanel');
   // const { toggleSidebar } = useSidebar();
   const { activeChat } = useChatNavigation();
+  const { authLoading } = useAuth();
   const { getCharacter, getCharacterMedia } = useCharacterService();
   const { initiateCall } = useChatService();
   const router = useRouter();
@@ -71,7 +73,8 @@ export const ChatRightPanel = (props: {
           : '';
 
   useEffect(() => {
-    if (!activeChat?.characterId) {
+    // The character is only readable as its owner, so wait for the session.
+    if (!activeChat?.characterId || authLoading) {
       return;
     }
 
@@ -93,7 +96,7 @@ export const ChatRightPanel = (props: {
         }
       }
     }).catch(() => {});
-  }, [activeChat?.characterId]);
+  }, [activeChat?.characterId, authLoading]);
 
   const displayImages = (images.length > 0 ? images : [props.image])
     .map(src => isValidImageSrc(src) ? src : '/General/Profile.png');

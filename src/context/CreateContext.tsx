@@ -4,7 +4,7 @@ import { createContext, use, useState } from 'react';
 
 type AppearanceSelections = Partial<Record<string, string>>;
 
-type CreateState = {
+export type CreateState = {
   style: string | null;
   appearance: AppearanceSelections;
   name: string;
@@ -87,13 +87,23 @@ const readSession = (): CreateState => {
 
 const CreateContext = createContext<CreateContextValue>({} as CreateContextValue);
 
-export const CreateProvider = (props: { children: React.ReactNode }) => {
-  const [data, setData] = useState<CreateState>(readSession);
+/**
+ * Holds the character form state shared by the create steps.
+ * @param props - Provider props.
+ * @param props.children - Steps that read and write the form state.
+ * @param props.initial - Seed state, e.g. an existing character being edited; falls back to the saved draft.
+ * @param props.persist - Whether edits are written to the session draft. Off for flows that must not overwrite a create in progress.
+ */
+export const CreateProvider = (props: { children: React.ReactNode; initial?: CreateState; persist?: boolean }) => {
+  const [data, setData] = useState<CreateState>(() => props.initial ?? readSession());
+  const persist = props.persist ?? true;
 
   const update = (patch: Partial<CreateState>) => {
     setData((prev) => {
       const next = { ...prev, ...patch };
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
+      if (persist) {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
+      }
       return next;
     });
   };

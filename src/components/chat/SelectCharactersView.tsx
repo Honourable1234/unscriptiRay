@@ -3,6 +3,7 @@
 import type { Character } from '@/data/characters';
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/components/general/SearchBar';
+import { useAuth } from '@/context/AuthContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { createExploreService } from '@/services/useExploreService';
 import { mapCharacter } from '@/utils/mapCharacter';
@@ -19,6 +20,7 @@ export const SelectCharactersView = (props: {
   createLabel?: string;
 }) => {
   const { getCharacters } = createExploreService();
+  const { authLoading } = useAuth();
   const { getCharacter } = useCharacterService();
   const [query, setQuery] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -39,7 +41,8 @@ export const SelectCharactersView = (props: {
   }, []);
 
   useEffect(() => {
-    if (!props.preSelectedId) {
+    // The character is only readable as its owner, so wait for the session.
+    if (!props.preSelectedId || authLoading) {
       return;
     }
     getCharacter(props.preSelectedId).then((res) => {
@@ -48,7 +51,7 @@ export const SelectCharactersView = (props: {
         setSelected([mapCharacter(c as Record<string, unknown>)]);
       }
     }).catch(() => {});
-  }, [props.preSelectedId]);
+  }, [props.preSelectedId, authLoading]);
 
   const loadMore = () => {
     const nextPage = page + 1;
