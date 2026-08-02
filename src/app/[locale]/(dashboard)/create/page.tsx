@@ -62,6 +62,7 @@ const getInitialGenerationId = (): string | null => {
 
 function CreatePageContent() {
   const t = useTranslations('CreatePage');
+  const tPrompt = useTranslations('SignUpPrompts');
   const [step, setStep] = useState(getInitialStep);
   const [stepValid, setStepValid] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -245,7 +246,7 @@ function CreatePageContent() {
 
       {showSignUpPrompt && (
         <SignUpPromptModal
-          description="Sign up to bring your companion to life — your creation will be saved to your account."
+          description={tPrompt('create_character')}
           onClose={() => setShowSignUpPrompt(false)}
         />
       )}

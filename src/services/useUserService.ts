@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 
@@ -10,10 +11,11 @@ export type UpdateProfileBody = Partial<{
 
 export const useUserService = () => {
   const { token } = useAuth();
+  const t = useTranslations('Errors');
 
   const updateProfile = (body: UpdateProfileBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.patch('/users/me', body, token) as Promise<{ success: boolean; message: string }>;
   };

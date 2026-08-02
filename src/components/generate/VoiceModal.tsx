@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { CloseIcon, PlayIcon, VoiceIcon } from '@/components/icons';
 import { useVoices } from '@/services/UseVoice';
@@ -15,6 +16,7 @@ export const VoiceModal = (props: {
   onSelect: (voice: SelectedVoice) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('VoiceModal');
   const { getVoices } = useVoices();
   const [voices, setVoices] = useState<Voice[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ export const VoiceModal = (props: {
     <div className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div className="my-auto w-full max-w-160 rounded-2xl border border-white-25 bg-black-80 px-4 py-6 md:px-7.5">
         <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Select Voice</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
             <CloseIcon />
           </button>
@@ -95,12 +97,12 @@ export const VoiceModal = (props: {
           : !voices || voices.length === 0
               ? (
                   <div className="flex items-center justify-center py-16">
-                    <p className="text-sm text-white-50">No voices available.</p>
+                    <p className="text-sm text-white-50">{t('empty')}</p>
                   </div>
                 )
               : (
                   <div className="flex flex-col gap-6">
-                    {([{ label: 'Female', items: female }, { label: 'Male', items: male }] as const)
+                    {([{ label: t('female'), items: female }, { label: t('male'), items: male }] as const)
                       .filter(group => group.items && group.items.length > 0)
                       .map(group => (
                         <div key={group.label} className="flex flex-col gap-3">

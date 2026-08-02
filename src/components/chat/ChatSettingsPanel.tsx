@@ -72,10 +72,10 @@ export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDispl
     setSaving(true);
     updateSettings(props.chatroomId, next)
       .then(() => {
-        toast.success('Settings saved.');
+        toast.success(t('toast_saved'));
       })
       .catch(() => {
-        toast.error('Failed to save settings.');
+        toast.error(t('toast_save_failed'));
         setSettings(prev);
       })
       .finally(() => setSaving(false));

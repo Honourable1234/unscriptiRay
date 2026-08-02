@@ -1,6 +1,7 @@
 'use client';
 
 import type { MyCharacter } from '@/services/useMyAiService';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 import { FilterDropdown } from '@/components/explore/FilterDropdown';
 import { SearchIcon } from '@/components/icons';
@@ -17,6 +18,7 @@ type Filter = 'All' | 'Approved' | 'Pending';
 const skeletonKeys = ['a', 'b', 'c'];
 
 export const MyAiSection = () => {
+  const t = useTranslations('MyAiSection');
   const { isAuthenticated, token } = useAuth();
   const { getMyCharacters } = useMyAiService();
   const [characters, setCharacters] = useState<MyCharacter[]>([]);
@@ -56,21 +58,21 @@ export const MyAiSection = () => {
     if (!isAuthenticated) {
       return (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <p className="text-sm font-semibold text-white">Sign up to start your collection</p>
-          <p className="max-w-80 text-xs text-white-75">Every AI character you create is saved here to your account.</p>
+          <p className="text-sm font-semibold text-white">{t('signup_title')}</p>
+          <p className="max-w-80 text-xs text-white-75">{t('signup_description')}</p>
           <div className="mt-1 flex items-center gap-2">
             <Link
               href="/sign-up"
               onClick={() => returnUrl.save(window.location.pathname)}
               className="rounded-xl bg-primary-100 px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80"
             >
-              Sign up free
+              {t('sign_up_free')}
             </Link>
             <Link
               href="/create"
               className="rounded-xl border border-white-25 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100"
             >
-              Start creating
+              {t('start_creating')}
             </Link>
           </div>
         </div>
@@ -79,12 +81,12 @@ export const MyAiSection = () => {
 
     return (
       <div className="flex flex-col items-center gap-3 py-16">
-        <p className="text-sm text-white/50">You haven't created any AI characters yet.</p>
+        <p className="text-sm text-white/50">{t('empty')}</p>
         <Link
           href="/create"
           className="rounded-xl bg-primary-100 px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80"
         >
-          Create your first AI
+          {t('create_first')}
         </Link>
       </div>
     );
@@ -99,7 +101,7 @@ export const MyAiSection = () => {
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name, style or tag..."
+          placeholder={t('search_placeholder')}
           className="flex-1 bg-transparent text-sm text-white placeholder-white-50 focus:outline-none"
         />
       </div>
@@ -107,7 +109,7 @@ export const MyAiSection = () => {
       {/* Filters row */}
       <div className="flex flex-wrap gap-2">
         <FilterDropdown
-          label="Status"
+          label={t('filter_status')}
           value={filter}
           options={['All', 'Approved', 'Pending']}
           onChange={v => setFilter(v as Filter)}
@@ -124,7 +126,7 @@ export const MyAiSection = () => {
         : filtered.length === 0
           ? (
               <div className="flex justify-center py-16">
-                <p className="text-sm text-white/50">No characters match your search.</p>
+                <p className="text-sm text-white/50">{t('no_matches')}</p>
               </div>
             )
           : (

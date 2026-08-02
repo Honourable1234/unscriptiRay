@@ -1,6 +1,7 @@
 'use client';
 
 import type { CoinPackage } from '@/services/useWalletService';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CoinIcon } from '@/components/icons';
@@ -23,6 +24,7 @@ export const CoinPackageGrid = (props: {
   className?: string;
   onPurchased?: () => void;
 }) => {
+  const t = useTranslations('CoinPackageGrid');
   const { refresh: refreshWallet } = useWallet();
   const { purchaseCoins } = useWalletService();
   const [pendingPackage, setPendingPackage] = useState<CoinPackage | null>(null);
@@ -43,7 +45,7 @@ export const CoinPackageGrid = (props: {
         // checkout session, never on a 200 that carries no URL.
         const checkoutUrl = res?.content?.checkout_url;
         if (res?.success !== true || !checkoutUrl) {
-          toast.error(res?.message || 'Could not start checkout. You have not been charged.');
+          toast.error(res?.message || t('toast_checkout_failed'));
           setPendingPackage(null);
           return;
         }
@@ -51,7 +53,7 @@ export const CoinPackageGrid = (props: {
         // checkout URL is just this page, so the coins land without a round trip.
         if (res.content.stub) {
           const added = res.content.coins;
-          toast.success(added ? `${added.toLocaleString()} Dreamcoins added.` : 'Dreamcoins added.');
+          toast.success(added ? t('toast_added_count', { count: added }) : t('toast_added'));
           refreshWallet();
           setPendingPackage(null);
           props.onPurchased?.();
@@ -60,7 +62,7 @@ export const CoinPackageGrid = (props: {
         window.location.href = checkoutUrl;
       })
       .catch((error) => {
-        toast.error(error instanceof Error ? error.message : 'Could not start checkout. You have not been charged.');
+        toast.error(error instanceof Error ? error.message : t('toast_checkout_failed'));
         setPendingPackage(null);
       });
   };
@@ -77,7 +79,7 @@ export const CoinPackageGrid = (props: {
           <CoinIcon />
           <span className="text-base font-bold text-white">{Number(coinPackage).toLocaleString()}</span>
           <span className="text-xs text-white-50">
-            {pendingPackage === coinPackage ? 'Opening checkout…' : 'Buy'}
+            {pendingPackage === coinPackage ? t('opening_checkout') : t('buy')}
           </span>
         </button>
       ))}

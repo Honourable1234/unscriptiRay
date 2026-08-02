@@ -221,7 +221,7 @@ const ChatSideBarContent = () => {
           <SidebarInput
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search chats..."
+            placeholder={t('search_placeholder')}
             className="h-9 rounded-lg border-black-40 bg-black-60 pl-8 text-white placeholder-white-75"
           />
         </div>

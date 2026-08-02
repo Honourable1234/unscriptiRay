@@ -1,10 +1,12 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { CloseIcon } from '@/components/icons';
 import { useWallet } from '@/context/WalletContext';
 import { CoinPackageGrid } from './CoinPackageGrid';
 
 export const InsufficientCoinsModal = (props: { description: string; onClose: () => void }) => {
+  const t = useTranslations('InsufficientCoinsModal');
   const { balance } = useWallet();
 
   return (
@@ -25,7 +27,7 @@ export const InsufficientCoinsModal = (props: { description: string; onClose: ()
         onKeyDown={e => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Out of coins</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
             <CloseIcon />
           </button>
@@ -33,14 +35,14 @@ export const InsufficientCoinsModal = (props: { description: string; onClose: ()
 
         <p className="text-sm text-white-75">{props.description}</p>
         <p className="mt-1 text-xs text-white-50">
-          Balance:
+          {t('balance')}
           {' '}
           <span className="font-semibold text-white">{balance.toLocaleString()}</span>
           {' '}
-          Dreamcoins
+          {t('dreamcoins')}
         </p>
 
-        <p className="mt-5 mb-2 text-sm font-semibold text-white">Top up to continue</p>
+        <p className="mt-5 mb-2 text-sm font-semibold text-white">{t('top_up')}</p>
         <CoinPackageGrid
           className="grid grid-cols-2 gap-2"
           returnPath="/profile/wallet"
@@ -52,7 +54,7 @@ export const InsufficientCoinsModal = (props: { description: string; onClose: ()
           onClick={props.onClose}
           className="mt-2.5 w-full cursor-pointer rounded-xl border border-black-40 py-3 text-center text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100"
         >
-          Not now
+          {t('not_now')}
         </button>
       </div>
     </div>

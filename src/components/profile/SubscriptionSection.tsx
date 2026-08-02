@@ -1,6 +1,7 @@
 'use client';
 
 import type { Invoice, SubscriptionStatus, SubscriptionTier } from '@/services/useSubscriptionService';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -9,15 +10,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useSubscriptionService } from '@/services/useSubscriptionService';
-
-// Stripe owns the pricing, so plans are listed by billing period and the amount
-// to charge is settled at checkout. Free has no tier: it is what an account
-// falls back to, reached by cancelling rather than by checkout.
-const plans: { tier: SubscriptionTier | null; label: string; caption: string }[] = [
-  { tier: null, label: 'Free', caption: 'Limited access' },
-  { tier: 'monthly', label: 'Monthly', caption: 'Billed every month' },
-  { tier: 'yearly', label: 'Yearly', caption: 'Billed once a year' },
-];
 
 /**
  * Decides whether a URL the billing API returned actually leads to Stripe.
@@ -30,6 +22,7 @@ const leadsToStripe = (url: string) =>
   new URL(url, window.location.origin).origin !== window.location.origin;
 
 export const SubscriptionSection = () => {
+  const t = useTranslations('SubscriptionSection');
   const { user, isAuthenticated } = useAuth();
   const { refresh: refreshWallet } = useWallet();
   const { getStatus, cancelSubscription, getInvoices, createCheckout, changeTier, openPortal } = useSubscriptionService();
@@ -40,6 +33,15 @@ export const SubscriptionSection = () => {
   const [cancelling, setCancelling] = useState(false);
   const [pendingTier, setPendingTier] = useState<SubscriptionTier | null>(null);
   const [openingPortal, setOpeningPortal] = useState(false);
+
+  // Stripe owns the pricing, so plans are listed by billing period and the amount
+  // to charge is settled at checkout. Free has no tier: it is what an account
+  // falls back to, reached by cancelling rather than by checkout.
+  const plans: { tier: SubscriptionTier | null; label: string; caption: string }[] = [
+    { tier: null, label: t('plan_free'), caption: t('plan_free_caption') },
+    { tier: 'monthly', label: t('plan_monthly'), caption: t('plan_monthly_caption') },
+    { tier: 'yearly', label: t('plan_yearly'), caption: t('plan_yearly_caption') },
+  ];
 
   useEffect(() => {
     // Fall back to the user data already on screen if the fetch fails.
@@ -52,12 +54,12 @@ export const SubscriptionSection = () => {
   useEffect(() => {
     const outcome = searchParams.get('subscription');
     if (outcome === 'success') {
-      toast.success('Payment received. Your plan updates once Stripe confirms it.');
+      toast.success(t('toast_payment_received'));
     } else if (outcome === 'cancelled') {
-      toast.info('Upgrade cancelled.');
+      toast.info(t('toast_upgrade_cancelled'));
     } else if (outcome === 'portal') {
       // Coming back from the portal looks like a bare page reload otherwise.
-      toast.info('Back from the billing portal.');
+      toast.info(t('toast_back_from_portal'));
     }
   }, []);
 
@@ -65,10 +67,10 @@ export const SubscriptionSection = () => {
   const tier = subscription?.tier ?? user?.subscription_tier;
   const expiresAt = subscription?.current_period_end ?? user?.subscription_expires_at;
   const isActivePaid = !!tier && status === 'active';
-  const tierLabel = tier || 'Free';
+  const tierLabel = tier || t('plan_free');
   const expiresLabel = expiresAt ? new Date(expiresAt).toLocaleDateString() : null;
   const currentTier = tier?.toLowerCase();
-  const actionLabel = isActivePaid ? 'Switch' : 'Upgrade';
+  const actionLabel = isActivePaid ? t('action_switch') : t('action_upgrade');
 
   const handleSelectTier = (nextTier: SubscriptionTier) => {
     // Guard against double-submits while a checkout session is being opened.
@@ -90,7 +92,7 @@ export const SubscriptionSection = () => {
         // checkout session, never on a 200 that carries no URL.
         const checkoutUrl = res?.content?.checkout_url;
         if (res?.success !== true || !checkoutUrl) {
-          toast.error(res?.message || 'Could not start checkout. You have not been charged.');
+          toast.error(res?.message || t('toast_checkout_failed'));
           setPendingTier(null);
           return;
         }
@@ -98,7 +100,7 @@ export const SubscriptionSection = () => {
         // the checkout URL is just this page, so the server is the thing to read
         // the new state from rather than somewhere to redirect to.
         if (res.content.stub) {
-          toast.success(res.message || 'Subscription active.');
+          toast.success(res.message || t('toast_subscription_active'));
           getStatus().then(fresh => setSubscription(fresh.content)).catch(() => {});
           // Subscribing grants coins, so the balance on screen is now stale.
           refreshWallet();
@@ -107,14 +109,14 @@ export const SubscriptionSection = () => {
         }
         // An unflagged echo of our own URL would claim a payment that never happened.
         if (!leadsToStripe(checkoutUrl)) {
-          toast.error('Payments are not available yet. You have not been charged.');
+          toast.error(t('toast_payments_unavailable'));
           setPendingTier(null);
           return;
         }
         window.location.href = checkoutUrl;
       })
       .catch((error) => {
-        toast.error(error instanceof Error ? error.message : 'Could not start checkout. You have not been charged.');
+        toast.error(error instanceof Error ? error.message : t('toast_checkout_failed'));
         setPendingTier(null);
       });
   };
@@ -129,21 +131,21 @@ export const SubscriptionSection = () => {
         // Only leave the page when Stripe actually hands back a portal session.
         const portalUrl = res?.content?.portal_url;
         if (res?.success !== true || !portalUrl) {
-          toast.error(res?.message || 'Could not open the billing portal.');
+          toast.error(res?.message || t('toast_portal_failed'));
           setOpeningPortal(false);
           return;
         }
         // The portal has nothing behind it without Stripe: the stub echoes the
         // return URL back, which would read as an unexplained page reload.
         if (res.content.stub || !leadsToStripe(portalUrl)) {
-          toast.info('The billing portal is not available yet.');
+          toast.info(t('toast_portal_unavailable'));
           setOpeningPortal(false);
           return;
         }
         window.location.href = portalUrl;
       })
       .catch((error) => {
-        toast.error(error instanceof Error ? error.message : 'Could not open the billing portal.');
+        toast.error(error instanceof Error ? error.message : t('toast_portal_failed'));
         setOpeningPortal(false);
       });
   };
@@ -161,10 +163,10 @@ export const SubscriptionSection = () => {
         // still-active status must be surfaced as a failure, never a success.
         const cancelledStatus = res?.content?.status;
         if (res?.success !== true || !cancelledStatus || cancelledStatus === 'active') {
-          toast.error(res?.message || 'Could not cancel subscription. You have not been charged for a cancellation.');
+          toast.error(res?.message || t('toast_cancel_failed'));
           return;
         }
-        toast.success(res.message || 'Subscription cancelled.');
+        toast.success(res.message || t('toast_subscription_cancelled'));
         setShowCancelConfirm(false);
         setSubscription(prev => (prev ? { ...prev, status: cancelledStatus } : prev));
         // Reconcile with the server as the source of truth for billing state.
@@ -175,7 +177,7 @@ export const SubscriptionSection = () => {
           // Keep the confirmed cancelled status if the reconcile fetch fails.
         }
       })
-      .catch(() => toast.error('Failed to cancel subscription. Please try again.'))
+      .catch(() => toast.error(t('toast_cancel_failed')))
       .finally(() => setCancelling(false));
   };
 
@@ -185,17 +187,15 @@ export const SubscriptionSection = () => {
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black-60 text-white [&>svg]:h-4 [&>svg]:w-3.5">
           <ChevronLeftIcon />
         </span>
-        <span className="text-lg font-bold text-white">Subscription</span>
+        <span className="text-lg font-bold text-white">{t('title')}</span>
       </Link>
 
       <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-4">
-        <p className="text-sm text-white-50">Current plan</p>
+        <p className="text-sm text-white-50">{t('current_plan')}</p>
         <p className="mt-1 text-base font-semibold text-white capitalize">{tierLabel}</p>
         {expiresLabel && (
           <p className="mt-1 text-xs text-white-50">
-            Renews/expires
-            {' '}
-            {expiresLabel}
+            {t('renews_expires', { date: expiresLabel })}
           </p>
         )}
       </div>
@@ -203,7 +203,7 @@ export const SubscriptionSection = () => {
       {isAuthenticated
         ? (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-semibold text-white">{isActivePaid ? 'Change plan' : 'Upgrade to Premium'}</p>
+              <p className="text-sm font-semibold text-white">{isActivePaid ? t('change_plan') : t('upgrade_to_premium')}</p>
               {/* Three across only where a card is wide enough for its caption
                   and action side by side; below that the action sits under the
                   text so neither has to shrink. */}
@@ -214,7 +214,7 @@ export const SubscriptionSection = () => {
                   const isCurrent = planTier ? isActivePaid && currentTier === planTier : !isActivePaid;
                   return (
                     <div
-                      key={plan.label}
+                      key={planTier ?? 'free'}
                       className={`flex flex-col justify-between gap-3 rounded-2xl border bg-black-100 px-4 py-3.5 ${isCurrent ? 'border-primary-100' : 'border-black-40'}`}
                     >
                       <div>
@@ -223,7 +223,7 @@ export const SubscriptionSection = () => {
                       </div>
                       {isCurrent && (
                         <span className="rounded-full bg-black-60 px-3 py-1.5 text-center text-xs font-semibold text-white-75">
-                          Current
+                          {t('current')}
                         </span>
                       )}
                       {/* Free is reached by cancelling, so only paid plans get a checkout button. */}
@@ -233,7 +233,7 @@ export const SubscriptionSection = () => {
                           disabled={!!pendingTier}
                           className="w-full cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          {pendingTier === planTier ? 'Opening…' : actionLabel}
+                          {pendingTier === planTier ? t('opening') : actionLabel}
                         </button>
                       )}
                     </div>
@@ -245,11 +245,11 @@ export const SubscriptionSection = () => {
         : (
             <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
               <div>
-                <p className="text-sm font-semibold text-white">Get Started</p>
-                <p className="text-xs text-white-50">Sign up to unlock premium features</p>
+                <p className="text-sm font-semibold text-white">{t('get_started')}</p>
+                <p className="text-xs text-white-50">{t('get_started_caption')}</p>
               </div>
               <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                Sign Up Now
+                {t('sign_up_now')}
               </Link>
             </div>
           )}
@@ -261,19 +261,19 @@ export const SubscriptionSection = () => {
             disabled={openingPortal}
             className="flex-1 cursor-pointer rounded-2xl border border-black-40 px-4 py-3 text-sm font-semibold text-white hover:bg-black-60 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {openingPortal ? 'Opening…' : 'Manage billing'}
+            {openingPortal ? t('opening') : t('manage_billing')}
           </button>
           <button
             onClick={() => setShowCancelConfirm(true)}
             className="flex-1 cursor-pointer rounded-2xl border border-error-200 px-4 py-3 text-sm font-semibold text-error-200 hover:bg-error-200/10"
           >
-            Cancel Subscription
+            {t('cancel_subscription')}
           </button>
         </div>
       )}
 
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-white">Billing history</p>
+        <p className="text-sm font-semibold text-white">{t('billing_history')}</p>
         {invoices === null
           ? (
               <div className="flex flex-col gap-2">
@@ -285,7 +285,7 @@ export const SubscriptionSection = () => {
           : invoices.length === 0
             ? (
                 <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-6 text-center">
-                  <p className="text-sm text-white-50">No invoices yet.</p>
+                  <p className="text-sm text-white-50">{t('no_invoices')}</p>
                 </div>
               )
             : (
@@ -293,10 +293,10 @@ export const SubscriptionSection = () => {
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-black-40 text-xs text-white-50">
-                        <th className="px-4 py-3 font-medium">Amount</th>
-                        <th className="px-4 py-3 font-medium">Date</th>
-                        <th className="px-4 py-3 font-medium">Status</th>
-                        <th className="px-4 py-3 text-right font-medium">Invoice</th>
+                        <th className="px-4 py-3 font-medium">{t('column_amount')}</th>
+                        <th className="px-4 py-3 font-medium">{t('column_date')}</th>
+                        <th className="px-4 py-3 font-medium">{t('column_status')}</th>
+                        <th className="px-4 py-3 text-right font-medium">{t('column_invoice')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -323,7 +323,7 @@ export const SubscriptionSection = () => {
                                       className="inline-flex items-center gap-1.5 rounded-full bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 [&_svg]:size-3.5"
                                     >
                                       <DownloadIcon />
-                                      PDF
+                                      {t('pdf')}
                                     </a>
                                   )
                                 : <span className="text-xs text-white-50">-</span>}
@@ -354,12 +354,9 @@ export const SubscriptionSection = () => {
             onClick={e => e.stopPropagation()}
             onKeyDown={e => e.stopPropagation()}
           >
-            <h2 className="text-base font-semibold text-white">Cancel Subscription</h2>
+            <h2 className="text-base font-semibold text-white">{t('cancel_subscription')}</h2>
             <p className="mt-2 text-sm text-white-75">
-              Are you sure you want to cancel your subscription? You&apos;ll keep access until
-              {' '}
-              {expiresLabel ?? 'the end of your billing period'}
-              .
+              {t('cancel_confirm_body', { date: expiresLabel ?? t('end_of_billing_period') })}
             </p>
             <div className="mt-5 flex gap-2">
               <button
@@ -367,14 +364,14 @@ export const SubscriptionSection = () => {
                 disabled={cancelling}
                 className="flex-1 cursor-pointer rounded-2xl border border-black-40 px-4 py-2.5 text-sm text-white disabled:opacity-50"
               >
-                Keep Subscription
+                {t('keep_subscription')}
               </button>
               <button
                 onClick={handleCancel}
                 disabled={cancelling}
                 className="flex-1 cursor-pointer rounded-2xl bg-error-200 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {cancelling ? '…' : 'Confirm Cancel'}
+                {cancelling ? '…' : t('confirm_cancel')}
               </button>
             </div>
           </div>

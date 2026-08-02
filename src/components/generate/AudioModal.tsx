@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
@@ -16,12 +17,24 @@ export const AudioModal = (props: {
   onSave: (values: { script: string; sceneEmotion: Scene; voiceType: string }) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('AudioModal');
   const { enrichPrompt } = useGenerateService();
   const [script, setScript] = useState(props.script);
   const [sceneEmotion, setSceneEmotion] = useState<Scene>(props.sceneEmotion);
   const [voiceType, setVoiceType] = useState(props.voiceType);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [isEnriching, setIsEnriching] = useState(false);
+
+  // The value is what the API expects; only the label follows the locale.
+  const sceneLabels: Record<Scene, string> = {
+    Happy: t('scene_happy'),
+    Natural: t('scene_natural'),
+    Sad: t('scene_sad'),
+    Angry: t('scene_angry'),
+    Fearful: t('scene_fearful'),
+    Disgusted: t('scene_disgusted'),
+    Surprised: t('scene_surprised'),
+  };
 
   const handleEnrich = async () => {
     const prompt = script.trim();
@@ -35,7 +48,7 @@ export const AudioModal = (props: {
         setScript(res.content.enriched_prompt);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not enrich script.');
+      toast.error(error instanceof Error ? error.message : t('toast_enrich_failed'));
     } finally {
       setIsEnriching(false);
     }
@@ -46,7 +59,7 @@ export const AudioModal = (props: {
       <div className="fixed inset-0 z-70 flex items-start justify-center overflow-y-auto bg-black/80 p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="my-auto w-full max-w-160 rounded-2xl border border-white-25 bg-black-80 px-4 py-6 md:px-7.5">
           <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
-            <h2 className="text-base font-semibold text-white">Audio</h2>
+            <h2 className="text-base font-semibold text-white">{t('title')}</h2>
             <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
               <CloseIcon />
             </button>
@@ -58,7 +71,7 @@ export const AudioModal = (props: {
                 value={script}
                 onChange={e => setScript(e.target.value)}
                 disabled={isEnriching}
-                placeholder="Type what you want them to say..."
+                placeholder={t('script_placeholder')}
                 rows={5}
                 className="w-full resize-none rounded-xl border border-black-40 bg-black-100 px-4 py-3 text-sm text-white placeholder:text-white-50 focus:border-primary-100 focus:outline-none disabled:opacity-60"
               />
@@ -68,12 +81,12 @@ export const AudioModal = (props: {
                 className="flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-black-40 bg-black-100 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:size-4"
               >
                 {isEnriching ? <SpinnerIcon /> : <AiIcon />}
-                Enrich with AI
+                {t('enrich')}
               </button>
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-sm font-semibold text-white">Scene</span>
+              <span className="text-sm font-semibold text-white">{t('scene')}</span>
               <div className="flex flex-wrap gap-2">
                 {scenes.map(s => (
                   <button
@@ -81,14 +94,14 @@ export const AudioModal = (props: {
                     onClick={() => setSceneEmotion(s)}
                     className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${sceneEmotion === s ? 'bg-primary-100 text-white' : 'bg-black-40 text-white-75 hover:bg-black-60'}`}
                   >
-                    {s}
+                    {sceneLabels[s]}
                   </button>
                 ))}
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-sm font-semibold text-white">Voice Present</span>
+              <span className="text-sm font-semibold text-white">{t('voice_preset')}</span>
               <button
                 onClick={() => setVoiceOpen(true)}
                 className="flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-black-40 bg-black-100 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary-100"
@@ -107,7 +120,7 @@ export const AudioModal = (props: {
               }}
               className="w-full cursor-pointer rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
-              Save
+              {t('save')}
             </button>
           </div>
         </div>

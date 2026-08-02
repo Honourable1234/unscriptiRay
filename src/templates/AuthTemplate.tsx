@@ -1,8 +1,11 @@
+import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 
-export const AuthTemplate = (props: {
+export const AuthTemplate = async (props: {
   children: React.ReactNode;
 }) => {
+  const t = await getTranslations('AuthTemplate');
+
   return (
     <div className="flex h-screen flex-col bg-black-80">
       <header className="flex h-15 w-full shrink-0 items-center justify-center bg-black-100 md:h-25">
@@ -17,9 +20,7 @@ export const AuthTemplate = (props: {
       </div>
       <footer className="flex h-15 w-full shrink-0 items-center justify-center bg-black-100 md:h-25">
         <p className="text-sm font-semibold text-white">
-          Copyright©
-          {new Date().getFullYear()}
-          . Unscripti AI
+          {t('copyright', { year: new Date().getFullYear() })}
         </p>
       </footer>
     </div>

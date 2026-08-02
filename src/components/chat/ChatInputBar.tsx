@@ -123,7 +123,7 @@ export const ChatInputBar = () => {
             </button>
             <button
               onClick={() => void sendMessage()}
-              aria-label="Send message"
+              aria-label={t('send_message')}
               className="flex cursor-pointer items-center justify-center rounded-full bg-white p-2.5 text-black-100 [&>svg]:size-4"
             >
               <SendIcon />

@@ -1,6 +1,7 @@
 'use client';
 
 import type { DiscoverItem } from './FeedCard';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
@@ -10,6 +11,7 @@ import { FeedCardSkeleton } from './FeedCardSkeleton';
 import { FeedPaywall } from './FeedPaywall';
 
 export const FeedSection = () => {
+  const t = useTranslations('FeedSection');
   const { token } = useAuth();
   const { getDiscoverVideos } = useFeedService();
   const [items, setItems] = useState<DiscoverItem[]>([]);
@@ -98,7 +100,7 @@ export const FeedSection = () => {
 
       {hasMore && (
         <div ref={sentinelRef} className="flex h-16 items-center justify-center">
-          <p className="text-xs text-white/30">Loading more...</p>
+          <p className="text-xs text-white/30">{t('loading_more')}</p>
         </div>
       )}
     </div>

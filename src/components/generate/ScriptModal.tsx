@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { AiIcon, CloseIcon, SpinnerIcon } from '@/components/icons';
@@ -10,6 +11,7 @@ export const ScriptModal = (props: {
   onSave: (script: string) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('ScriptModal');
   const { enrichPrompt } = useGenerateService();
   const [script, setScript] = useState(props.script);
   const [isEnriching, setIsEnriching] = useState(false);
@@ -26,7 +28,7 @@ export const ScriptModal = (props: {
         setScript(res.content.enriched_prompt);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not enrich script.');
+      toast.error(error instanceof Error ? error.message : t('toast_enrich_failed'));
     } finally {
       setIsEnriching(false);
     }
@@ -50,7 +52,7 @@ export const ScriptModal = (props: {
         onKeyDown={e => e.stopPropagation()}
       >
         <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Audio Script</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
             <CloseIcon />
           </button>
@@ -61,7 +63,7 @@ export const ScriptModal = (props: {
           onChange={e => setScript(e.target.value)}
           disabled={isEnriching}
           rows={5}
-          placeholder="Type what you want them to say..."
+          placeholder={t('placeholder')}
           className="w-full resize-none rounded-xl border border-black-40 bg-black-100 px-4 py-3 text-sm text-white placeholder:text-white-50 focus:border-primary-100 focus:outline-none disabled:opacity-60"
         />
 
@@ -72,7 +74,7 @@ export const ScriptModal = (props: {
             className="flex cursor-pointer items-center gap-2 rounded-xl border border-black-40 bg-black-100 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:size-4"
           >
             {isEnriching ? <SpinnerIcon /> : <AiIcon />}
-            Enrich with AI
+            {t('enrich')}
           </button>
           <button
             onClick={() => {
@@ -81,7 +83,7 @@ export const ScriptModal = (props: {
             }}
             className="cursor-pointer rounded-xl bg-primary-100 px-6 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Save
+            {t('save')}
           </button>
         </div>
       </div>

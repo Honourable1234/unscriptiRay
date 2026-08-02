@@ -1,6 +1,7 @@
 'use client';
 
 import type { UpdateProfileBody } from '@/services/useUserService';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -23,6 +24,7 @@ const Field = (props: { label: string; value: string; placeholder: string; onCha
 );
 
 export const ProfileEditModal = (props: { onClose: () => void }) => {
+  const t = useTranslations('ProfileEditModal');
   const { user, refreshUser } = useAuth();
   const { updateProfile } = useUserService();
   const { uploadReference } = useGenerateService();
@@ -50,7 +52,7 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
       const { url } = await uploadReference(file);
       setImageUrl(url);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not upload that image');
+      toast.error(error instanceof Error ? error.message : t('toast_upload_failed'));
     } finally {
       setUploading(false);
     }
@@ -60,16 +62,16 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
     setSaving(true);
     updateProfile(body).then((res) => {
       if (res?.success === false) {
-        toast.error(res.message || 'Could not save your profile');
+        toast.error(res.message || t('toast_save_failed'));
         setSaving(false);
         return;
       }
-      toast.success('Profile updated');
+      toast.success(t('toast_saved'));
       refreshUser();
       props.onClose();
     }).catch((error: unknown) => {
       setSaving(false);
-      toast.error(error instanceof Error ? error.message : 'Could not save your profile');
+      toast.error(error instanceof Error ? error.message : t('toast_save_failed'));
     });
   };
 
@@ -93,7 +95,7 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
         onKeyDown={e => e.stopPropagation()}
       >
         <div className="mb-5 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Edit profile</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} disabled={busy} className="cursor-pointer text-white-75 hover:text-white disabled:opacity-50">
             <CloseIcon />
           </button>
@@ -112,7 +114,7 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
               )}
             </div>
             <label className="cursor-pointer rounded-xl border border-black-20 px-4 py-2 text-xs font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100">
-              {uploading ? 'Uploading…' : 'Change photo'}
+              {uploading ? t('uploading') : t('change_photo')}
               <input
                 type="file"
                 accept="image/*"
@@ -123,8 +125,8 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
             </label>
           </div>
 
-          <Field label="Display name" value={displayName} placeholder="How your name appears" onChange={setDisplayName} />
-          <Field label="Username" value={username} placeholder="Your handle" onChange={setUsername} />
+          <Field label={t('display_name')} value={displayName} placeholder={t('display_name_placeholder')} onChange={setDisplayName} />
+          <Field label={t('username')} value={username} placeholder={t('username_placeholder')} onChange={setUsername} />
 
           <button
             type="button"
@@ -132,7 +134,7 @@ export const ProfileEditModal = (props: { onClose: () => void }) => {
             disabled={!hasChanges || busy}
             className={`mt-1 rounded-xl py-3 text-sm font-semibold transition-colors ${hasChanges && !busy ? 'cursor-pointer bg-primary-100 text-white' : 'cursor-not-allowed bg-primary-100/40 text-white/40'}`}
           >
-            {saving ? <SpinnerIcon /> : 'Save changes'}
+            {saving ? <SpinnerIcon /> : t('save')}
           </button>
         </div>
       </div>

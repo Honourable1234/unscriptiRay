@@ -1,6 +1,7 @@
 'use client';
 
 import type { CharacterDetail } from '@/services/useCharacterService';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
@@ -22,6 +23,7 @@ const Notice = (props: { title: string; body: string; href: string; action: stri
 );
 
 export const CharacterEditContent = (props: { id: string }) => {
+  const t = useTranslations('CharacterEditContent');
   const { authLoading, user } = useAuth();
   const { getCharacter } = useCharacterService();
   const [character, setCharacter] = useState<CharacterDetail | null>(null);
@@ -55,10 +57,10 @@ export const CharacterEditContent = (props: { id: string }) => {
   if (error || !character) {
     return (
       <Notice
-        title="Character unavailable"
-        body="We could not load this character. It may have been deleted."
+        title={t('unavailable_title')}
+        body={t('unavailable_body')}
         href="/my-ai"
-        action="Back to My AI"
+        action={t('unavailable_action')}
       />
     );
   }
@@ -66,10 +68,10 @@ export const CharacterEditContent = (props: { id: string }) => {
   if (!isCharacterOwner({ creator: character.creator, username: user?.username })) {
     return (
       <Notice
-        title="This character isn't yours"
-        body="Only the creator of a character can edit it. You can still chat with this one from its profile."
+        title={t('not_yours_title')}
+        body={t('not_yours_body')}
         href={`/character/${props.id}`}
-        action="View profile"
+        action={t('not_yours_action')}
       />
     );
   }

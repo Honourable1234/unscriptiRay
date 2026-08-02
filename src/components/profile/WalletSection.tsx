@@ -1,6 +1,7 @@
 'use client';
 
 import type { WalletTransaction } from '@/services/useWalletService';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -35,6 +36,7 @@ const pagesToShow = (page: number, pageCount: number) => {
 };
 
 export const WalletSection = () => {
+  const t = useTranslations('WalletSection');
   const { isAuthenticated } = useAuth();
   const { wallet, balance, refresh: refreshWallet } = useWallet();
   const searchParams = useSearchParams();
@@ -77,10 +79,10 @@ export const WalletSection = () => {
   useEffect(() => {
     const outcome = searchParams.get('purchase');
     if (outcome === 'success') {
-      toast.success('Payment received. Your coins will appear once Stripe confirms it.');
+      toast.success(t('toast_payment_received'));
       refreshWallet();
     } else if (outcome === 'cancelled') {
-      toast.info('Purchase cancelled.');
+      toast.info(t('toast_purchase_cancelled'));
     }
   }, []);
 
@@ -94,35 +96,35 @@ export const WalletSection = () => {
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black-60 text-white [&>svg]:h-4 [&>svg]:w-3.5">
           <ChevronLeftIcon />
         </span>
-        <span className="text-lg font-bold text-white">Wallet</span>
+        <span className="text-lg font-bold text-white">{t('title')}</span>
       </Link>
 
       {/* Balance */}
       <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-4">
-        <p className="text-sm text-white-50">Balance</p>
+        <p className="text-sm text-white-50">{t('balance')}</p>
         <p className="mt-1 flex items-center gap-2 text-2xl font-bold text-white">
           <CoinIcon />
           {balance.toLocaleString()}
-          <span className="text-sm font-medium text-white-50">Dreamcoins</span>
+          <span className="text-sm font-medium text-white-50">{t('dreamcoins')}</span>
         </p>
         {wallet && (
           <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-black-40 pt-3 text-xs text-white-50">
             <span>
-              Image credits:
+              {t('image_credits')}
               {' '}
               <span className="font-semibold text-white">{wallet.monthly_image_credits}</span>
             </span>
             <span>
-              Video credits:
+              {t('video_credits')}
               {' '}
               <span className="font-semibold text-white">{wallet.monthly_video_credits}</span>
             </span>
             <span>
-              Credits reset:
+              {t('credits_reset')}
               {' '}
               <span className="font-semibold text-white">
                 {/* Null until the first monthly cycle is scheduled for the wallet. */}
-                {wallet.credits_reset_at ? new Date(wallet.credits_reset_at).toLocaleDateString() : 'Not scheduled'}
+                {wallet.credits_reset_at ? new Date(wallet.credits_reset_at).toLocaleDateString() : t('not_scheduled')}
               </span>
             </span>
           </div>
@@ -131,17 +133,17 @@ export const WalletSection = () => {
 
       {/* Buy coins */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-white">Buy more coins</p>
+        <p className="text-sm font-semibold text-white">{t('buy_more_coins')}</p>
         {isAuthenticated
           ? <CoinPackageGrid onPurchased={() => fetchTransactions(1).catch(() => {})} />
           : (
               <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
                 <div>
-                  <p className="text-sm font-semibold text-white">Get Started</p>
-                  <p className="text-xs text-white-50">Sign up to buy Dreamcoins</p>
+                  <p className="text-sm font-semibold text-white">{t('get_started')}</p>
+                  <p className="text-xs text-white-50">{t('get_started_caption')}</p>
                 </div>
                 <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                  Sign Up Now
+                  {t('sign_up_now')}
                 </Link>
               </div>
             )}
@@ -149,7 +151,7 @@ export const WalletSection = () => {
 
       {/* Transactions */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-white">Transactions</p>
+        <p className="text-sm font-semibold text-white">{t('transactions')}</p>
         {rows === null
           ? (
               <div className="flex flex-col gap-2">
@@ -161,7 +163,7 @@ export const WalletSection = () => {
           : rows.length === 0
             ? (
                 <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-6 text-center">
-                  <p className="text-sm text-white-50">No transactions yet.</p>
+                  <p className="text-sm text-white-50">{t('no_transactions')}</p>
                 </div>
               )
             : (
@@ -169,9 +171,9 @@ export const WalletSection = () => {
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-black-40 text-xs text-white-50">
-                        <th className="px-4 py-3 font-medium">Reason</th>
-                        <th className="px-4 py-3 font-medium">Date</th>
-                        <th className="px-4 py-3 text-right font-medium">Coins</th>
+                        <th className="px-4 py-3 font-medium">{t('column_reason')}</th>
+                        <th className="px-4 py-3 font-medium">{t('column_date')}</th>
+                        <th className="px-4 py-3 text-right font-medium">{t('column_coins')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -195,7 +197,7 @@ export const WalletSection = () => {
         {pageCount > 1 && (
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-white-50">
-              {`Page ${page} of ${pageCount} · ${total} transactions`}
+              {t('pagination', { page, pageCount, total })}
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -203,7 +205,7 @@ export const WalletSection = () => {
                 disabled={isPaging || page === 1}
                 className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Prev
+                {t('prev')}
               </button>
               {pageNumbers.map((pageNumber, i) => (
                 pageNumber === null
@@ -225,7 +227,7 @@ export const WalletSection = () => {
                 disabled={isPaging || page === pageCount}
                 className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next
+                {t('next')}
               </button>
             </div>
           </div>

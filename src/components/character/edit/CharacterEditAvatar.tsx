@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +10,7 @@ import { useCharacterService } from '@/services/useCharacterService';
 import { isValidImageSrc } from '@/utils/isValidImageSrc';
 
 export const CharacterEditAvatar = (props: { id: string; name: string; imageUrl: string | null }) => {
+  const t = useTranslations('CharacterEditAvatar');
   const { generateCharacterImage } = useCharacterService();
   const { pollGenerationStatus } = useGenerateService();
   const [imageUrl, setImageUrl] = useState(props.imageUrl);
@@ -28,20 +30,20 @@ export const CharacterEditAvatar = (props: { id: string; name: string; imageUrl:
           setGenerating(false);
           if (result.url) {
             setImageUrl(result.url);
-            toast.success('New avatar ready');
+            toast.success(t('toast_ready'));
           } else {
-            toast.error('Generation finished without an image');
+            toast.error(t('toast_no_image'));
           }
         },
         (message) => {
           setGenerating(false);
-          toast.error(message || 'Image generation failed');
+          toast.error(message || t('toast_failed'));
         },
       );
     } catch (error) {
       setGenerating(false);
       // A rate limit (10 per minute) surfaces here with the API's own message.
-      toast.error(error instanceof Error ? error.message : 'Could not start image generation');
+      toast.error(error instanceof Error ? error.message : t('toast_start_failed'));
     }
   };
 
@@ -63,7 +65,7 @@ export const CharacterEditAvatar = (props: { id: string; name: string; imageUrl:
       </div>
       <div className="flex flex-col gap-2">
         <span className="text-sm font-semibold text-white">{props.name}</span>
-        <p className="text-xs text-white-75">Regenerating is free, and replaces the picture shown everywhere this character appears.</p>
+        <p className="text-xs text-white-75">{t('description')}</p>
         <button
           type="button"
           onClick={handleRegenerate}
@@ -71,7 +73,7 @@ export const CharacterEditAvatar = (props: { id: string; name: string; imageUrl:
           className="flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-black-20 px-4 py-2 text-xs font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <SparkleIcon />
-          {generating ? 'Generating…' : 'Regenerate image'}
+          {generating ? t('generating') : t('regenerate')}
         </button>
       </div>
     </div>

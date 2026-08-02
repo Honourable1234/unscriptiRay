@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { CloseIcon, SearchIcon } from '@/components/icons';
@@ -11,6 +12,7 @@ export const SelectMotionModal = (props: {
   onSelect: (motion: Motion) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('SelectMotionModal');
   const { getPresets } = useGenerateService();
   const [search, setSearch] = useState('');
   const [motions, setMotions] = useState<Motion[]>([]);
@@ -58,7 +60,7 @@ export const SelectMotionModal = (props: {
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-black-40 px-5 py-4">
-          <span className="text-base font-semibold text-white">Select Motion</span>
+          <span className="text-base font-semibold text-white">{t('title')}</span>
           <button
             onClick={props.onClose}
             className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black-40 hover:bg-black-100"
@@ -75,7 +77,7 @@ export const SelectMotionModal = (props: {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search motion..."
+              placeholder={t('search_placeholder')}
               className="flex-1 bg-transparent text-sm text-white placeholder-white-50 focus:outline-none"
             />
           </div>
@@ -86,13 +88,13 @@ export const SelectMotionModal = (props: {
           {loading
             ? (
                 <div className="flex items-center justify-center py-16">
-                  <p className="text-sm text-white-50">Loading motions...</p>
+                  <p className="text-sm text-white-50">{t('loading')}</p>
                 </div>
               )
             : filtered.length === 0
               ? (
                   <div className="flex items-center justify-center py-16">
-                    <p className="text-sm text-white-50">No motions found.</p>
+                    <p className="text-sm text-white-50">{t('empty')}</p>
                   </div>
                 )
               : (

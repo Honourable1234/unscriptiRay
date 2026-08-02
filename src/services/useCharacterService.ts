@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 import { guestToken } from '@/libs/guestToken';
@@ -128,6 +129,7 @@ export type UpdateCharacterBody = Partial<{
 
 export const useCharacterService = () => {
   const { token } = useAuth();
+  const t = useTranslations('Errors');
 
   // A character the viewer owns is only readable with their credentials, so the
   // guest token stands in for the signed-in one on characters made before sign-up.
@@ -138,21 +140,21 @@ export const useCharacterService = () => {
 
   const likeCharacter = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/like`, {}, token);
   };
 
   const unlikeCharacter = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete(`/characters/${id}/like`, token);
   };
 
   const purchaseCollection = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/purchase-collection`, {}, token) as Promise<PurchaseCollectionResponse>;
   };
@@ -161,42 +163,42 @@ export const useCharacterService = () => {
 
   const createCharacter = (body: CreateCharacterBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/characters', body as unknown as Record<string, unknown>, token);
   };
 
   const aiEnrich = (body: AiEnrichBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/characters/ai-enrich', body as unknown as Record<string, unknown>, token);
   };
 
   const updateCharacter = (id: string, body: UpdateCharacterBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.patch(`/characters/${id}`, body as unknown as Record<string, unknown>, token);
   };
 
   const updateVisibility = (id: string, visibility: CharacterVisibility) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.patch(`/characters/${id}/visibility`, { visibility }, token);
   };
 
   const deleteCharacter = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete(`/characters/${id}`, token);
   };
 
   const generateCharacterImage = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/generate-image`, {}, token) as Promise<{
       success: boolean;

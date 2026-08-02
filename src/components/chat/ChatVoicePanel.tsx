@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { PlayIcon, SearchIcon, VoiceIcon } from '@/components/icons';
@@ -11,6 +12,7 @@ type Voice = { localName: string; shortName: string; gender: 'Female' | 'Male'; 
 type ApiVoice = { localName: string; shortName: string; gender: string; sampleUrl: string };
 
 export const ChatVoicePanel = () => {
+  const t = useTranslations('ChatVoicePanel');
   const { getVoices } = useVoices();
   const { activeChat, voiceId, setVoiceId } = useChatNavigation();
   const { updateVoice } = useChatService();
@@ -31,7 +33,7 @@ export const ChatVoicePanel = () => {
     updateVoice(activeChat.chatroomId, voice.shortName)
       .catch(() => {
         setVoiceId(previous);
-        toast.error('Failed to update voice.');
+        toast.error(t('toast_update_failed'));
       })
       .finally(() => setSavingShortName(null));
   };
@@ -67,7 +69,7 @@ export const ChatVoicePanel = () => {
   };
 
   if (!voices) {
-    return <div className="px-4 py-3 text-sm text-white-50">{error ? 'Failed to load voices.' : 'Loading…'}</div>;
+    return <div className="px-4 py-3 text-sm text-white-50">{error ? t('load_failed') : t('loading')}</div>;
   }
 
   const filtered = query.trim()
@@ -86,16 +88,16 @@ export const ChatVoicePanel = () => {
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Search voices…"
+          placeholder={t('search_placeholder')}
           className="w-full rounded-2xl border border-black-40 bg-black-60/40 py-2.5 pr-4 pl-10 text-sm text-white placeholder-white-50 focus:border-primary-100 focus:outline-none"
         />
       </div>
 
       {female.length === 0 && male.length === 0 && (
-        <div className="px-4 py-3 text-center text-sm text-white-50">No voices found.</div>
+        <div className="px-4 py-3 text-center text-sm text-white-50">{t('no_voices')}</div>
       )}
 
-      {([{ label: 'Female', items: female }, { label: 'Male', items: male }] as const).map(group => group.items.length > 0 && (
+      {([{ label: t('female'), items: female }, { label: t('male'), items: male }] as const).map(group => group.items.length > 0 && (
         <div key={group.label} className="flex flex-col gap-3">
           <span className="text-sm font-semibold text-white">{group.label}</span>
           <div className="flex flex-col gap-2">
@@ -111,7 +113,7 @@ export const ChatVoicePanel = () => {
                 >
                   <span className="text-sm text-white">{v.localName}</span>
                   {v.shortName === voiceId && (
-                    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold text-white">Selected</span>
+                    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold text-white">{t('selected')}</span>
                   )}
                 </button>
 

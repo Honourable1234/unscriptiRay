@@ -36,6 +36,7 @@ const assetExtension = (asset: Asset) => {
 
 export default function GenerateScenePage() {
   const t = useTranslations('GenerateScenePage');
+  const tPrompt = useTranslations('SignUpPrompts');
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { token } = useAuth();
@@ -285,7 +286,7 @@ export default function GenerateScenePage() {
 
       {showSignUpPrompt && (
         <SignUpPromptModal
-          description="Sign up to manage your scenes — deleting is only available on your own account."
+          description={tPrompt('manage_scenes')}
           onClose={() => setShowSignUpPrompt(false)}
         />
       )}

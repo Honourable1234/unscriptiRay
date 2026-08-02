@@ -1,10 +1,12 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { CloseIcon } from '@/components/icons';
 import { Link } from '@/libs/I18nNavigation';
 import { returnUrl } from '@/libs/returnUrl';
 
 export const SignUpPromptModal = (props: { description: string; onClose: () => void }) => {
+  const t = useTranslations('SignUpPromptModal');
   const saveReturnUrl = () => returnUrl.save(window.location.pathname);
 
   return (
@@ -25,7 +27,7 @@ export const SignUpPromptModal = (props: { description: string; onClose: () => v
         onKeyDown={e => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between border-b border-black-40 pb-4">
-          <h2 className="text-base font-semibold text-white">Sign up to continue</h2>
+          <h2 className="text-base font-semibold text-white">{t('title')}</h2>
           <button onClick={props.onClose} className="cursor-pointer text-white-75 hover:text-white">
             <CloseIcon />
           </button>
@@ -39,14 +41,14 @@ export const SignUpPromptModal = (props: { description: string; onClose: () => v
             onClick={saveReturnUrl}
             className="cursor-pointer rounded-xl bg-primary-100 py-3 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Sign up free
+            {t('sign_up_free')}
           </Link>
           <Link
             href="/sign-in"
             onClick={saveReturnUrl}
             className="cursor-pointer rounded-xl border border-black-40 py-3 text-center text-sm font-semibold text-white transition-colors hover:border-primary-100 hover:text-primary-100"
           >
-            Log in
+            {t('log_in')}
           </Link>
         </div>
       </div>

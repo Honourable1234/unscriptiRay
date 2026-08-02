@@ -2,6 +2,7 @@
 
 import type { EditSection } from './editSections';
 import type { CharacterDetail } from '@/services/useCharacterService';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CreateStep1 } from '@/components/create/CreateStep1';
@@ -16,9 +17,11 @@ import { CharacterDeleteButton } from './CharacterDeleteButton';
 import { CharacterEditAvatar } from './CharacterEditAvatar';
 import { CharacterEditNav } from './CharacterEditNav';
 import { CharacterVisibilityField } from './CharacterVisibilityField';
-import { editSectionMeta } from './editSections';
+import { useEditSectionMeta } from './editSections';
 
 export const CharacterEditForm = (props: { character: CharacterDetail }) => {
+  const t = useTranslations('CharacterEditForm');
+  const editSectionMeta = useEditSectionMeta();
   const { data } = useCreate();
   const { updateCharacter } = useCharacterService();
   const [saving, setSaving] = useState(false);
@@ -36,8 +39,8 @@ export const CharacterEditForm = (props: { character: CharacterDetail }) => {
   const handleSave = () => {
     setSaving(true);
     updateCharacter(props.character.id, body)
-      .then(() => toast.success('Changes saved'))
-      .catch((error: unknown) => toast.error(error instanceof Error ? error.message : 'Could not save changes'))
+      .then(() => toast.success(t('toast_saved')))
+      .catch((error: unknown) => toast.error(error instanceof Error ? error.message : t('toast_save_failed')))
       .finally(() => setSaving(false));
   };
 
@@ -46,7 +49,7 @@ export const CharacterEditForm = (props: { character: CharacterDetail }) => {
       <div className="sticky top-0 z-20 flex flex-col gap-3 bg-black-80 py-4 sm:flex-row sm:items-center sm:justify-between">
         <Link href={`/character/${props.character.id}`} className="flex w-fit items-center gap-1 text-xs font-medium whitespace-nowrap text-white-75 transition-colors hover:text-white">
           <span className="[&>svg]:h-4 [&>svg]:w-3.5"><ChevronLeftIcon /></span>
-          Back to profile
+          {t('back_to_profile')}
         </Link>
 
         <div className="flex items-center gap-2">
@@ -57,7 +60,7 @@ export const CharacterEditForm = (props: { character: CharacterDetail }) => {
             disabled={!canSave}
             className={`rounded-xl px-5 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors ${canSave ? 'cursor-pointer bg-primary-100 text-white' : 'cursor-not-allowed bg-primary-100/40 text-white/40'}`}
           >
-            {saving ? <SpinnerIcon /> : 'Save changes'}
+            {saving ? <SpinnerIcon /> : t('save_changes')}
           </button>
         </div>
       </div>

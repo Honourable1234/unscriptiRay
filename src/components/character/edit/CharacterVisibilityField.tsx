@@ -1,20 +1,22 @@
 'use client';
 
 import type { CharacterVisibility } from '@/services/useCharacterService';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCharacterService } from '@/services/useCharacterService';
 
-const options: { value: CharacterVisibility; label: string; hint: string }[] = [
-  { value: 'public', label: 'Public', hint: 'Anyone can find this character in Explore.' },
-  { value: 'unlisted', label: 'Unlisted', hint: 'Only people with the link can open it.' },
-  { value: 'private', label: 'Private', hint: 'Only you can see this character.' },
-];
-
 export const CharacterVisibilityField = (props: { id: string; visibility: CharacterVisibility }) => {
+  const t = useTranslations('CharacterVisibilityField');
   const { updateVisibility } = useCharacterService();
   const [visibility, setVisibility] = useState(props.visibility);
   const [saving, setSaving] = useState(false);
+
+  const options: { value: CharacterVisibility; label: string; hint: string }[] = [
+    { value: 'public', label: t('public_label'), hint: t('public_hint') },
+    { value: 'unlisted', label: t('unlisted_label'), hint: t('unlisted_hint') },
+    { value: 'private', label: t('private_label'), hint: t('private_hint') },
+  ];
 
   const handleSelect = (next: CharacterVisibility) => {
     if (next === visibility || saving) {
@@ -24,17 +26,17 @@ export const CharacterVisibilityField = (props: { id: string; visibility: Charac
     setVisibility(next);
     setSaving(true);
     updateVisibility(props.id, next)
-      .then(() => toast.success(`Character is now ${next}`))
+      .then(() => toast.success(t('toast_updated', { visibility: next })))
       .catch((error: unknown) => {
         setVisibility(previous);
-        toast.error(error instanceof Error ? error.message : 'Could not change visibility');
+        toast.error(error instanceof Error ? error.message : t('toast_failed'));
       })
       .finally(() => setSaving(false));
   };
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl bg-black-60 p-4">
-      <span className="text-sm font-semibold text-white">Visibility</span>
+      <span className="text-sm font-semibold text-white">{t('title')}</span>
       <div className="flex flex-wrap gap-2">
         {options.map(option => (
           <button

@@ -63,7 +63,7 @@ export const ChatRightPanel = (props: {
   const [activeSection, setActiveSection] = useState<'instructions' | 'voice' | 'memory' | 'settings' | null>(null);
 
   const sectionTitle = activeSection === 'instructions'
-    ? 'Instructions'
+    ? t('instructions')
     : activeSection === 'voice'
       ? t('voice')
       : activeSection === 'memory'
@@ -198,9 +198,9 @@ export const ChatRightPanel = (props: {
                       setCalling(true);
                       initiateCall(activeChat.chatroomId)
                         .then(() => {
-                          toast.success('Call started!');
+                          toast.success(t('toast_call_started'));
                         })
-                        .catch(() => toast.error('Failed to start call.'))
+                        .catch(() => toast.error(t('toast_call_failed')))
                         .finally(() => setCalling(false));
                     }}
                     className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white disabled:opacity-50 sm:px-3"
@@ -219,7 +219,7 @@ export const ChatRightPanel = (props: {
                   >
                     <span className="flex items-center gap-2">
                       <ModelIcon />
-                      Instructions
+                      {t('instructions')}
                     </span>
                     <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
                   </button>

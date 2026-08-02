@@ -15,6 +15,7 @@ export const CreativeInputModal = (props: {
   onClose: () => void;
 }) => {
   const t = useTranslations('CreativeInputModal');
+  const tPrompt = useTranslations('SignUpPrompts');
   const { isAuthenticated } = useAuth();
   const { enrichPrompt } = useGenerateService();
   const [text, setText] = useState(props.value);
@@ -103,7 +104,7 @@ export const CreativeInputModal = (props: {
       </div>
       {needsSignUp && (
         <SignUpPromptModal
-          description="Sign up to enrich your prompt with AI."
+          description={tPrompt('enrich_prompt')}
           onClose={() => setNeedsSignUp(false)}
         />
       )}

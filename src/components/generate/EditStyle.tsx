@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { SelectStarIcon } from '@/components/icons';
 import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
 import { GenerateOptionCard } from './GenerateOptionCard';
@@ -13,12 +14,14 @@ export const EditStyle = (props: {
   onImageClick: () => void;
   onImageClear: () => void;
 }) => {
+  const t = useTranslations('EditStyle');
+
   return (
     <div className="mx-auto flex w-full max-w-184 flex-col gap-3">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <GenerateOptionCard
-          label="Select Star"
-          sublabel="Required"
+          label={t('select_star')}
+          sublabel={t('required')}
           height="223px"
           icon={<SelectStarIcon />}
           isSelected={!!props.starName}
@@ -28,13 +31,13 @@ export const EditStyle = (props: {
           onDeselect={props.onStarClear}
         />
         <GenerateOptionCard
-          label="Image"
-          sublabel="Required"
+          label={t('image')}
+          sublabel={t('required')}
           height="223px"
           icon={<ImageFrameIcon />}
           isSelected={!!props.imageUrl}
           selectedImage={props.imageUrl ?? undefined}
-          selectedName="Select Image"
+          selectedName={t('select_image')}
           onClick={props.onImageClick}
           onDeselect={props.onImageClear}
         />
