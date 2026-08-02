@@ -15,13 +15,30 @@ export class ApiError extends Error {
   }
 }
 
+type PaymentRequiredHandler = (error: ApiError) => void;
+
+let onPaymentRequired: PaymentRequiredHandler | null = null;
+
+/**
+ * Registers the single listener notified whenever a request is refused for
+ * lack of coins, so the buy-coins prompt is raised once rather than per screen.
+ * @param handler - Called with the 402 error, or null to unsubscribe.
+ */
+export const setPaymentRequiredHandler = (handler: PaymentRequiredHandler | null) => {
+  onPaymentRequired = handler;
+};
+
 const throwApiError = async (res: Response): Promise<never> => {
   const body = await res.json().catch(() => ({})) as { message?: string; detail?: string; error?: string; signup_required?: boolean };
-  throw new ApiError(body.message ?? body.detail ?? `HTTP ${res.status}`, {
+  const error = new ApiError(body.message ?? body.detail ?? `HTTP ${res.status}`, {
     status: res.status,
     code: body.error,
     signupRequired: body.signup_required,
   });
+  if (res.status === 402) {
+    onPaymentRequired?.(error);
+  }
+  throw error;
 };
 
 export const api = {

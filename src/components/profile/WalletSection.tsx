@@ -1,18 +1,15 @@
 'use client';
 
-import type { CoinPackage, WalletTransaction } from '@/services/useWalletService';
+import type { WalletTransaction } from '@/services/useWalletService';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { CoinPackageGrid } from '@/components/general/CoinPackageGrid';
 import { ChevronLeftIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useWalletService } from '@/services/useWalletService';
-
-// Stripe owns the pricing, so packages are listed by the coins they add and the
-// amount to charge is settled at checkout.
-const coinPackages: CoinPackage[] = ['100', '500', '1000', '5000'];
 
 /**
  * Formats a signed coin movement for the transaction table.
@@ -41,13 +38,12 @@ export const WalletSection = () => {
   const { isAuthenticated } = useAuth();
   const { wallet, balance, refresh: refreshWallet } = useWallet();
   const searchParams = useSearchParams();
-  const { getTransactions, purchaseCoins } = useWalletService();
+  const { getTransactions } = useWalletService();
   const [transactions, setTransactions] = useState<WalletTransaction[] | null>(null);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [total, setTotal] = useState(0);
   const [isPaging, setIsPaging] = useState(false);
-  const [pendingPackage, setPendingPackage] = useState<CoinPackage | null>(null);
 
   /**
    * Loads a page of history, replacing the table on page 1 and appending after it.
@@ -91,44 +87,6 @@ export const WalletSection = () => {
   // Signed-out visitors have nothing to fetch, so the table skips its skeleton.
   const rows = isAuthenticated ? transactions : [];
   const pageNumbers = pagesToShow(page, pageCount);
-
-  const handlePurchase = (coinPackage: CoinPackage) => {
-    if (pendingPackage) {
-      return;
-    }
-    setPendingPackage(coinPackage);
-    const returnUrl = `${window.location.origin}${window.location.pathname}`;
-    purchaseCoins({
-      package: coinPackage,
-      success_url: `${returnUrl}?purchase=success`,
-      cancel_url: `${returnUrl}?purchase=cancelled`,
-    })
-      .then((res) => {
-        // Money-critical: only leave the page when the API actually returns a
-        // checkout session, never on a 200 that carries no URL.
-        const checkoutUrl = res?.content?.checkout_url;
-        if (res?.success !== true || !checkoutUrl) {
-          toast.error(res?.message || 'Could not start checkout. You have not been charged.');
-          setPendingPackage(null);
-          return;
-        }
-        // Without a Stripe key the pack is credited before the response and the
-        // checkout URL is just this page, so the coins land without a round trip.
-        if (res.content.stub) {
-          const added = res.content.coins;
-          toast.success(added ? `${added.toLocaleString()} Dreamcoins added.` : 'Dreamcoins added.');
-          refreshWallet();
-          fetchTransactions(1).catch(() => {});
-          setPendingPackage(null);
-          return;
-        }
-        window.location.href = checkoutUrl;
-      })
-      .catch((error) => {
-        toast.error(error instanceof Error ? error.message : 'Could not start checkout. You have not been charged.');
-        setPendingPackage(null);
-      });
-  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -175,24 +133,7 @@ export const WalletSection = () => {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-semibold text-white">Buy more coins</p>
         {isAuthenticated
-          ? (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {coinPackages.map(coinPackage => (
-                  <button
-                    key={coinPackage}
-                    onClick={() => handlePurchase(coinPackage)}
-                    disabled={!!pendingPackage}
-                    className="flex cursor-pointer flex-col items-center gap-1 rounded-2xl border border-black-40 bg-black-100 px-4 py-4 transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <CoinIcon />
-                    <span className="text-base font-bold text-white">{Number(coinPackage).toLocaleString()}</span>
-                    <span className="text-xs text-white-50">
-                      {pendingPackage === coinPackage ? 'Opening checkout…' : 'Buy'}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )
+          ? <CoinPackageGrid onPurchased={() => fetchTransactions(1).catch(() => {})} />
           : (
               <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
                 <div>

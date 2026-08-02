@@ -8,6 +8,7 @@ import { SpinnerIcon, VoiceIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
+import { useWallet } from '@/context/WalletContext';
 import { useChatService } from '@/services/useChatService';
 import { ChatMessageActions } from './ChatMessageActions';
 
@@ -64,6 +65,7 @@ export const ChatMessageBubble = (props: {
   const { activeChat } = useChatNavigation();
   const { getMessageSpeech } = useChatService();
   const { isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const isUser = props.message.sender === 'user';
   const messageId = props.message.messageId;
 
@@ -76,6 +78,8 @@ export const ChatMessageBubble = (props: {
     setIsPlayingVoice(true);
     try {
       const res = await getMessageSpeech(activeChat.chatroomId, messageId);
+      // Speech is charged on request, so the shown balance is stale until re-read.
+      refreshWallet();
       const { audio: base64Audio, format } = res.content;
       console.error('speech response', { format, audioLength: base64Audio?.length });
       const mimeType = audioMimeTypes[format.toLowerCase()] ?? `audio/${format}`;

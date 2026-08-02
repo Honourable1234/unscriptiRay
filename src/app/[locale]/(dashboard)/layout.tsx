@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { PaymentRequiredPrompt } from '@/components/general/PaymentRequiredPrompt';
 import { AuthProvider } from '@/context/AuthContext';
 import { WalletProvider } from '@/context/WalletContext';
 import { DashboardTemplate } from '@/templates/DashboardTemplate';
@@ -19,6 +20,7 @@ export default async function Layout(props: {
             {props.children}
           </AuthGuard>
         </DashboardTemplate>
+        <PaymentRequiredPrompt />
       </WalletProvider>
     </AuthProvider>
   );

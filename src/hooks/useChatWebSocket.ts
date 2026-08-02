@@ -4,6 +4,7 @@ import type { Message } from '@/components/chat/types';
 import { useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { useWallet } from '@/context/WalletContext';
 import { ApiError } from '@/libs/api';
 import { Env } from '@/libs/Env';
 import { guestToken } from '@/libs/guestToken';
@@ -43,6 +44,7 @@ export const useChatWebSocket = () => {
   const { activeChat, voiceId } = useChatNavigation();
   const { setMessages, setIsTyping, setGuestLimitReached } = useChatMessages();
   const { startChat, sendMessage } = useChatService();
+  const { refresh: refreshWallet } = useWallet();
   const wsRef = useRef<WebSocket | null>(null);
 
   // Close the socket when the token changes (e.g. sign-out) so ensureOpen reconnects fresh.
@@ -99,6 +101,8 @@ export const useChatWebSocket = () => {
           const res = await sendMessage(activeChat.chatroomId, { content });
           const aiText = (res as { content?: { ai_message?: { text?: string } } })?.content?.ai_message?.text;
           setIsTyping(false);
+          // The reply is charged as it lands, so the shown balance is stale until re-read.
+          refreshWallet();
           if (aiText) {
             setMessages((prev: Message[]) => [...prev, {
               id: Date.now() + 1,
@@ -187,6 +191,8 @@ export const useChatWebSocket = () => {
           setMessages((prev: Message[]) =>
             prev.map((m: Message) => m.id === streamingId ? { ...m, text: msg.data } : m),
           );
+          // The reply is charged as it lands, so the shown balance is stale until re-read.
+          refreshWallet();
         }
 
         if (

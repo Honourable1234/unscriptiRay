@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
+import { ApiError } from '@/libs/api';
 import { useGenerateService } from '@/services/generateService';
 
 type RunOptions = {
@@ -83,9 +84,12 @@ export const useGenerationRun = () => {
       track(res.content.generation_id, options);
     } catch (error) {
       setIsGenerating(false);
+      // A 402 raises the buy-coins modal from the api layer, so it needs no toast here.
+      if (error instanceof ApiError && error.status === 402) {
+        return;
+      }
       const message = error instanceof Error ? error.message : t('failed');
-      const isInsufficient = message.toLowerCase().includes('coin') || message.toLowerCase().includes('credit');
-      toast.error(isInsufficient ? t('insufficient_coins', { message }) : message);
+      toast.error(message);
     }
   };
 
