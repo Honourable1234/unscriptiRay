@@ -1,5 +1,7 @@
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
+import { guestToken } from '@/libs/guestToken';
 
 /** One media entry; the API sends only `blur_url` for items the viewer cannot see. */
 export type CharacterMediaItem = {
@@ -35,6 +37,37 @@ type PurchaseCollectionResponse = {
   };
 };
 
+export type CharacterVisibility = 'public' | 'unlisted' | 'private';
+
+/**
+ * Shape of `GET /characters/{id}`. Fields the API keeps behind `secrets_locked`
+ * arrive only for the creator, so everything past the public summary is optional.
+ */
+export type CharacterDetail = {
+  id: string;
+  name: string;
+  age: number | null;
+  gender: string | null;
+  style: string | null;
+  image_url: string | null;
+  short_bio: string | null;
+  tags: string[] | null;
+  visibility: CharacterVisibility;
+  creator: string | null;
+  appearance?: Partial<Record<string, string>> | null;
+  voice_settings?: string | { voice_type?: string } | null;
+  personality_archetype?: string | null;
+  relationship_dynamic?: string | null;
+  kinks?: string | string[] | null;
+  hobby?: string | null;
+  backstory?: string | null;
+  scenario?: string | null;
+  personality_details?: string | null;
+  custom_physical_prompt?: string | null;
+  custom_face_prompt?: string | null;
+  greeting_message?: string | null;
+};
+
 type CreateCharacterBody = {
   style: string;
   appearance: Partial<Record<string, string>>;
@@ -64,7 +97,7 @@ type AiEnrichBody = {
   hobby?: string;
 };
 
-type UpdateCharacterBody = Partial<{
+export type UpdateCharacterBody = Partial<{
   style: string;
   appearance: Partial<{
     ethnic_influence: string;
@@ -96,29 +129,32 @@ type UpdateCharacterBody = Partial<{
 
 export const useCharacterService = () => {
   const { token } = useAuth();
+  const t = useTranslations('Errors');
 
-  const getCharacter = (id: string) => api.get(`/characters/${id}`);
+  // A character the viewer owns is only readable with their credentials, so the
+  // guest token stands in for the signed-in one on characters made before sign-up.
+  const getCharacter = (id: string) => api.get(`/characters/${id}`, token ?? guestToken.get() ?? undefined);
 
   const getCharacterMedia = (id: string, type: 'images' | 'videos') =>
-    api.get(`/characters/${id}/media?type=${type}`, token ?? undefined) as Promise<CharacterMediaResponse>;
+    api.get(`/characters/${id}/media?type=${type}`, token ?? guestToken.get() ?? undefined) as Promise<CharacterMediaResponse>;
 
   const likeCharacter = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/like`, {}, token);
   };
 
   const unlikeCharacter = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete(`/characters/${id}/like`, token);
   };
 
   const purchaseCollection = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/purchase-collection`, {}, token) as Promise<PurchaseCollectionResponse>;
   };
@@ -127,28 +163,42 @@ export const useCharacterService = () => {
 
   const createCharacter = (body: CreateCharacterBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/characters', body as unknown as Record<string, unknown>, token);
   };
 
   const aiEnrich = (body: AiEnrichBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/characters/ai-enrich', body as unknown as Record<string, unknown>, token);
   };
 
   const updateCharacter = (id: string, body: UpdateCharacterBody) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.patch(`/characters/${id}`, body as unknown as Record<string, unknown>, token);
   };
 
+  const updateVisibility = (id: string, visibility: CharacterVisibility) => {
+    if (!token) {
+      return Promise.reject(new Error(t('not_authenticated')));
+    }
+    return api.patch(`/characters/${id}/visibility`, { visibility }, token);
+  };
+
+  const deleteCharacter = (id: string) => {
+    if (!token) {
+      return Promise.reject(new Error(t('not_authenticated')));
+    }
+    return api.delete(`/characters/${id}`, token);
+  };
+
   const generateCharacterImage = (id: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/characters/${id}/generate-image`, {}, token) as Promise<{
       success: boolean;
@@ -167,6 +217,8 @@ export const useCharacterService = () => {
     createCharacter,
     aiEnrich,
     updateCharacter,
+    updateVisibility,
+    deleteCharacter,
     generateCharacterImage,
   };
 };

@@ -1,15 +1,18 @@
 'use client';
 
 import type { MyCharacter } from '@/services/useMyAiService';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ChatIcon2, ProfileIcon } from '@/components/icons';
 
 export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) => {
+  const t = useTranslations('MyAiCard');
   const c = props.character;
   const total = c.image_count + c.video_count;
 
   return (
-    <Link href={`/chat/${c.id}`} className="relative block cursor-pointer overflow-hidden rounded-2xl bg-black-80">
+    <div className="relative overflow-hidden rounded-2xl bg-black-80">
       {/* Image */}
       <div className="relative h-116 w-full lg:h-136">
         {c.image_url
@@ -33,7 +36,7 @@ export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) 
 
         {!c.is_approved && (
           <div className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1">
-            <span className="text-xs font-medium text-white/60">Pending</span>
+            <span className="text-xs font-medium text-white/60">{t('pending')}</span>
           </div>
         )}
 
@@ -83,6 +86,22 @@ export const MyAiCard = (props: { character: MyCharacter; priority?: boolean }) 
         </div>
       </div>
 
-    </Link>
+      <div className="flex gap-3 p-4">
+        <Link
+          href={`/character/${c.id}`}
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black-20 py-3 text-sm font-semibold text-white"
+        >
+          <ProfileIcon />
+          {t('profile')}
+        </Link>
+        <Link
+          href={`/chat/${c.id}`}
+          className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary-100 py-3 text-sm font-semibold text-white md:flex-2"
+        >
+          <ChatIcon2 />
+          {t('chat')}
+        </Link>
+      </div>
+    </div>
   );
 };

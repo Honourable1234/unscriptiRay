@@ -1,12 +1,43 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDownIcon } from '@/components/icons';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+
+const FilterOption = (props: {
+  option: string;
+  isActive: boolean;
+  onSelect: () => void;
+}) => {
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (el) {
+      setIsTruncated(el.scrollHeight > el.clientHeight);
+    }
+  }, []);
+
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        type="button"
+        onClick={props.onSelect}
+        className={`flex w-full px-4 py-2 text-left text-xs transition-colors hover:bg-white/5 ${props.isActive ? 'font-semibold text-white' : 'text-white/70'}`}
+      >
+        <span ref={textRef} className="line-clamp-4">{props.option}</span>
+      </TooltipTrigger>
+      <TooltipContent hidden={!isTruncated}>{props.option}</TooltipContent>
+    </Tooltip>
+  );
+};
 
 export const FilterDropdown = (props: {
   label: string;
   value: string;
   options: string[];
   onChange?: (value: string) => void;
+  menuClassName?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,19 +75,17 @@ export const FilterDropdown = (props: {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 mt-1 min-w-full rounded-xl border border-white/10 bg-black-80 py-1 shadow-lg">
+        <div className={`absolute top-full left-0 z-50 mt-1 max-h-64 overflow-y-auto rounded-xl border border-white/10 bg-black-80 py-1 shadow-lg ${props.menuClassName ?? 'min-w-full'}`}>
           {props.options.map(option => (
-            <button
+            <FilterOption
               key={option}
-              type="button"
-              onClick={() => {
+              option={option}
+              isActive={props.value === option}
+              onSelect={() => {
                 props.onChange?.(option);
                 setIsOpen(false);
               }}
-              className={`flex w-full px-4 py-2 text-left text-xs transition-colors hover:bg-white/5 ${props.value === option ? 'font-semibold text-white' : 'text-white/70'}`}
-            >
-              {option}
-            </button>
+            />
           ))}
         </div>
       )}

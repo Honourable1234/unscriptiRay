@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { useCharacterService } from '@/services/useCharacterService';
 
 type StarCharacter = { id: string; name: string; image: string };
@@ -12,11 +13,13 @@ type StarCharacter = { id: string; name: string; image: string };
  * @returns The selected star and its setter, in `useState` order.
  */
 export const useAssetStar = (characterId: string | null) => {
+  const { authLoading } = useAuth();
   const { getCharacter } = useCharacterService();
   const [star, setStar] = useState<StarCharacter | null>(null);
 
   useEffect(() => {
-    if (!characterId) {
+    // The character is only readable as its owner, so wait for the session.
+    if (!characterId || authLoading) {
       return;
     }
     getCharacter(characterId).then((res) => {
@@ -25,7 +28,7 @@ export const useAssetStar = (characterId: string | null) => {
         setStar({ id: character.id, name: character.name, image: character.image_url ?? '' });
       }
     }).catch(() => {});
-  }, [characterId]);
+  }, [characterId, authLoading]);
 
   return [star, setStar] as const;
 };

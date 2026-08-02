@@ -26,6 +26,7 @@ export const StillStylePresent = (props: {
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('StillStylePresent');
+  const tPrompt = useTranslations('SignUpPrompts');
   const { generateImage } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [visual, setVisual] = useState('Cinematic');
@@ -103,7 +104,7 @@ export const StillStylePresent = (props: {
       />
       {needsSignUp && (
         <SignUpPromptModal
-          description="Sign up to generate scenes — your creations will be saved to your account."
+          description={tPrompt('generate_scenes')}
           onClose={dismissSignUpPrompt}
         />
       )}

@@ -7,7 +7,6 @@ import { ChatRoom } from '@/components/chat/ChatRoom';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
-import { guestToken } from '@/libs/guestToken';
 import { useChatService } from '@/services/useChatService';
 
 const formatTime = (dateStr: string) => {
@@ -28,7 +27,7 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
   const { id } = use(props.params);
   const { activeChat, setActiveChat, setVoiceId, bumpChatList } = useChatNavigation();
   const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping, setGuestLimitReached } = useChatMessages();
-  const { authLoading, isAuthenticated } = useAuth();
+  const { authLoading } = useAuth();
   const { startChat, getMessages } = useChatService();
   const router = useRouter();
 
@@ -48,13 +47,6 @@ export default function ChatIdPage(props: { params: Promise<{ id: string }> }) {
       if (!c?.chatroom_id) {
         router.replace('/chat');
         return;
-      }
-
-      if (!isAuthenticated) {
-        const gt = (c.guest_token ?? res?.guest_token) as string | undefined;
-        if (gt) {
-          guestToken.set(gt);
-        }
       }
 
       const greetingMessage = (c.character?.greeting_message as string) ?? '';

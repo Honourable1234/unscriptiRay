@@ -5,7 +5,7 @@ import type { Motion } from './SelectMotionModal';
 import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CaptureIcon, MotionIcon, SelectStarIcon } from '@/components/icons';
 import { useAssetStar } from '@/hooks/useAssetStar';
 import { useGenerationRun } from '@/hooks/useGenerationRun';

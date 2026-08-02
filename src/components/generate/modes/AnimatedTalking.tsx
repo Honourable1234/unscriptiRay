@@ -29,6 +29,7 @@ export const AnimatedTalking = (props: {
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedTalking');
+  const tPrompt = useTranslations('SignUpPrompts');
   const { generateSpeech } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
@@ -182,7 +183,7 @@ export const AnimatedTalking = (props: {
 
       {needsSignUp && (
         <SignUpPromptModal
-          description="Sign up to generate scenes — your creations will be saved to your account."
+          description={tPrompt('generate_scenes')}
           onClose={dismissSignUpPrompt}
         />
       )}

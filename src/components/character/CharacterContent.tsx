@@ -5,10 +5,13 @@ import type { CharacterMediaItem } from '@/services/useCharacterService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { MediaStyleTab } from '@/components/generate/MediaStyleTab';
+import { useAuth } from '@/context/AuthContext';
 import { assetAspectRatio } from '@/services/generateService';
 import { useCharacterService } from '@/services/useCharacterService';
+import { isCharacterOwner } from '@/utils/characterOwner';
 import { CharacterContentSkeleton } from './CharacterContentSkeleton';
 import { CharacterHeader } from './CharacterHeader';
+import { CharacterManageBar } from './CharacterManageBar';
 import { CharacterMediaGrid } from './CharacterMediaGrid';
 import { CharacterUnlockButton } from './CharacterUnlockButton';
 
@@ -24,8 +27,11 @@ const isRenderableSrc = (src: string) => /^(?:https?:\/\/|\/)/.test(src);
 
 export const CharacterContent = (props: { id: string }) => {
   const t = useTranslations('CharacterContent');
+  const { authLoading, user } = useAuth();
   const { getCharacter, getCharacterMedia } = useCharacterService();
   const [character, setCharacter] = useState<Character | null>(null);
+  // Only the creator may manage a character, and the API reports that as a handle.
+  const [creator, setCreator] = useState<string | null>(null);
   // The character payload reports whether this viewer owns the collection.
   const [hasFullAccess, setHasFullAccess] = useState(false);
   const [allMedia, setAllMedia] = useState<MediaItem[]>([]);
@@ -38,12 +44,19 @@ export const CharacterContent = (props: { id: string }) => {
   const handleUnlocked = () => setReloadKey(k => k + 1);
 
   useEffect(() => {
+    // Fetching before the session resolves reads as anonymous, which hides a
+    // character the viewer owns, so the skeleton stays up until the token lands.
+    if (authLoading) {
+      return;
+    }
+
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
     setLoading(true);
 
     const characterReq = getCharacter(props.id).then((res) => {
       const c = res?.content;
       if (c) {
+        setCreator(c.creator ?? null);
         setCharacter({
           id: c.id,
           name: c.name,
@@ -96,7 +109,7 @@ export const CharacterContent = (props: { id: string }) => {
     Promise.all([characterReq, mediaReq])
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [props.id, reloadKey]);
+  }, [props.id, reloadKey, authLoading]);
 
   if (loading) {
     return <CharacterContentSkeleton />;
@@ -123,6 +136,7 @@ export const CharacterContent = (props: { id: string }) => {
   return (
     <div className="w-full py-2.5">
       <CharacterHeader character={character} imageCount={imageCount} videoCount={videoCount} />
+      {isCharacterOwner({ creator, username: user?.username }) && <CharacterManageBar id={String(character.id)} />}
       {!hasFullAccess && <CharacterUnlockButton character={character} onUnlocked={handleUnlocked} />}
       <MediaStyleTab tab={tab} onTabChange={setTab} />
       <CharacterMediaGrid name={character.name} media={filtered} />

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -21,6 +21,7 @@ import {
   SidebarContent,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { useChatService } from '@/services/useChatService';
@@ -50,6 +51,7 @@ export const ChatRightPanel = (props: {
   const t = useTranslations('ChatRightPanel');
   // const { toggleSidebar } = useSidebar();
   const { activeChat } = useChatNavigation();
+  const { authLoading, isAuthenticated } = useAuth();
   const { getCharacter, getCharacterMedia } = useCharacterService();
   const { initiateCall } = useChatService();
   const router = useRouter();
@@ -61,7 +63,7 @@ export const ChatRightPanel = (props: {
   const [activeSection, setActiveSection] = useState<'instructions' | 'voice' | 'memory' | 'settings' | null>(null);
 
   const sectionTitle = activeSection === 'instructions'
-    ? 'Instructions'
+    ? t('instructions')
     : activeSection === 'voice'
       ? t('voice')
       : activeSection === 'memory'
@@ -71,7 +73,8 @@ export const ChatRightPanel = (props: {
           : '';
 
   useEffect(() => {
-    if (!activeChat?.characterId) {
+    // The character is only readable as its owner, so wait for the session.
+    if (!activeChat?.characterId || authLoading) {
       return;
     }
 
@@ -93,7 +96,7 @@ export const ChatRightPanel = (props: {
         }
       }
     }).catch(() => {});
-  }, [activeChat?.characterId]);
+  }, [activeChat?.characterId, authLoading]);
 
   const displayImages = (images.length > 0 ? images : [props.image])
     .map(src => isValidImageSrc(src) ? src : '/General/Profile.png');
@@ -185,72 +188,76 @@ export const ChatRightPanel = (props: {
                   <MediaIcon />
                   {t('view_media')}
                 </button>
-                <button
-                  disabled={calling || !activeChat}
-                  onClick={() => {
-                    if (!activeChat) {
-                      return;
-                    }
-                    setCalling(true);
-                    initiateCall(activeChat.chatroomId)
-                      .then(() => {
-                        toast.success('Call started!');
-                      })
-                      .catch(() => toast.error('Failed to start call.'))
-                      .finally(() => setCalling(false));
-                  }}
-                  className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white disabled:opacity-50 sm:px-3"
-                >
-                  <PhoneIcon />
-                  {calling ? '…' : t('call_me')}
-                </button>
+                {isAuthenticated && (
+                  <button
+                    disabled={calling || !activeChat}
+                    onClick={() => {
+                      if (!activeChat) {
+                        return;
+                      }
+                      setCalling(true);
+                      initiateCall(activeChat.chatroomId)
+                        .then(() => {
+                          toast.success(t('toast_call_started'));
+                        })
+                        .catch(() => toast.error(t('toast_call_failed')))
+                        .finally(() => setCalling(false));
+                    }}
+                    className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-black-20 px-1 py-2.5 text-xs font-semibold text-white disabled:opacity-50 sm:px-3"
+                  >
+                    <PhoneIcon />
+                    {calling ? '…' : t('call_me')}
+                  </button>
+                )}
               </div>
 
-              <div className="mt-6 flex flex-col">
-                <button
-                  onClick={() => setActiveSection('instructions')}
-                  className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
-                >
-                  <span className="flex items-center gap-2">
-                    <ModelIcon />
-                    Instructions
-                  </span>
-                  <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
-                </button>
+              {isAuthenticated && (
+                <div className="mt-6 flex flex-col">
+                  <button
+                    onClick={() => setActiveSection('instructions')}
+                    className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
+                  >
+                    <span className="flex items-center gap-2">
+                      <ModelIcon />
+                      {t('instructions')}
+                    </span>
+                    <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+                  </button>
 
-                <button
-                  onClick={() => setActiveSection('voice')}
-                  className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
-                >
-                  <span className="flex items-center gap-2">
-                    <VoiceIcon />
-                    {t('voice')}
-                  </span>
-                  <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
-                </button>
+                  <button
+                    onClick={() => setActiveSection('voice')}
+                    className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
+                  >
+                    <span className="flex items-center gap-2">
+                      <VoiceIcon />
+                      {t('voice')}
+                    </span>
+                    <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+                  </button>
 
-                <button
-                  onClick={() => setActiveSection('memory')}
-                  className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
-                >
-                  <span className="flex items-center gap-2">
-                    <MemoryIcon />
-                    {t('memory')}
-                  </span>
-                  <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
-                </button>
+                  <button
+                    onClick={() => setActiveSection('memory')}
+                    className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
+                  >
+                    <span className="flex items-center gap-2">
+                      <MemoryIcon />
+                      {t('memory')}
+                    </span>
+                    <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+                  </button>
 
-                <button
-                  onClick={() => setActiveSection('settings')}
-                  className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
-                >
-                  <span className="flex items-center gap-2">
-                    <SettingsIcon />
-                    {t('settings')}
-                  </span>
-                  <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
-                </button>
-              </div>
+                  <button
+                    onClick={() => setActiveSection('settings')}
+                    className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm text-white hover:bg-black-40"
+                  >
+                    <span className="flex items-center gap-2">
+                      <SettingsIcon />
+                      {t('settings')}
+                    </span>
+                    <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

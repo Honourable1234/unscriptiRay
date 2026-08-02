@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { CloseIcon, EditIcon, PlayIcon, SpinnerIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useGenerateService } from '@/services/generateService';

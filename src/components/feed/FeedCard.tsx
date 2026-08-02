@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { CommentIcon, HeartIcon, HeartIconFilled, ShareIcon } from '@/components/icons';
@@ -16,6 +17,7 @@ export type DiscoverItem = {
 };
 
 export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
+  const t = useTranslations('FeedCard');
   const { likeAsset, unlikeAsset } = useFeedService();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -119,7 +121,7 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
                   <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
                 </svg>
               )}
-          <span className="text-xs font-semibold">{muted ? 'Unmute' : 'Mute'}</span>
+          <span className="text-xs font-semibold">{muted ? t('unmute') : t('mute')}</span>
         </button>
 
         <button
@@ -132,7 +134,7 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
 
         <Link href={`/chat/${props.item.character.id}`} className="flex cursor-pointer flex-col items-center gap-1 text-white hover:text-primary-100">
           <CommentIcon />
-          <span className="text-xs font-semibold">Chat</span>
+          <span className="text-xs font-semibold">{t('chat')}</span>
         </Link>
 
         <button
@@ -142,7 +144,7 @@ export const FeedCard = (props: { item: DiscoverItem; index: number }) => {
           className="flex cursor-pointer flex-col items-center gap-1 text-white hover:text-primary-100"
         >
           <ShareIcon />
-          <span className="text-xs font-semibold">Share</span>
+          <span className="text-xs font-semibold">{t('share')}</span>
         </button>
       </div>
     </div>

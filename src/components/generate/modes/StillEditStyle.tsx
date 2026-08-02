@@ -31,6 +31,7 @@ export const StillEditStyle = (props: {
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('StillEditStyle');
+  const tPrompt = useTranslations('SignUpPrompts');
   const { generateImage, getPresets } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [model, setModel] = useState('Spark');
@@ -225,7 +226,7 @@ export const StillEditStyle = (props: {
 
       {imageModalOpen && (
         <SelectAssetModal
-          title="Select Image"
+          title={t('select_image')}
           filter="image"
           onSelect={(asset) => {
             setSourceImage({ id: asset.id, url: asset.url });
@@ -245,7 +246,7 @@ export const StillEditStyle = (props: {
       )}
       {needsSignUp && (
         <SignUpPromptModal
-          description="Sign up to generate scenes — your creations will be saved to your account."
+          description={tPrompt('generate_scenes')}
           onClose={dismissSignUpPrompt}
         />
       )}

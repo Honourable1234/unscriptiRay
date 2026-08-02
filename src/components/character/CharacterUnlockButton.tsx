@@ -3,7 +3,7 @@
 import type { Character } from '@/data/characters';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { BouncingDots } from '@/components/general/BouncingDots';
 import { SignUpPromptModal } from '@/components/general/SignUpPromptModal';
 import { LockIcon2 } from '@/components/icons';

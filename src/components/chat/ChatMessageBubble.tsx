@@ -1,12 +1,15 @@
 'use client';
 
 import type { Message } from './types';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SpinnerIcon, VoiceIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
+import { useWallet } from '@/context/WalletContext';
 import { useChatService } from '@/services/useChatService';
 import { ChatMessageActions } from './ChatMessageActions';
 
@@ -56,12 +59,15 @@ export const ChatMessageBubble = (props: {
   onDuplicate: (id: number) => void;
   onEdit: (id: number, text: string) => void;
 }) => {
+  const t = useTranslations('ChatMessageBubble');
   const [isEditing, setIsEditing] = useState(false);
   const [isPlayingVoice, setIsPlayingVoice] = useState(false);
   const editableRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { activeChat } = useChatNavigation();
   const { getMessageSpeech } = useChatService();
+  const { isAuthenticated } = useAuth();
+  const { refresh: refreshWallet } = useWallet();
   const isUser = props.message.sender === 'user';
   const messageId = props.message.messageId;
 
@@ -74,6 +80,8 @@ export const ChatMessageBubble = (props: {
     setIsPlayingVoice(true);
     try {
       const res = await getMessageSpeech(activeChat.chatroomId, messageId);
+      // Speech is charged on request, so the shown balance is stale until re-read.
+      refreshWallet();
       const { audio: base64Audio, format } = res.content;
       console.error('speech response', { format, audioLength: base64Audio?.length });
       const mimeType = audioMimeTypes[format.toLowerCase()] ?? `audio/${format}`;
@@ -87,7 +95,7 @@ export const ChatMessageBubble = (props: {
       console.error('audio.play() resolved', { paused: audio.paused, duration: audio.duration });
     } catch (error) {
       console.error('playVoice failed', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to play voice.');
+      toast.error(error instanceof Error ? error.message : t('toast_voice_failed'));
     } finally {
       setIsPlayingVoice(false);
     }
@@ -118,10 +126,10 @@ export const ChatMessageBubble = (props: {
         </div>
         <div className="mt-3 flex items-center justify-end gap-3">
           <Button type="button" onClick={() => setIsEditing(false)} className="rounded-full bg-black-40 text-white hover:bg-black-60">
-            Cancel
+            {t('cancel')}
           </Button>
           <Button type="button" onClick={saveEdit} className="rounded-full bg-white text-black hover:bg-white/90">
-            Save
+            {t('save')}
           </Button>
         </div>
       </div>
@@ -153,11 +161,12 @@ export const ChatMessageBubble = (props: {
                 onEdit={() => setIsEditing(true)}
                 onDuplicate={() => props.onDuplicate(props.message.id)}
                 onDelete={() => props.onDelete(props.message.id)}
+                copyOnly={!isAuthenticated}
               />
-              {!isUser && (
+              {!isUser && isAuthenticated && (
                 <button
                   type="button"
-                  aria-label="Play voice"
+                  aria-label={t('play_voice')}
                   disabled={isPlayingVoice || !messageId}
                   onClick={() => void playVoice()}
                   className="flex size-7 cursor-pointer items-center justify-center rounded-full bg-black-100/70 text-white hover:text-white disabled:cursor-not-allowed disabled:opacity-60 [&>svg]:size-3.5"

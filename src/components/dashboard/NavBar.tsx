@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
@@ -18,6 +19,7 @@ type Notification = {
 };
 
 export const NavBar = (props: { className?: string }) => {
+  const t = useTranslations('NavBar');
   const { isAuthenticated, isPremium, authLoading } = useAuth();
   const { balance } = useWallet();
   const { getUnreadCount, getNotifications } = useNotificationService();
@@ -50,8 +52,8 @@ export const NavBar = (props: { className?: string }) => {
         )}
         {!authLoading && !isAuthenticated && (
           <div className="flex gap-3 md:mr-21">
-            <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-sm font-semibold text-primary-100 transition-opacity hover:opacity-80">Log In</Link>
-            <Link href="/sign-up" className="hidden cursor-pointer rounded-lg border border-primary-100 bg-primary-100 px-6 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80 sm:block">Sign up</Link>
+            <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-sm font-semibold text-primary-100 transition-opacity hover:opacity-80">{t('log_in')}</Link>
+            <Link href="/sign-up" className="hidden cursor-pointer rounded-lg border border-primary-100 bg-primary-100 px-6 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80 sm:block">{t('sign_up')}</Link>
           </div>
         )}
         {!authLoading && isAuthenticated && (
@@ -64,7 +66,7 @@ export const NavBar = (props: { className?: string }) => {
               <span className="text-xs whitespace-nowrap text-white">
                 {balance.toLocaleString()}
                 {' '}
-                Coins
+                {t('coins')}
               </span>
             </Link>
             {!isPremium && (
@@ -73,7 +75,7 @@ export const NavBar = (props: { className?: string }) => {
                 className="hidden cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 px-3 py-2 text-xs font-semibold text-white sm:flex"
               >
                 <UpgradeIcon />
-                <span>Upgrade</span>
+                <span>{t('upgrade')}</span>
               </Link>
             )}
             <div className="relative">
@@ -103,15 +105,15 @@ export const NavBar = (props: { className?: string }) => {
                   <button
                     className="fixed inset-0 z-40 cursor-default"
                     onClick={() => setNotifOpen(false)}
-                    aria-label="Close notifications"
+                    aria-label={t('close_notifications')}
                   />
                   <div className="absolute top-8 right-0 z-50 w-72 rounded-xl border border-black-40 bg-black-100 py-2 shadow-lg">
-                    <p className="px-4 pb-2 text-xs font-semibold text-white-50">Notifications</p>
+                    <p className="px-4 pb-2 text-xs font-semibold text-white-50">{t('notifications')}</p>
                     {notifLoading && (
-                      <p className="px-4 py-3 text-sm text-white-50">Loading…</p>
+                      <p className="px-4 py-3 text-sm text-white-50">{t('loading')}</p>
                     )}
                     {!notifLoading && notifications.length === 0 && (
-                      <p className="px-4 py-3 text-sm text-white-50">No notifications to show.</p>
+                      <p className="px-4 py-3 text-sm text-white-50">{t('no_notifications')}</p>
                     )}
                     {!notifLoading && notifications.map(n => (
                       <div key={n.id} className="flex flex-col gap-0.5 border-t border-black-40 px-4 py-3">

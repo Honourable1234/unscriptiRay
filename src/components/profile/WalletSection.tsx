@@ -1,18 +1,16 @@
 'use client';
 
-import type { CoinPackage, WalletTransaction } from '@/services/useWalletService';
+import type { WalletTransaction } from '@/services/useWalletService';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
+import { CoinPackageGrid } from '@/components/general/CoinPackageGrid';
 import { ChevronLeftIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useWalletService } from '@/services/useWalletService';
-
-// Stripe owns the pricing, so packages are listed by the coins they add and the
-// amount to charge is settled at checkout.
-const coinPackages: CoinPackage[] = ['100', '500', '1000', '5000'];
 
 /**
  * Formats a signed coin movement for the transaction table.
@@ -38,16 +36,16 @@ const pagesToShow = (page: number, pageCount: number) => {
 };
 
 export const WalletSection = () => {
+  const t = useTranslations('WalletSection');
   const { isAuthenticated } = useAuth();
   const { wallet, balance, refresh: refreshWallet } = useWallet();
   const searchParams = useSearchParams();
-  const { getTransactions, purchaseCoins } = useWalletService();
+  const { getTransactions } = useWalletService();
   const [transactions, setTransactions] = useState<WalletTransaction[] | null>(null);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [total, setTotal] = useState(0);
   const [isPaging, setIsPaging] = useState(false);
-  const [pendingPackage, setPendingPackage] = useState<CoinPackage | null>(null);
 
   /**
    * Loads a page of history, replacing the table on page 1 and appending after it.
@@ -81,10 +79,10 @@ export const WalletSection = () => {
   useEffect(() => {
     const outcome = searchParams.get('purchase');
     if (outcome === 'success') {
-      toast.success('Payment received. Your coins will appear once Stripe confirms it.');
+      toast.success(t('toast_payment_received'));
       refreshWallet();
     } else if (outcome === 'cancelled') {
-      toast.info('Purchase cancelled.');
+      toast.info(t('toast_purchase_cancelled'));
     }
   }, []);
 
@@ -92,69 +90,41 @@ export const WalletSection = () => {
   const rows = isAuthenticated ? transactions : [];
   const pageNumbers = pagesToShow(page, pageCount);
 
-  const handlePurchase = (coinPackage: CoinPackage) => {
-    if (pendingPackage) {
-      return;
-    }
-    setPendingPackage(coinPackage);
-    const returnUrl = `${window.location.origin}${window.location.pathname}`;
-    purchaseCoins({
-      package: coinPackage,
-      success_url: `${returnUrl}?purchase=success`,
-      cancel_url: `${returnUrl}?purchase=cancelled`,
-    })
-      .then((res) => {
-        // Money-critical: only leave the page when the API actually returns a
-        // checkout session, never on a 200 that carries no URL.
-        const checkoutUrl = res?.content?.checkout_url;
-        if (res?.success !== true || !checkoutUrl) {
-          toast.error(res?.message || 'Could not start checkout. You have not been charged.');
-          setPendingPackage(null);
-          return;
-        }
-        window.location.href = checkoutUrl;
-      })
-      .catch((error) => {
-        toast.error(error instanceof Error ? error.message : 'Could not start checkout. You have not been charged.');
-        setPendingPackage(null);
-      });
-  };
-
   return (
     <div className="flex flex-col gap-4">
       <Link href="/profile" className="flex w-fit cursor-pointer items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black-60 text-white [&>svg]:h-4 [&>svg]:w-3.5">
           <ChevronLeftIcon />
         </span>
-        <span className="text-lg font-bold text-white">Wallet</span>
+        <span className="text-lg font-bold text-white">{t('title')}</span>
       </Link>
 
       {/* Balance */}
       <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-4">
-        <p className="text-sm text-white-50">Balance</p>
+        <p className="text-sm text-white-50">{t('balance')}</p>
         <p className="mt-1 flex items-center gap-2 text-2xl font-bold text-white">
           <CoinIcon />
           {balance.toLocaleString()}
-          <span className="text-sm font-medium text-white-50">Dreamcoins</span>
+          <span className="text-sm font-medium text-white-50">{t('dreamcoins')}</span>
         </p>
         {wallet && (
           <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-black-40 pt-3 text-xs text-white-50">
             <span>
-              Image credits:
+              {t('image_credits')}
               {' '}
               <span className="font-semibold text-white">{wallet.monthly_image_credits}</span>
             </span>
             <span>
-              Video credits:
+              {t('video_credits')}
               {' '}
               <span className="font-semibold text-white">{wallet.monthly_video_credits}</span>
             </span>
             <span>
-              Credits reset:
+              {t('credits_reset')}
               {' '}
               <span className="font-semibold text-white">
                 {/* Null until the first monthly cycle is scheduled for the wallet. */}
-                {wallet.credits_reset_at ? new Date(wallet.credits_reset_at).toLocaleDateString() : 'Not scheduled'}
+                {wallet.credits_reset_at ? new Date(wallet.credits_reset_at).toLocaleDateString() : t('not_scheduled')}
               </span>
             </span>
           </div>
@@ -163,34 +133,17 @@ export const WalletSection = () => {
 
       {/* Buy coins */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-white">Buy more coins</p>
+        <p className="text-sm font-semibold text-white">{t('buy_more_coins')}</p>
         {isAuthenticated
-          ? (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {coinPackages.map(coinPackage => (
-                  <button
-                    key={coinPackage}
-                    onClick={() => handlePurchase(coinPackage)}
-                    disabled={!!pendingPackage}
-                    className="flex cursor-pointer flex-col items-center gap-1 rounded-2xl border border-black-40 bg-black-100 px-4 py-4 transition-colors hover:border-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <CoinIcon />
-                    <span className="text-base font-bold text-white">{Number(coinPackage).toLocaleString()}</span>
-                    <span className="text-xs text-white-50">
-                      {pendingPackage === coinPackage ? 'Opening checkout…' : 'Buy'}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )
+          ? <CoinPackageGrid onPurchased={() => fetchTransactions(1).catch(() => {})} />
           : (
               <div className="flex items-center justify-between rounded-2xl border border-black-40 bg-black-100 px-4 py-3.5">
                 <div>
-                  <p className="text-sm font-semibold text-white">Get Started</p>
-                  <p className="text-xs text-white-50">Sign up to buy Dreamcoins</p>
+                  <p className="text-sm font-semibold text-white">{t('get_started')}</p>
+                  <p className="text-xs text-white-50">{t('get_started_caption')}</p>
                 </div>
                 <Link href="/sign-up" className="cursor-pointer rounded-full bg-primary-100 px-4 py-2 text-xs font-semibold text-white">
-                  Sign Up Now
+                  {t('sign_up_now')}
                 </Link>
               </div>
             )}
@@ -198,7 +151,7 @@ export const WalletSection = () => {
 
       {/* Transactions */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-white">Transactions</p>
+        <p className="text-sm font-semibold text-white">{t('transactions')}</p>
         {rows === null
           ? (
               <div className="flex flex-col gap-2">
@@ -210,7 +163,7 @@ export const WalletSection = () => {
           : rows.length === 0
             ? (
                 <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-6 text-center">
-                  <p className="text-sm text-white-50">No transactions yet.</p>
+                  <p className="text-sm text-white-50">{t('no_transactions')}</p>
                 </div>
               )
             : (
@@ -218,9 +171,9 @@ export const WalletSection = () => {
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-black-40 text-xs text-white-50">
-                        <th className="px-4 py-3 font-medium">Reason</th>
-                        <th className="px-4 py-3 font-medium">Date</th>
-                        <th className="px-4 py-3 text-right font-medium">Coins</th>
+                        <th className="px-4 py-3 font-medium">{t('column_reason')}</th>
+                        <th className="px-4 py-3 font-medium">{t('column_date')}</th>
+                        <th className="px-4 py-3 text-right font-medium">{t('column_coins')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -244,7 +197,7 @@ export const WalletSection = () => {
         {pageCount > 1 && (
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-white-50">
-              {`Page ${page} of ${pageCount} · ${total} transactions`}
+              {t('pagination', { page, pageCount, total })}
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -252,7 +205,7 @@ export const WalletSection = () => {
                 disabled={isPaging || page === 1}
                 className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Prev
+                {t('prev')}
               </button>
               {pageNumbers.map((pageNumber, i) => (
                 pageNumber === null
@@ -274,7 +227,7 @@ export const WalletSection = () => {
                 disabled={isPaging || page === pageCount}
                 className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next
+                {t('next')}
               </button>
             </div>
           </div>

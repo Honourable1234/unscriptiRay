@@ -25,6 +25,8 @@ type AuthContextValue = {
   authLoading: boolean;
   token: string | null;
   user: UserData | null;
+  /** Refetches the profile after anything that edits it. */
+  refreshUser: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue>({
@@ -33,6 +35,7 @@ const AuthContext = createContext<AuthContextValue>({
   authLoading: true,
   token: null,
   user: null,
+  refreshUser: () => {},
 });
 
 const fetchUserData = async (accessToken: string): Promise<UserData | null> => {
@@ -77,8 +80,20 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  const refreshUser = () => {
+    if (!token) {
+      return;
+    }
+    // Keep the profile already on screen if the refetch fails.
+    fetchUserData(token).then((userData) => {
+      if (userData) {
+        setUser(userData);
+      }
+    }).catch(() => {});
+  };
+
   return (
-    <AuthContext value={{ isAuthenticated, isPremium, authLoading, token, user }}>
+    <AuthContext value={{ isAuthenticated, isPremium, authLoading, token, user, refreshUser }}>
       {props.children}
     </AuthContext>
   );

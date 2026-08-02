@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
@@ -61,11 +61,11 @@ export const ChatRoom = () => {
       .then(() => {
         setMessages([]);
         setShowClearConfirmId(null);
-        toast.success('Chat cleared.');
+        toast.success(t('toast_cleared'));
       })
       .catch(() => {
         setShowClearConfirmId(null);
-        toast.error('Failed to clear chat.');
+        toast.error(t('toast_clear_failed'));
       });
   };
 
@@ -75,14 +75,14 @@ export const ChatRoom = () => {
     }
     deleteRoom(activeChat.chatroomId)
       .then(() => {
-        toast.success('Chat room deleted.');
+        toast.success(t('toast_deleted'));
         setShowClearConfirmId(null);
         setActiveChat(null);
         bumpChatList();
       })
       .catch(() => {
         setShowClearConfirmId(null);
-        toast.error('Failed to delete chat room.');
+        toast.error(t('toast_delete_failed'));
       });
   };
 

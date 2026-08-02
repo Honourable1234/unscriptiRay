@@ -20,6 +20,7 @@ import {
   ProfileIcon,
   VideoIcon,
 } from '@/components/icons';
+import { useAuth } from '@/context/AuthContext';
 import { useCharacterService } from '@/services/useCharacterService';
 import { CharacterModalSkeleton } from './CharacterModalSkeleton';
 
@@ -37,6 +38,7 @@ export const CharacterModal = (props: {
   onClose: () => void;
 }) => {
   const t = useTranslations('CharacterModal');
+  const { authLoading } = useAuth();
   const { getCharacter } = useCharacterService();
   const [expanded, setExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
@@ -53,6 +55,11 @@ export const CharacterModal = (props: {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // The character is only readable as its owner, so wait for the session.
+    if (authLoading) {
+      return;
+    }
+
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
     setLoading(true);
     getCharacter(String(props.character.id)).then((res) => {
@@ -80,7 +87,7 @@ export const CharacterModal = (props: {
     }).catch(() => {}).finally(() => {
       setLoading(false);
     });
-  }, [props.character.id]);
+  }, [props.character.id, authLoading]);
   const descRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {

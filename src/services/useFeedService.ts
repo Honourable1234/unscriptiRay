@@ -1,4 +1,5 @@
 import type { DiscoverItem } from '@/components/feed/FeedCard';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 import { Env } from '@/libs/Env';
@@ -18,6 +19,7 @@ export class FeedLimitError extends Error {
 
 export const useFeedService = () => {
   const { token } = useAuth();
+  const t = useTranslations('Errors');
 
   const getDiscoverVideos = async (options: { cursor?: string; seed?: string; limit?: number } = {}): Promise<{ content: DiscoverResponse }> => {
     const params = new URLSearchParams({ limit: String(options.limit ?? 10) });
@@ -45,14 +47,14 @@ export const useFeedService = () => {
 
   const likeAsset = (assetId: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/feed/${assetId}/like`, {}, token);
   };
 
   const unlikeAsset = (assetId: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete(`/feed/${assetId}/like`, token);
   };

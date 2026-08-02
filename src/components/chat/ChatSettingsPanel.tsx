@@ -3,7 +3,7 @@
 import type { WebSettings } from '@/services/useChatService';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { ChevronDownIcon } from '@/components/icons';
 import { useChatService } from '@/services/useChatService';
 
@@ -72,10 +72,10 @@ export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDispl
     setSaving(true);
     updateSettings(props.chatroomId, next)
       .then(() => {
-        toast.success('Settings saved.');
+        toast.success(t('toast_saved'));
       })
       .catch(() => {
-        toast.error('Failed to save settings.');
+        toast.error(t('toast_save_failed'));
         setSettings(prev);
       })
       .finally(() => setSaving(false));

@@ -1,4 +1,5 @@
 'use client';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { BarsIcon, ChatIcon, CreateIcon, ExploreIcon, FeedIcon, GenerateIcon, MyAIIcon, SignOutIcon, UpgradeIcon } from '@/components/icons';
@@ -23,15 +24,6 @@ type NavItem = {
   icon: React.ReactNode;
 };
 
-const navItems: NavItem[] = [
-  { label: 'Create', href: '/create', icon: <CreateIcon /> },
-  { label: 'Explore', href: '/', icon: <ExploreIcon /> },
-  { label: 'Chat', href: '/chat', icon: <ChatIcon /> },
-  { label: 'Generate', href: '/generate', icon: <GenerateIcon /> },
-  { label: 'My AI', href: '/my-ai', icon: <MyAIIcon /> },
-  { label: 'Feed', href: '/feed', icon: <FeedIcon /> },
-];
-
 const SideBarTrigger = (props: { className?: string }) => {
   const { toggleSidebar } = useSidebar();
   return (
@@ -45,9 +37,19 @@ const SideBarTrigger = (props: { className?: string }) => {
 };
 
 const SideBarContent = () => {
+  const t = useTranslations('SideBar');
   const { isAuthenticated, isPremium, user } = useAuth();
   const { setOpenMobile } = useSidebar();
   const pathname = usePathname();
+
+  const navItems: NavItem[] = [
+    { label: t('create'), href: '/create', icon: <CreateIcon /> },
+    { label: t('explore'), href: '/', icon: <ExploreIcon /> },
+    { label: t('chat'), href: '/chat', icon: <ChatIcon /> },
+    { label: t('generate'), href: '/generate', icon: <GenerateIcon /> },
+    { label: t('my_ai'), href: '/my-ai', icon: <MyAIIcon /> },
+    { label: t('feed'), href: '/feed', icon: <FeedIcon /> },
+  ];
 
   return (
     <Sidebar collapsible="icon" className="border-black-40 bg-black-100">
@@ -83,12 +85,12 @@ const SideBarContent = () => {
             ? (
                 <Link href="/profile/subscription" className="flex w-full cursor-pointer items-center gap-3 rounded-xl bg-gradient-to-r from-premium-100 to-primary-200 p-3 text-sm font-semibold text-white group-data-[collapsible=icon]:justify-center">
                   <UpgradeIcon />
-                  <span className="group-data-[collapsible=icon]:hidden">Upgrade</span>
+                  <span className="group-data-[collapsible=icon]:hidden">{t('upgrade')}</span>
                 </Link>
               )
             : (
                 <Link href="/sign-in" className="cursor-pointer rounded-lg border border-primary-100 px-6 py-2 text-center text-sm font-semibold text-primary-100 transition-opacity group-data-[collapsible=icon]:px-2 hover:opacity-80">
-                  Sign In
+                  {t('sign_in')}
                 </Link>
               )
         )}
@@ -103,7 +105,7 @@ const SideBarContent = () => {
                 <Image src={user?.image_url ?? '/General/Profile.png'} alt="User Avatar" fill sizes="32px" className="rounded-full object-cover" />
               </span>
               <span className="min-w-0 group-data-[collapsible=icon]:hidden">
-                <span className="block truncate text-sm font-semibold text-white">{user?.display_name ?? user?.username ?? 'Account'}</span>
+                <span className="block truncate text-sm font-semibold text-white">{user?.display_name ?? user?.username ?? t('account')}</span>
                 {user?.email && <span className="block truncate text-xs text-white-50">{user.email}</span>}
               </span>
             </Link>
@@ -111,11 +113,11 @@ const SideBarContent = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => supabase.auth.signOut()}
-                  tooltip="Sign Out"
+                  tooltip={t('sign_out')}
                   className="h-auto rounded-xl p-3 text-sm font-medium text-white hover:bg-black-40 hover:text-white/75 [&>svg]:size-5"
                 >
                   <SignOutIcon />
-                  <span>Sign Out</span>
+                  <span>{t('sign_out')}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

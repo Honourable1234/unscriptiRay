@@ -28,6 +28,7 @@ export const AnimatedExtendVideo = (props: {
   onGenerationEnd?: (generationId: string) => void;
 }) => {
   const t = useTranslations('AnimatedExtendVideo');
+  const tPrompt = useTranslations('SignUpPrompts');
   const { generateVideo } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
   const [quality, setQuality] = useState('Balanced');
@@ -180,7 +181,7 @@ export const AnimatedExtendVideo = (props: {
       )}
       {needsSignUp && (
         <SignUpPromptModal
-          description="Sign up to generate scenes — your creations will be saved to your account."
+          description={tPrompt('generate_scenes')}
           onClose={dismissSignUpPrompt}
         />
       )}

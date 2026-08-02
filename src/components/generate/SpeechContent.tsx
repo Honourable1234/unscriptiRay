@@ -4,7 +4,7 @@ import type { SelectedVoice } from './VoiceModal';
 import type { Asset } from '@/services/generateService';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { VoiceIcon } from '@/components/icons';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
 import { useGenerateService } from '@/services/generateService';

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/libs/api';
 import { guestToken } from '@/libs/guestToken';
@@ -248,6 +249,7 @@ type GenerateResult = Promise<{
 
 export const useGenerateService = () => {
   const { token } = useAuth();
+  const t = useTranslations('Errors');
   // Reads fall back to the guest session so signed-out visitors can browse;
   // writes stay signed-in only and surface the sign-up prompt instead.
   const readToken = () => token ?? guestToken.get() ?? undefined;
@@ -306,7 +308,7 @@ export const useGenerateService = () => {
     face_negative_prompt?: string;
   }): GenerateResult => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/image', body, token) as GenerateResult;
   };
@@ -318,14 +320,14 @@ export const useGenerateService = () => {
     orientation?: string;
   }): GenerateResult => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/edit', body, token) as GenerateResult;
   };
 
   const uploadReference = async (file: File): Promise<{ key: string; url: string }> => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     const res = await api.post('/generate/upload-reference', {
       content_type: file.type,
@@ -343,7 +345,7 @@ export const useGenerateService = () => {
 
   const enhanceGeneratedImage = (assetId: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/enhance', { asset_id: assetId }, token) as Promise<{
       success: boolean;
@@ -369,7 +371,7 @@ export const useGenerateService = () => {
     advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/animation', body, token) as GenerateResult;
   };
@@ -391,21 +393,21 @@ export const useGenerateService = () => {
     advanced_prompt?: string;
   }): GenerateResult => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/speech', body, token) as GenerateResult;
   };
 
   const retryGeneration = (generationId: string): GenerateResult => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post(`/generate/${generationId}/retry`, {}, token) as GenerateResult;
   };
 
   const deleteAsset = (assetId: string) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete(`/generate/assets/${assetId}`, token) as Promise<{
       success: boolean;
@@ -416,7 +418,7 @@ export const useGenerateService = () => {
 
   const enrichPrompt = (body: { prompt: string; character_id?: string }) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.post('/generate/enrich', body, token) as Promise<{
       success: boolean;
@@ -427,7 +429,7 @@ export const useGenerateService = () => {
 
   const deleteAssets = (body: { asset_ids: string[]; type: 'image' | 'video' }) => {
     if (!token) {
-      return Promise.reject(new Error('Not authenticated'));
+      return Promise.reject(new Error(t('not_authenticated')));
     }
     return api.delete('/generate/assets/batch', token, body) as Promise<{
       success: boolean;
@@ -458,7 +460,7 @@ export const useGenerateService = () => {
         return;
       }
       if (Date.now() - start > timeoutMs) {
-        onError('Generation timed out');
+        onError(t('generation_timed_out'));
         return;
       }
       getGenerationStatus(currentId).then((res) => {
@@ -479,11 +481,11 @@ export const useGenerateService = () => {
               timerId = setTimeout(tick, intervalMs);
             }).catch(() => {
               if (!stopped) {
-                onError('Generation failed');
+                onError(t('generation_failed'));
               }
             });
           } else {
-            onError('Generation failed');
+            onError(t('generation_failed'));
           }
         } else {
           timerId = setTimeout(tick, intervalMs);

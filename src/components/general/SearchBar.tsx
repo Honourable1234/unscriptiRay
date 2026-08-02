@@ -6,6 +6,7 @@ import { FilterIcon, SearchIcon } from '@/components/icons';
 export const SearchBar = (props: {
   onSearch?: (value: string) => void;
   onChange?: (value: string) => void;
+  onFilterClick?: () => void;
   hideFilter?: boolean;
 }) => {
   const t = useTranslations('SearchBar');
@@ -33,6 +34,7 @@ export const SearchBar = (props: {
       {!props.hideFilter && (
         <button
           type="button"
+          onClick={props.onFilterClick}
           className="flex shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white-25 bg-black-60 px-4 py-3 text-white-75 transition-colors hover:text-white md:px-6 md:py-4"
         >
           <FilterIcon />

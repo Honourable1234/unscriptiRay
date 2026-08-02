@@ -4,6 +4,8 @@ import type { Message } from '@/components/chat/types';
 import { useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useChatMessages, useChatNavigation } from '@/context/ChatContext';
+import { useWallet } from '@/context/WalletContext';
+import { ApiError } from '@/libs/api';
 import { Env } from '@/libs/Env';
 import { guestToken } from '@/libs/guestToken';
 import { supabase } from '@/libs/supabase';
@@ -41,7 +43,8 @@ export const useChatWebSocket = () => {
   const { token, user } = useAuth();
   const { activeChat, voiceId } = useChatNavigation();
   const { setMessages, setIsTyping, setGuestLimitReached } = useChatMessages();
-  const { startChat } = useChatService();
+  const { startChat, sendMessage } = useChatService();
+  const { refresh: refreshWallet } = useWallet();
   const wsRef = useRef<WebSocket | null>(null);
 
   // Close the socket when the token changes (e.g. sign-out) so ensureOpen reconnects fresh.
@@ -90,6 +93,50 @@ export const useChatWebSocket = () => {
     };
     setMessages((prev: Message[]) => [...prev, userMsg]);
     setIsTyping(true);
+
+    // The WS gateway rejects guest tokens outright, so guests send over REST instead.
+    if (!token) {
+      const sendAsGuest = async (retry = true): Promise<void> => {
+        try {
+          const res = await sendMessage(activeChat.chatroomId, { content });
+          const aiText = (res as { content?: { ai_message?: { text?: string } } })?.content?.ai_message?.text;
+          setIsTyping(false);
+          // The reply is charged as it lands, so the shown balance is stale until re-read.
+          refreshWallet();
+          if (aiText) {
+            setMessages((prev: Message[]) => [...prev, {
+              id: Date.now() + 1,
+              text: aiText,
+              sender: 'character' as const,
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              date: 'Today',
+            }]);
+          }
+        } catch (err) {
+          if (err instanceof ApiError && err.code === 'GUEST_LIMIT_REACHED') {
+            setIsTyping(false);
+            setMessages((prev: Message[]) => prev.filter((m: Message) => m.id !== userMsg.id));
+            setGuestLimitReached(true);
+            return;
+          }
+          // Guest token expired (~10 min TTL): mint a fresh one and retry once.
+          if (err instanceof ApiError && err.status === 401 && retry) {
+            guestToken.clear();
+            try {
+              await startChat(activeChat.characterId);
+              await sendAsGuest(false);
+              return;
+            } catch {
+              // fall through to generic failure handling below
+            }
+          }
+          setIsTyping(false);
+        }
+      };
+
+      await sendAsGuest();
+      return;
+    }
 
     const streamingId = Date.now() + 1;
     let retried = false;
@@ -144,6 +191,8 @@ export const useChatWebSocket = () => {
           setMessages((prev: Message[]) =>
             prev.map((m: Message) => m.id === streamingId ? { ...m, text: msg.data } : m),
           );
+          // The reply is charged as it lands, so the shown balance is stale until re-read.
+          refreshWallet();
         }
 
         if (

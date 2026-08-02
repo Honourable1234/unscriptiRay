@@ -5,7 +5,6 @@ const config: KnipConfig = {
   ignore: [
     'checkly.config.ts',
     'src/libs/I18n.ts',
-    'src/libs/I18nNavigation.ts',
     'src/types/I18n.ts',
     'src/components/LocaleSwitcher.tsx',
     'src/components/ui/**', // shadcn/ui boilerplate keeps its full export surface

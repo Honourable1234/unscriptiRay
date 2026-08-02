@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { CloseIcon } from '@/components/icons';
@@ -16,6 +17,7 @@ export const SelectAssetModal = (props: {
   onSelect: (asset: SelectedAsset) => void;
   onClose: () => void;
 }) => {
+  const t = useTranslations('SelectAssetModal');
   const { getGeneratedAssets } = useGenerateService();
   const [assets, setAssets] = useState<SelectedAsset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +72,7 @@ export const SelectAssetModal = (props: {
             : assets.length === 0
               ? (
                   <div className="flex items-center justify-center py-16">
-                    <p className="text-sm text-white-50">Nothing generated yet — generate a scene first</p>
+                    <p className="text-sm text-white-50">{t('empty')}</p>
                   </div>
                 )
               : (
