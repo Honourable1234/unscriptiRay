@@ -1,0 +1,868 @@
+{
+  "LocaleSwitcher": {
+    "change_language": "變更語言"
+  },
+  "SignInPage": {
+    "title": "登入",
+    "google_button": "登入",
+    "divider": "繼續使用電子郵件",
+    "email_label": "電子郵件",
+    "email_placeholder": "請輸入您的電子郵件地址",
+    "password_label": "密碼",
+    "forgot_password": "忘記密碼了嗎？",
+    "submit": "登入",
+    "no_account": "還沒有帳號嗎？",
+    "sign_up_link": "註冊",
+    "login_failed": "登入失敗"
+  },
+  "SignUpPage": {
+    "title": "建立您的帳戶",
+    "google_button": "註冊",
+    "divider": "繼續使用電子郵件",
+    "email_label": "電子郵件",
+    "email_placeholder": "請輸入您的電子郵件地址",
+    "password_label": "密碼",
+    "confirm_password_label": "確認密碼",
+    "submit": "註冊",
+    "have_account": "已有帳號嗎？",
+    "sign_in_link": "登入",
+    "passwords_mismatch": "密碼不符",
+    "password_too_short": "密碼必須至少有 8 個字元",
+    "sign_up_failed": "註冊失敗",
+    "check_email": "請檢查您的電子郵件以確認您的帳號。"
+  },
+  "ForgotPasswordPage": {
+    "title": "忘記密碼了嗎？",
+    "subtitle": "系統將向您的電子郵件寄送一個連結，供您重設密碼",
+    "email_label": "電子郵件",
+    "email_placeholder": "請輸入您的電子郵件地址",
+    "submit": "提交",
+    "check_email": "請查看您的電子郵件，尋找重設連結。",
+    "remember_password": "Remember your password?",
+    "sign_in_link": "Sign in"
+  },
+  "NewPasswordPage": {
+    "title": "新密碼",
+    "subtitle": "請輸入您的新密碼",
+    "new_password_label": "新密碼",
+    "confirm_password_label": "確認密碼",
+    "submit": "提交",
+    "passwords_mismatch": "密碼不符",
+    "password_too_short": "密碼必須至少有 8 個字元"
+  },
+  "GoogleButton": {
+    "with_google": "透過 Google"
+  },
+  "ExplorePage": {
+    "title": "探索您的",
+    "title_highlight": "幻想"
+  },
+  "ExploreSection": {
+    "filter_identity": "身分",
+    "filter_style": "視覺風格",
+    "filter_age": "年齡範圍",
+    "filter_vibe": "氛圍",
+    "filter_sort": "排序"
+  },
+  "ExploreCharacters": {
+    "loading": "請稍候，我們正在載入媒體內容……",
+    "error": "無法載入角色。",
+    "per_page": "每頁：",
+    "loading_more": "載入中...",
+    "load_more": "載入更多"
+  },
+  "CharacterModal": {
+    "show_more": "顯示更多",
+    "show_less": "顯示較少",
+    "profile": "個人簡介",
+    "more_tags": "+{count} 更多",
+    "want_more": "想看更多嗎？",
+    "view_content": "檢視內容",
+    "generate": "產生",
+    "chat": "聊天"
+  },
+  "SearchBar": {
+    "placeholder": "搜尋"
+  },
+  "CharacterHeader": {
+    "chat": "聊天",
+    "new_group": "建立一個新群組",
+    "generate": "產生",
+    "new_scenario": "新情境"
+  },
+  "CharacterContent": {
+    "error": "無法載入角色。"
+  },
+  "CharacterUnlockButton": {
+    "unlock": "解鎖「 {name} 」—— 50 枚金幣",
+    "purchase_failed": "購買失敗",
+    "error": "發生了錯誤",
+    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
+    "unlocked": "Collection unlocked",
+    "already_unlocked": "You already own this collection"
+  },
+  "CharacterMediaGrid": {
+    "secrets_locked": "被鎖住的秘密",
+    "tap_to_reveal": "點擊以顯示"
+  },
+  "ChatRoom": {
+    "clear_confirm": "清除所有訊息嗎？",
+    "clear": "清除",
+    "cancel": "Cancel",
+    "toast_cleared": "Chat cleared.",
+    "toast_clear_failed": "Could not clear chat.",
+    "toast_deleted": "Chat room deleted.",
+    "toast_delete_failed": "Could not delete chat room."
+  },
+  "ChatInputBar": {
+    "getting_suggestions": "徵求建議…",
+    "placeholder": "傳送訊息...",
+    "generating_suggestion": "Generating suggestion…",
+    "send_message": "Send message"
+  },
+  "ChatSideBar": {
+    "new_chat": "新聊天室",
+    "new_group": "新群組",
+    "new_scenario": "新情境",
+    "your_chats": "您的聊天記錄 ({count})",
+    "loading_more": "載入中...",
+    "load_more": "載入更多",
+    "close_sidebar": "關閉側邊欄",
+    "search_placeholder": "Search chats…"
+  },
+  "ChatRightPanel": {
+    "view_media": "檢視媒體",
+    "call_me": "打電話給我",
+    "voice": "聲音",
+    "memory": "記憶",
+    "settings": "設定",
+    "instructions": "Instructions",
+    "toast_call_started": "Call started!",
+    "toast_call_failed": "Could not start call."
+  },
+  "ChatRatingPrompt": {
+    "question": "這場對話進行得如何？",
+    "toast_thanks": "Thanks for your rating!",
+    "toast_failed": "Could not submit rating."
+  },
+  "ChatSettingsPanel": {
+    "loading": "載入…",
+    "error": "無法載入設定。",
+    "saving": "拯救…",
+    "allow_messages": "允許發送文字訊息",
+    "background_display": "背景顯示",
+    "lust_level": "慾望程度",
+    "response_length": "回應長度",
+    "language": "語言",
+    "toast_saved": "Settings saved.",
+    "toast_save_failed": "Could not save settings."
+  },
+  "NewGroupView": {
+    "heading": "你想將誰加入這個群組？",
+    "group_name_label": "為您的群組取個名字",
+    "group_name_placeholder": "MyGroup"
+  },
+  "NewScenarioView": {
+    "heading": "在這個情境中，你想扮演哪個角色？",
+    "create_label": "建立情境",
+    "placeholder": "請在此輸入您的情境..."
+  },
+  "SelectedCharacterBar": {
+    "selected_list": "精選角色列表（{count}/{max}）",
+    "no_selection": "您尚未選取任何角色",
+    "coming_soon": "即將推出",
+    "create_group": "建立群組"
+  },
+  "GeneratePage": {
+    "title": "打造您的",
+    "title_highlight": "奇幻場景"
+  },
+  "GenerateOptionsGrid": {
+    "select_star": "選擇星號",
+    "required": "(必填)",
+    "optional": "（可選）",
+    "action": "動作",
+    "setting": "背景",
+    "mood": "心情",
+    "creative_input": "創意輸入（進階）",
+    "creator_tier": "創作者級別專屬",
+    "add_star": "Add Star",
+    "stars_count": "{count} stars"
+  },
+  "GenerateTypeToggle": {
+    "still_images": "靜態影像",
+    "animated_scenes": "動畫場景",
+    "mode": "模式"
+  },
+  "GenerateControls": {
+    "visual_label": "視覺效果：",
+    "orientation_label": "導覽：",
+    "cinematic_desc": "高品質的結果，且提示準確度極高",
+    "realistic_desc": "超寫實的視覺效果，搭配強化光照效果",
+    "anime_desc": "風格化的動漫美學，配以鮮豔的色彩"
+  },
+  "GenerateButton": {
+    "generate_image": "產生圖片"
+  },
+  "SelectStarModal": {
+    "title": "選擇星號",
+    "search_placeholder": "搜尋字元...",
+    "loading": "正在載入角色...",
+    "no_results": "未找到任何字元。",
+    "selected_count": "{count} of {max} selected",
+    "done": "Done"
+  },
+  "GenerateSceneModal": {
+    "title_remix": "混音版",
+    "title_video": "圖片轉影片",
+    "title_edit": "編輯圖片",
+    "title_speech": "對嘴影片",
+    "title_enhance": "增強影像",
+    "title_more": "更多"
+  },
+  "GenerateVideoControls": {
+    "quality_label": "品質等級：",
+    "orientation_label": "導覽：",
+    "duration_label": "時長：",
+    "audio": "音訊",
+    "balanced_label": "平衡 (480p)",
+    "balanced_desc": "最適合用於服裝、背景和特效",
+    "ultra_label": "Ultra（1080p）",
+    "ultra_desc": "針對不適合在工作場所瀏覽的內容及解剖學細節進行了優化"
+  },
+  "CreatePage": {
+    "title": "建立一個",
+    "title_highlight": "伴侶",
+    "prev": "上一頁",
+    "next": "下一頁",
+    "generate": "產生",
+    "image_gen_failed": "Character created but image generation failed to start.",
+    "create_failed": "Failed to create character.",
+    "save_tags_failed": "Failed to save tags."
+  },
+  "CreateStep1": {
+    "ethnic_influence": "族群影響",
+    "eye_color": "眼色",
+    "eye_intensity": "眼神的張力",
+    "facial_shape": "臉型",
+    "figure_type": "圖表類型",
+    "hair_color": "髮色",
+    "hair_style": "髮型",
+    "hip_profile": "髖關節輪廓",
+    "bust_profile": "胸圍輪廓",
+    "skin_tone": "膚色"
+  },
+  "CreateStep2": {
+    "character_name": "角色名稱",
+    "character_age": "角色年齡",
+    "gender": "Gender",
+    "gender_female": "Female",
+    "gender_male": "Male",
+    "gender_non_binary": "Non-binary"
+  },
+  "CharacterInfo": {
+    "heading": "角色資訊",
+    "voice": "聲音",
+    "personality": "人格原型",
+    "relationship": "人際關係的動態",
+    "kinks": "怪癖與舒適",
+    "select_voice": "選擇語音",
+    "select_personality": "選擇個性",
+    "select_relationship": "選擇關係",
+    "select_kinks": "選擇「Kinks」",
+    "hobby": "Hobby",
+    "select_hobby": "Select Hobby",
+    "custom": "Custom"
+  },
+  "CharacterInfoCard": {
+    "select": "選擇 {title}"
+  },
+  "CreateStep3": {
+    "ai_enrichment": "AI 增強功能（自動完成）",
+    "ai_subtitle": "運用人工智慧來填補空白，並塑造更立體的角色",
+    "backstory": "背景故事",
+    "backstory_placeholder": "未設定背景故事",
+    "custom_physical": "客製化體檢",
+    "custom_physical_placeholder": "沒有自訂實體集",
+    "custom_face": "自訂臉部細節",
+    "custom_face_placeholder": "未設定自訂臉部細節",
+    "greeting": "問候",
+    "greeting_placeholder": "未設定問候語",
+    "personality_details": "個性詳情",
+    "personality_details_placeholder": "未設定任何人物詳細資料",
+    "toast_enriched": "Character enriched with AI.",
+    "toast_enrich_failed": "AI enrichment failed."
+  },
+  "CreateStep4": {
+    "tab_appearance": "外觀",
+    "tab_personality": "個性",
+    "preview": "預覽角色",
+    "generate_process": "產生流程",
+    "meet_companion": "認識您的夥伴",
+    "no_character": "沒有可用的人物資料。",
+    "tags": "標籤 ({count}/10)",
+    "tag_placeholder": "新增標籤...",
+    "voice": "聲音",
+    "ethnic": "族裔",
+    "facial_shape": "臉型",
+    "hair_style": "髮型",
+    "eye_intensity": "眼神的張力",
+    "figure_type": "圖表類型",
+    "bust": "胸像",
+    "hip": "髖部",
+    "personality_attr": "個性",
+    "relationship": "關係",
+    "kinks_comforts": "怪癖與舒適",
+    "social_role": "社會角色",
+    "backstory": "背景故事",
+    "physical": "物理",
+    "face_details": "臉部細節",
+    "greeting": "問候",
+    "personality_details": "個性詳情",
+    "hair_color": "髮色",
+    "eye_color": "眼色",
+    "skin_tone": "膚色",
+    "saved": "Saved.",
+    "save_failed": "Failed to save.",
+    "image_failed": "Image generation failed",
+    "retry": "Retry",
+    "save": "Save"
+  },
+  "OptionModal": {
+    "loading": "載入中...",
+    "search_placeholder": "Search..."
+  },
+  "CreateTagsField": {
+    "tags": "標籤 ({count}/{max})",
+    "no_tags": "未設定標籤",
+    "add_tag": "新增標籤..."
+  },
+  "_comment": "i18n coverage: all user-visible strings are extracted. fr.json mirrors en.json structurally and still holds English copy as placeholders pending translation.",
+  "PickOptionModal": {
+    "loading": "Loading options...",
+    "no_results": "No options available."
+  },
+  "VideoContent": {
+    "motion": "Motion",
+    "select_star": "Select Star",
+    "required": "(Required)",
+    "creative_input": "Creative Input",
+    "creator_tier": "Creator Tier",
+    "select_star_first": "Please select a star first.",
+    "generating": "Generating...",
+    "generate_video": "Generate Video",
+    "video_ready": "Video ready!"
+  },
+  "EditContent": {
+    "visual_label": "Visual:",
+    "scene_alt": "Scene being edited",
+    "model_label": "Model:",
+    "orientation_label": "Orientation:",
+    "spark_desc": "Fast and efficient editing",
+    "pro_desc": "High quality, detailed edits",
+    "select_star": "Select Star",
+    "required": "(Required)",
+    "editing": "Editing...",
+    "edit_scene": "Edit Scene",
+    "edit_complete": "Edit complete!"
+  },
+  "SpeechContent": {
+    "aurora_sublabel": "(Character default)",
+    "scene_label": "Scene",
+    "audio_script": "Audio Script",
+    "voice": "Voice",
+    "required": "(Required)",
+    "select_voice_first": "Please select a voice first.",
+    "enter_script_first": "Please enter an audio script first.",
+    "generating": "Generating...",
+    "generate_speech": "Generate Speech",
+    "scene_ready": "Scene ready!"
+  },
+  "EnhanceContent": {
+    "description": "Enhancing will make your image sharper and improve its resolution",
+    "enhancing": "Enhancing...",
+    "enhance_scene": "Enhance Scene",
+    "enhance_complete": "Enhancement complete!"
+  },
+  "RemixContent": {
+    "select_star_first": "Please select a star first.",
+    "generating": "Generating...",
+    "remix_scene": "Remix Scene",
+    "scene_ready": "Scene ready!"
+  },
+  "StillStylePresent": {
+    "generating": "Generating...",
+    "generate_image": "Generate Image",
+    "image_ready": "Image ready!"
+  },
+  "StillEditStyle": {
+    "upload_failed": "Upload failed.",
+    "generating": "Generating...",
+    "generate_image": "Generate Image",
+    "image_ready": "Image ready!",
+    "model_label": "Model:",
+    "orientation_label": "Orientation:",
+    "visual_label": "Visual:",
+    "select_image": "Select image"
+  },
+  "AnimatedStylePresent": {
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "scene_label": "Scene {id}",
+    "add": "Add",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedImageToVideo": {
+    "image": "Image",
+    "required": "(Required)",
+    "motion": "Motion",
+    "creative_input_advanced": "Creative Input (Advanced)",
+    "creator_tier_exclusive": "Creator Tier Exclusive",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_image": "Select Image",
+    "select_star": "Select Star",
+    "add_star": "Add Star",
+    "stars_count": "{count} stars",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedExtendVideo": {
+    "video": "Video",
+    "required": "(Required)",
+    "select_star": "Select Star",
+    "stars_count": "{count} stars",
+    "motion": "Motion",
+    "creative_input_advanced": "Creative Input (Advanced)",
+    "creator_tier_exclusive": "Creator Tier Exclusive",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_video": "Select Video",
+    "scene_ready": "Scene ready!"
+  },
+  "AnimatedTalking": {
+    "image_video": "Image / Video",
+    "required": "(Required)",
+    "select_star": "Select Star",
+    "stars_count": "{count} stars",
+    "voice": "Voice",
+    "audio_script": "Audio Script",
+    "generating": "Generating...",
+    "generate_scene": "Generate Scene",
+    "select_image_video": "Select Image / Video",
+    "scene_ready": "Scene ready!"
+  },
+  "CreativeInputModal": {
+    "title": "Creative Input",
+    "placeholder": "Describe extra details for your scene...",
+    "enrich_with_ai": "Enrich with AI",
+    "enrich_failed": "Could not enrich prompt.",
+    "save": "Save"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "No generated scenes yet",
+    "generating": "Generating...",
+    "scene_alt": "Generated scene"
+  },
+  "GenerateScenePage": {
+    "download_started": "Preparing download...",
+    "download_saved": "Download saved.",
+    "download_failed": "Could not save the file. Opening it instead.",
+    "link_copied": "Link copied to clipboard!",
+    "copy_failed": "Could not copy the link.",
+    "scene_deleted": "Scene deleted.",
+    "delete_failed": "Could not delete the scene.",
+    "not_available": "Not available yet.",
+    "scene_not_found": "Scene not found",
+    "scene_alt": "Generated scene",
+    "thumbnail_alt": "Thumbnail",
+    "generated_label": "Generated {type}"
+  },
+  "GenerationToasts": {
+    "complete": "Generation complete!",
+    "restarted": "Generation restarted, processing...",
+    "retry_failed": "Retry failed.",
+    "started": "Generation started, processing...",
+    "failed": "Generation failed.",
+    "retry": "Retry"
+  },
+  "SubscriptionSection": {
+    "title": "Subscription",
+    "current_plan": "Current plan",
+    "renews_expires": "Renews/expires {date}",
+    "plan_free": "Free",
+    "plan_free_caption": "Limited access",
+    "plan_monthly": "Monthly",
+    "plan_monthly_caption": "Billed every month",
+    "plan_yearly": "Yearly",
+    "plan_yearly_caption": "Billed once a year",
+    "change_plan": "Change plan",
+    "upgrade_to_premium": "Upgrade to Premium",
+    "current": "Current",
+    "opening": "Opening…",
+    "action_switch": "Switch",
+    "action_upgrade": "Upgrade",
+    "get_started": "Get started",
+    "get_started_caption": "Sign up to unlock premium features",
+    "sign_up_now": "Sign up now",
+    "manage_billing": "Manage billing",
+    "cancel_subscription": "Cancel subscription",
+    "billing_history": "Billing history",
+    "no_invoices": "No invoices yet.",
+    "column_amount": "Amount",
+    "column_date": "Date",
+    "column_status": "Status",
+    "column_invoice": "Invoice",
+    "pdf": "PDF",
+    "cancel_confirm_body": "Are you sure you want to cancel your subscription? You'll keep access until {date}.",
+    "end_of_billing_period": "the end of your billing period",
+    "keep_subscription": "Keep subscription",
+    "confirm_cancel": "Confirm cancel",
+    "toast_payment_received": "Payment received. Your plan updates once Stripe confirms it.",
+    "toast_upgrade_cancelled": "Upgrade cancelled.",
+    "toast_back_from_portal": "Back from the billing portal.",
+    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
+    "toast_subscription_active": "Subscription active.",
+    "toast_payments_unavailable": "Payments are not available yet. You have not been charged.",
+    "toast_portal_failed": "Could not open the billing portal.",
+    "toast_portal_unavailable": "The billing portal is not available yet.",
+    "toast_cancel_failed": "Could not cancel subscription.",
+    "toast_subscription_cancelled": "Subscription cancelled."
+  },
+  "WalletSection": {
+    "title": "Wallet",
+    "balance": "Balance",
+    "dreamcoins": "Dreamcoins",
+    "image_credits": "Image credits:",
+    "video_credits": "Video credits:",
+    "credits_reset": "Credits reset:",
+    "not_scheduled": "Not scheduled",
+    "buy_more_coins": "Buy more coins",
+    "get_started": "Get started",
+    "get_started_caption": "Sign up to buy Dreamcoins",
+    "sign_up_now": "Sign up now",
+    "transactions": "Transactions",
+    "no_transactions": "No transactions yet.",
+    "column_reason": "Reason",
+    "column_date": "Date",
+    "column_coins": "Coins",
+    "pagination": "Page {page} of {pageCount} · {total} transactions",
+    "prev": "Prev",
+    "next": "Next",
+    "toast_payment_received": "Payment received. Your coins will appear once Stripe confirms it.",
+    "toast_purchase_cancelled": "Purchase cancelled."
+  },
+  "ProfileSection": {
+    "unnamed": "Unnamed",
+    "visit_profile": "Visit profile",
+    "dreamcoins": "Dreamcoins",
+    "wallet": "Wallet",
+    "wallet_caption": "Buy Dreamcoins and review your transactions",
+    "subscription": "Subscription",
+    "tier_free": "Free",
+    "change_password": "Change password",
+    "change_password_caption": "Update the password you sign in with",
+    "language": "Language",
+    "coming_soon": "Coming soon.",
+    "sign_out": "Sign out"
+  },
+  "ProfileView": {
+    "unnamed": "Unnamed",
+    "interactions": "interactions",
+    "followers": "followers",
+    "following": "following",
+    "edit_profile": "Edit profile",
+    "tab_highlighted": "Highlighted",
+    "tab_characters": "Characters",
+    "tab_activity": "Activity",
+    "filter_style": "Style",
+    "filter_sort": "Sort",
+    "nothing_to_show": "Nothing to show yet.",
+    "loading": "Loading…",
+    "no_matches": "No characters match your style filters",
+    "create_new_character": "CREATE NEW CHARACTER",
+    "create": "Create"
+  },
+  "ProfileEditModal": {
+    "title": "Edit profile",
+    "uploading": "Uploading…",
+    "change_photo": "Change photo",
+    "display_name": "Display name",
+    "display_name_placeholder": "How your name appears",
+    "username": "Username",
+    "username_placeholder": "Your handle",
+    "save": "Save changes",
+    "toast_upload_failed": "Could not upload that image",
+    "toast_save_failed": "Could not save your profile",
+    "toast_saved": "Profile updated"
+  },
+  "ChangePasswordModal": {
+    "title": "Change password",
+    "google_account": "This account signs in with Google, so there is no password to change.",
+    "close": "Close",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "confirm_new_password": "Confirm new password",
+    "submit": "Update password",
+    "error_mismatch": "The new passwords do not match.",
+    "error_too_short": "Use at least {count} characters.",
+    "error_same_password": "The new password is the same as the current one.",
+    "error_no_email": "This account has no email address to verify against.",
+    "error_wrong_current": "That current password is not correct.",
+    "toast_changed": "Password changed"
+  },
+  "NavBar": {
+    "log_in": "Log in",
+    "sign_up": "Sign up",
+    "coins": "Coins",
+    "upgrade": "Upgrade",
+    "close_notifications": "Close notifications",
+    "notifications": "Notifications",
+    "loading": "Loading…",
+    "no_notifications": "No notifications to show."
+  },
+  "SideBar": {
+    "create": "Create",
+    "explore": "Explore",
+    "chat": "Chat",
+    "generate": "Generate",
+    "my_ai": "My AI",
+    "feed": "Feed",
+    "upgrade": "Upgrade",
+    "sign_in": "Sign in",
+    "account": "Account",
+    "sign_out": "Sign out"
+  },
+  "ChatTemplate": {
+    "dreamcoins_left": "{count} dreamcoins left",
+    "bonus_on_signup": "+50 on signup",
+    "sign_up_free": "Sign up free",
+    "login": "Login",
+    "join_free": "Join free"
+  },
+  "AuthTemplate": {
+    "copyright": "Copyright© {year}. Unscripti AI"
+  },
+  "ChatMemoryPanel": {
+    "placeholder": "Add a memory…",
+    "add": "Add",
+    "loading": "Loading…",
+    "empty": "No memories yet.",
+    "load_failed": "Could not load memories.",
+    "toast_saved": "Memory saved.",
+    "toast_save_failed": "Could not save memory."
+  },
+  "ChatInstructionsPanel": {
+    "placeholder": "Add custom instructions…",
+    "save": "Save",
+    "loading": "Loading…",
+    "load_failed": "Could not load instructions.",
+    "toast_saved": "Instructions saved.",
+    "toast_save_failed": "Could not save instructions."
+  },
+  "ChatVoicePanel": {
+    "loading": "Loading…",
+    "load_failed": "Could not load voices.",
+    "search_placeholder": "Search voices…",
+    "no_voices": "No voices found.",
+    "female": "Female",
+    "male": "Male",
+    "selected": "Selected",
+    "toast_update_failed": "Could not update voice."
+  },
+  "ChatGuestLimitPrompt": {
+    "title": "You've reached the guest limit",
+    "description": "Sign up to keep chatting — your conversation will be saved to your account.",
+    "sign_up_free": "Sign up free",
+    "log_in": "Log in"
+  },
+  "ChatMessageActions": {
+    "copy": "Copy message",
+    "edit": "Edit message",
+    "more": "More actions",
+    "duplicate": "Duplicate from here",
+    "delete": "Delete"
+  },
+  "ChatMessageBubble": {
+    "play_voice": "Play voice",
+    "cancel": "Cancel",
+    "save": "Save",
+    "toast_voice_failed": "Could not play voice."
+  },
+  "CharacterEditSections": {
+    "profile_label": "Profile",
+    "profile_description": "Their avatar, and who can find them.",
+    "appearance_label": "Appearance",
+    "appearance_description": "Changing these updates how new images are generated; regenerate the avatar to match.",
+    "details_label": "Details",
+    "details_description": "Name, age and the traits that shape how they speak.",
+    "story_label": "Story",
+    "story_description": "Backstory, greeting and the prompts behind their personality."
+  },
+  "CharacterEditNav": {
+    "title": "Manage"
+  },
+  "CharacterEditForm": {
+    "back_to_profile": "Back to profile",
+    "save_changes": "Save changes",
+    "toast_saved": "Changes saved",
+    "toast_save_failed": "Could not save changes"
+  },
+  "CharacterEditAvatar": {
+    "description": "Regenerating is free, and replaces the picture shown everywhere this character appears.",
+    "generating": "Generating…",
+    "regenerate": "Regenerate image",
+    "toast_ready": "New avatar ready",
+    "toast_no_image": "Generation finished without an image",
+    "toast_failed": "Image generation failed",
+    "toast_start_failed": "Could not start image generation"
+  },
+  "CharacterVisibilityField": {
+    "title": "Visibility",
+    "public_label": "Public",
+    "public_hint": "Anyone can find this character in Explore.",
+    "unlisted_label": "Unlisted",
+    "unlisted_hint": "Only people with the link can open it.",
+    "private_label": "Private",
+    "private_hint": "Only you can see this character.",
+    "toast_updated": "Character is now {visibility}",
+    "toast_failed": "Could not change visibility"
+  },
+  "CharacterDeleteButton": {
+    "delete": "Delete",
+    "confirm_title": "Delete {name}?",
+    "confirm_body": "Their chats and generated media go with them. This cannot be undone.",
+    "confirm_delete": "Delete permanently",
+    "keep": "Keep character",
+    "toast_deleted": "{name} was deleted",
+    "toast_delete_failed": "Could not delete this character"
+  },
+  "CharacterEditContent": {
+    "unavailable_title": "Character unavailable",
+    "unavailable_body": "We could not load this character. It may have been deleted.",
+    "unavailable_action": "Back to My AI",
+    "not_yours_title": "This character isn't yours",
+    "not_yours_body": "Only the creator of a character can edit it. You can still chat with this one from its profile.",
+    "not_yours_action": "View profile"
+  },
+  "CharacterManageBar": {
+    "title": "This is your AI",
+    "description": "Edit their details, change who can see them, or delete them.",
+    "manage": "Manage AI"
+  },
+  "AudioModal": {
+    "title": "Audio",
+    "script_placeholder": "Type what you want them to say…",
+    "enrich": "Enrich with AI",
+    "scene": "Scene",
+    "voice_preset": "Voice preset",
+    "save": "Save",
+    "toast_enrich_failed": "Could not enrich script.",
+    "scene_happy": "Happy",
+    "scene_natural": "Natural",
+    "scene_sad": "Sad",
+    "scene_angry": "Angry",
+    "scene_fearful": "Fearful",
+    "scene_disgusted": "Disgusted",
+    "scene_surprised": "Surprised"
+  },
+  "ScriptModal": {
+    "title": "Audio script",
+    "placeholder": "Type what you want them to say…",
+    "enrich": "Enrich with AI",
+    "save": "Save",
+    "toast_enrich_failed": "Could not enrich script."
+  },
+  "SelectMotionModal": {
+    "title": "Select motion",
+    "search_placeholder": "Search motion…",
+    "loading": "Loading motions…",
+    "empty": "No motions found."
+  },
+  "SelectAssetModal": {
+    "empty": "Nothing generated yet — generate a scene first"
+  },
+  "VoiceModal": {
+    "title": "Select voice",
+    "empty": "No voices available.",
+    "female": "Female",
+    "male": "Male"
+  },
+  "EditStyle": {
+    "select_star": "Select star",
+    "required": "Required",
+    "image": "Image",
+    "select_image": "Select image"
+  },
+  "SignUpPromptModal": {
+    "title": "Sign up to continue",
+    "sign_up_free": "Sign up free",
+    "log_in": "Log in"
+  },
+  "InsufficientCoinsModal": {
+    "title": "Out of coins",
+    "balance": "Balance:",
+    "dreamcoins": "Dreamcoins",
+    "top_up": "Top up to continue",
+    "not_now": "Not now"
+  },
+  "CoinPackageGrid": {
+    "buy": "Buy",
+    "opening_checkout": "Opening checkout…",
+    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
+    "toast_added": "Dreamcoins added.",
+    "toast_added_count": "{count} Dreamcoins added."
+  },
+  "FeedCard": {
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "chat": "Chat",
+    "share": "Share"
+  },
+  "FeedSection": {
+    "loading_more": "Loading more…"
+  },
+  "FeedPaywall": {
+    "title": "Free feed limit reached!",
+    "subtitle": "You must upgrade to premium to get an unlimited feed",
+    "premium_features": "✦ Premium features ✦",
+    "feature_coins": "+1,000 Dreamcoins monthly",
+    "feature_feed": "Unlimited feed",
+    "feature_messages": "Unlimited messages",
+    "feature_media": "Custom images & videos",
+    "feature_calls": "Phone calls",
+    "try_now": "Try now",
+    "much_more": "& much more",
+    "upgrade_cta": "♡ Click here to upgrade now ♡"
+  },
+  "MyAiCard": {
+    "pending": "Pending",
+    "profile": "Profile",
+    "chat": "Chat"
+  },
+  "MyAiSection": {
+    "signup_title": "Sign up to start your collection",
+    "signup_description": "Every AI character you create is saved here to your account.",
+    "sign_up_free": "Sign up free",
+    "start_creating": "Start creating",
+    "empty": "You haven't created any AI characters yet.",
+    "create_first": "Create your first AI",
+    "search_placeholder": "Search by name, style or tag…",
+    "filter_status": "Status",
+    "no_matches": "No characters match your search."
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  },
+  "Errors": {
+    "not_authenticated": "Not authenticated",
+    "generation_timed_out": "Generation timed out",
+    "generation_failed": "Generation failed"
+  },
+  "SignUpPrompts": {
+    "generate_scenes": "Sign up to generate scenes — your creations will be saved to your account.",
+    "create_character": "Sign up to bring your companion to life — your creation will be saved to your account.",
+    "manage_scenes": "Sign up to manage your scenes — deleting is only available on your own account.",
+    "enrich_prompt": "Sign up to enrich your prompt with AI."
+  }
+}

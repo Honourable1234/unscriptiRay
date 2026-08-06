@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { Poppins } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
+import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { routing } from '@/libs/I18nRouting';
 import '@/styles/global.css';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
   icons: [
@@ -53,13 +62,16 @@ export default async function RootLayout(props: {
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider>
-          <PostHogProvider>
-            {props.children}
-          </PostHogProvider>
-        </NextIntlClientProvider>
+    <html lang={locale} className={poppins.variable}>
+      <body className="font-poppins" suppressHydrationWarning>
+        <PostHogProvider>
+          <NextIntlClientProvider>
+            <TooltipProvider>
+              {props.children}
+            </TooltipProvider>
+            <Toaster position="bottom-right" />
+          </NextIntlClientProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

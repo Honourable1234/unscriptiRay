@@ -28,7 +28,7 @@ export default antfu(
     },
 
     // Ignored paths
-    ignores: [],
+    ignores: ['fixes.md'],
   },
   // --- Accessibility Rules ---
   jsxA11y.flatConfigs.recommended,

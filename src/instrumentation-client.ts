@@ -2,19 +2,19 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 import * as Sentry from '@sentry/nextjs';
+import { Env } from '@/libs/Env';
 
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+if (Env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true') {
   Sentry.init({
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    dsn: Env.NEXT_PUBLIC_SENTRY_DSN,
 
     // Add optional integrations for additional features
     integrations: [
       Sentry.replayIntegration({
-        maskAllText: false,
-        maskAllInputs: false,
-        blockAllMedia: false,
+        maskAllText: true,
+        maskAllInputs: true,
+        blockAllMedia: true,
       }),
-      Sentry.consoleLoggingIntegration(),
       Sentry.browserTracingIntegration(),
 
       ...(process.env.NODE_ENV === 'development'
@@ -22,11 +22,9 @@ if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
         : []),
     ],
 
-    // Adds request headers and IP for users, for more info visit
-    sendDefaultPii: true,
+    sendDefaultPii: false,
 
-    // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-    tracesSampleRate: 1,
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1,
 
     // Define how likely Replay events are sampled.
     // This sets the sample rate to be 10%. You may want this to be 100% while
@@ -36,8 +34,7 @@ if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
     // Define how likely Replay events are sampled when an error occurs.
     replaysOnErrorSampleRate: 1.0,
 
-    // Enable logs to be sent to Sentry
-    enableLogs: true,
+    enableLogs: false,
 
     // Setting this option to true will print useful information to the console while you're setting up Sentry.
     debug: false,

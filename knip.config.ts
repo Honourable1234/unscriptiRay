@@ -6,6 +6,8 @@ const config: KnipConfig = {
     'checkly.config.ts',
     'src/libs/I18n.ts',
     'src/types/I18n.ts',
+    'src/components/LocaleSwitcher.tsx',
+    'src/components/ui/**', // shadcn/ui boilerplate keeps its full export surface
     'tests/**/*.ts',
   ],
   // Dependencies to ignore during analysis
@@ -14,6 +16,7 @@ const config: KnipConfig = {
     '@swc/helpers', // Avoid error in CI: "`npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync."
     'conventional-changelog-conventionalcommits',
     'vite',
+    'vitest-browser-react',
   ],
   // Binaries to ignore during analysis
   ignoreBinaries: [

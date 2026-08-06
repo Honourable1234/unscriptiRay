@@ -13,6 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    # Set the ENABLE_CROWDIN repository variable to 'true' and configure CROWDIN_PROJECT_ID + CROWDIN_PERSONAL_TOKEN secrets to enable.
+    if: ${{ vars.ENABLE_CROWDIN == 'true' }}
+
+    # Crowdin pushes the translations branch and opens a PR with GITHUB_TOKEN.
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v6
 

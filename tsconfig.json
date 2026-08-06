@@ -55,6 +55,7 @@
     // Project Structure
     // Configure import paths and module resolution
     // ======================================================================
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
       "@/*": [
