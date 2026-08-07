@@ -54,7 +54,7 @@ export const ChatSettingsPanel = (props: { chatroomId: string; onBackgroundDispl
     getSettings(props.chatroomId).then((res) => {
       const ws = res?.content?.web_settings as WebSettings | undefined;
       if (ws) {
-        setSettings(ws);
+        setSettings({ ...ws, language: ws.language || 'english' });
       }
     }).catch(() => setError(true));
   }, [props.chatroomId]);

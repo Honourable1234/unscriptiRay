@@ -1,6 +1,7 @@
 {
-  "LocaleSwitcher": {
-    "change_language": "언어 변경"
+  "LanguageModal": {
+    "title": "언어",
+    "current": "현재"
   },
   "SignInPage": {
     "title": "로그인",
@@ -12,34 +13,34 @@
     "forgot_password": "비밀번호를 잊으셨나요?",
     "submit": "로그인",
     "no_account": "계정이 없으신가요?",
-    "sign_up_link": "회원 가입",
+    "sign_up_link": "회원가입",
     "login_failed": "로그인에 실패했습니다"
   },
   "SignUpPage": {
     "title": "계정 만들기",
-    "google_button": "회원 가입",
+    "google_button": "회원가입",
     "divider": "이메일로 계속하기",
     "email_label": "이메일",
     "email_placeholder": "이메일 주소를 입력하세요",
     "password_label": "비밀번호",
     "confirm_password_label": "비밀번호 확인",
-    "submit": "회원 가입",
-    "have_account": "계정이 있으신가요?",
+    "submit": "회원가입",
+    "have_account": "이미 계정이 있으신가요?",
     "sign_in_link": "로그인",
     "passwords_mismatch": "비밀번호가 일치하지 않습니다",
-    "password_too_short": "비밀번호는 8자 이상이어야 합니다.",
-    "sign_up_failed": "가입에 실패했습니다",
+    "password_too_short": "비밀번호는 8자 이상이어야 합니다",
+    "sign_up_failed": "회원가입에 실패했습니다",
     "check_email": "이메일을 확인하여 계정을 인증해 주세요."
   },
   "ForgotPasswordPage": {
     "title": "비밀번호를 잊으셨나요?",
-    "subtitle": "비밀번호를 재설정할 수 있는 링크가 귀하의 이메일로 발송될 예정입니다.",
+    "subtitle": "비밀번호 재설정 링크를 이메일로 보내드릴게요",
     "email_label": "이메일",
     "email_placeholder": "이메일 주소를 입력하세요",
     "submit": "제출",
-    "check_email": "이메일에서 비밀번호 재설정 링크를 확인해 주세요.",
-    "remember_password": "Remember your password?",
-    "sign_in_link": "Sign in"
+    "check_email": "이메일에서 재설정 링크를 확인해 주세요.",
+    "remember_password": "비밀번호가 기억나셨나요?",
+    "sign_in_link": "로그인"
   },
   "NewPasswordPage": {
     "title": "새 비밀번호",
@@ -48,34 +49,33 @@
     "confirm_password_label": "비밀번호 확인",
     "submit": "제출",
     "passwords_mismatch": "비밀번호가 일치하지 않습니다",
-    "password_too_short": "비밀번호는 8자 이상이어야 합니다."
+    "password_too_short": "비밀번호는 8자 이상이어야 합니다"
   },
   "GoogleButton": {
     "with_google": "Google과 함께"
   },
   "ExplorePage": {
-    "title": "여러분의",
-    "title_highlight": "환상"
+    "title": "당신만의",
+    "title_highlight": "판타지"
   },
   "ExploreSection": {
     "filter_identity": "정체성",
-    "filter_style": "시각적 스타일",
+    "filter_style": "스타일",
     "filter_age": "연령대",
     "filter_vibe": "분위기",
     "filter_sort": "정렬"
   },
   "ExploreCharacters": {
-    "loading": "미디어를 불러오는 동안 잠시만 기다려 주세요...",
-    "error": "캐릭터를 불러오는 데 실패했습니다.",
+    "error": "캐릭터를 불러오지 못했습니다.",
     "per_page": "페이지당:",
     "loading_more": "로딩 중...",
     "load_more": "더 보기"
   },
   "CharacterModal": {
     "show_more": "더 보기",
-    "show_less": "더 적게 보기",
+    "show_less": "간략히 보기",
     "profile": "프로필",
-    "more_tags": "+{count} 더 보기",
+    "more_tags": "+{count}개 더보기",
     "want_more": "더 보고 싶으신가요?",
     "view_content": "콘텐츠 보기",
     "generate": "생성",
@@ -88,106 +88,99 @@
     "chat": "채팅",
     "new_group": "새 그룹 만들기",
     "generate": "생성",
-    "new_scenario": "새로운 시나리오"
+    "new_scenario": "새 시나리오"
   },
   "CharacterContent": {
-    "error": "캐릭터를 불러오는 데 실패했습니다."
+    "error": "캐릭터를 불러오지 못했습니다."
   },
   "CharacterUnlockButton": {
-    "unlock": "{name} 잠금 해제 — 코인 50개",
+    "unlock": "{name} 잠금 해제",
+    "sign_up_prompt": "계정을 만들면 {name}의 컬렉션을 잠금 해제할 수 있어요 — 코인과 잠금 해제 내역이 계정에 안전하게 보관됩니다.",
+    "unlocked": "컬렉션 잠금 해제 완료",
+    "already_unlocked": "이미 보유 중인 컬렉션입니다",
     "purchase_failed": "구매에 실패했습니다",
-    "error": "문제가 발생했습니다",
-    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
-    "unlocked": "Collection unlocked",
-    "already_unlocked": "You already own this collection"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "잠겨 있는 비밀들",
-    "tap_to_reveal": "탭하여 내용을 확인하세요"
+    "error": "문제가 발생했습니다"
   },
   "ChatRoom": {
-    "clear_confirm": "모든 메시지를 삭제하시겠습니까?",
+    "clear_confirm": "모든 메시지를 삭제하시겠어요?",
     "clear": "지우기",
-    "cancel": "Cancel",
-    "toast_cleared": "Chat cleared.",
-    "toast_clear_failed": "Could not clear chat.",
-    "toast_deleted": "Chat room deleted.",
-    "toast_delete_failed": "Could not delete chat room."
+    "toast_cleared": "채팅이 삭제되었습니다.",
+    "toast_clear_failed": "채팅을 삭제하지 못했습니다.",
+    "toast_deleted": "채팅방이 삭제되었습니다.",
+    "toast_delete_failed": "채팅방을 삭제하지 못했습니다."
   },
   "ChatInputBar": {
-    "getting_suggestions": "제안 받기…",
-    "placeholder": "메시지 보내기...",
-    "generating_suggestion": "Generating suggestion…",
-    "send_message": "Send message"
+    "generating_suggestion": "제안 생성 중…",
+    "placeholder": "메시지를 입력하세요...",
+    "send_message": "메시지 보내기"
   },
   "ChatSideBar": {
-    "new_chat": "새로운 채팅",
-    "new_group": "새로운 그룹",
-    "new_scenario": "새로운 시나리오",
-    "your_chats": "귀하의 채팅 내역 ({count})",
+    "new_chat": "새 채팅",
+    "new_group": "새 그룹",
+    "new_scenario": "새 시나리오",
+    "your_chats": "내 채팅 ({count})",
+    "your_groups": "내 그룹 ({count})",
+    "your_scenario": "내 시나리오 ({count})",
     "loading_more": "로딩 중...",
-    "load_more": "더 보기",
-    "close_sidebar": "사이드바 닫기",
-    "search_placeholder": "Search chats…"
+    "search_placeholder": "채팅 검색…"
   },
   "ChatRightPanel": {
     "view_media": "미디어 보기",
-    "call_me": "전화해 줘",
+    "call_me": "전화하기",
     "voice": "음성",
     "memory": "메모리",
     "settings": "설정",
-    "instructions": "Instructions",
-    "toast_call_started": "Call started!",
-    "toast_call_failed": "Could not start call."
+    "instructions": "지침",
+    "toast_call_started": "통화가 시작되었습니다!",
+    "toast_call_failed": "통화를 시작하지 못했습니다."
   },
   "ChatRatingPrompt": {
-    "question": "대화는 어떻게 진행되고 있나요?",
-    "toast_thanks": "Thanks for your rating!",
-    "toast_failed": "Could not submit rating."
+    "question": "대화는 어떠셨나요?",
+    "toast_thanks": "평가해 주셔서 감사합니다!",
+    "toast_failed": "평가를 제출하지 못했습니다."
   },
   "ChatSettingsPanel": {
-    "loading": "… 불러오는 중",
-    "error": "설정을 불러오는 데 실패했습니다.",
-    "saving": "… 구하기",
-    "allow_messages": "문자 메시지 허용",
-    "background_display": "배경 화면",
+    "loading": "불러오는 중…",
+    "error": "설정을 불러오지 못했습니다.",
+    "saving": "저장 중…",
+    "allow_messages": "캐릭터 메시지 허용",
+    "background_display": "배경 표시",
     "lust_level": "욕망 수준",
     "response_length": "응답 길이",
     "language": "언어",
-    "toast_saved": "Settings saved.",
-    "toast_save_failed": "Could not save settings."
+    "toast_saved": "설정이 저장되었습니다.",
+    "toast_save_failed": "설정을 저장하지 못했습니다."
   },
   "NewGroupView": {
-    "heading": "그룹에 누구를 추가하고 싶으신가요?",
-    "group_name_label": "그룹 이름을 지정하세요",
+    "heading": "그룹에 누구를 추가하시겠어요?",
+    "group_name_label": "그룹 이름을 정해 주세요",
     "group_name_placeholder": "MyGroup"
   },
   "NewScenarioView": {
-    "heading": "이 시나리오에서 어떤 캐릭터를 선택하시겠습니까?",
+    "heading": "이 시나리오에 어떤 캐릭터를 등장시키시겠어요?",
     "create_label": "시나리오 만들기",
-    "placeholder": "여기에 시나리오를 입력하세요..."
+    "placeholder": "시나리오를 입력하세요..."
   },
   "SelectedCharacterBar": {
-    "selected_list": "선정된 캐릭터 목록 ({count}/{max})",
-    "no_selection": "아직 캐릭터를 선택하지 않았습니다",
-    "coming_soon": "곧 공개됩니다",
+    "selected_list": "선택된 캐릭터 목록 ({count}/{max})",
+    "no_selection": "아직 선택한 캐릭터가 없습니다",
+    "coming_soon": "곧 출시 예정",
     "create_group": "그룹 만들기"
   },
   "GeneratePage": {
-    "title": "나만의",
+    "title": "당신만의",
     "title_highlight": "판타지 장면"
   },
   "GenerateOptionsGrid": {
-    "select_star": "별 선택",
+    "select_star": "스타 선택",
+    "stars_count": "스타 {count}명",
     "required": "(필수)",
-    "optional": "(선택 사항)",
+    "optional": "(선택)",
     "action": "액션",
     "setting": "배경",
-    "mood": "기분",
-    "creative_input": "창의적 아이디어 제시 (고급)",
-    "creator_tier": "크리에이터 티어 전용",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars"
+    "mood": "분위기",
+    "creative_input": "창의적 입력 (고급)",
+    "creator_tier": "크리에이터 티어 전용"
   },
   "GenerateTypeToggle": {
     "still_images": "정지 이미지",
@@ -195,674 +188,663 @@
     "mode": "모드"
   },
   "GenerateControls": {
-    "visual_label": "이미지:",
-    "orientation_label": "오리엔테이션:",
-    "cinematic_desc": "높은 품질의 결과와 뛰어난 프롬프트 정확도",
-    "realistic_desc": "향상된 조명 효과로 구현된 초현실적인 비주얼",
-    "anime_desc": "생동감 넘치는 색감을 담은 스타일리시한 애니메이션 미학"
+    "visual_label": "비주얼:",
+    "orientation_label": "방향:",
+    "cinematic_desc": "정확한 프롬프트 반영과 고품질 결과물",
+    "realistic_desc": "향상된 조명으로 구현한 초현실적인 비주얼"
   },
   "GenerateButton": {
     "generate_image": "이미지 생성"
   },
   "SelectStarModal": {
-    "title": "별 선택",
-    "search_placeholder": "문자 검색...",
-    "loading": "캐릭터 불러오는 중...",
-    "no_results": "해당 문자가 없습니다.",
-    "selected_count": "{count} of {max} selected",
-    "done": "Done"
+    "title": "스타 선택",
+    "search_placeholder": "캐릭터 검색...",
+    "no_results": "캐릭터를 찾을 수 없습니다.",
+    "selected_count": "{max}명 중 {count}명 선택됨",
+    "done": "완료"
+  },
+  "PickOptionModal": {
+    "loading": "옵션을 불러오는 중...",
+    "no_results": "사용 가능한 옵션이 없습니다."
   },
   "GenerateSceneModal": {
     "title_remix": "리믹스",
-    "title_video": "이미지를 동영상으로 변환",
+    "title_video": "이미지를 동영상으로",
     "title_edit": "이미지 편집",
     "title_speech": "립싱크 영상",
-    "title_enhance": "이미지 확대",
+    "title_enhance": "이미지 향상",
     "title_more": "더 보기"
   },
   "GenerateVideoControls": {
-    "quality_label": "품질 등급:",
-    "orientation_label": "오리엔테이션:",
-    "duration_label": "소요 시간:",
+    "quality_label": "화질 등급:",
+    "orientation_label": "방향:",
+    "duration_label": "재생 시간:",
     "audio": "오디오",
     "balanced_label": "밸런스 (480p)",
-    "balanced_desc": "의상, 배경, 효과에 가장 적합합니다",
+    "balanced_desc": "의상, 배경, 효과 표현에 적합해요",
     "ultra_label": "울트라 (1080p)",
-    "ultra_desc": "NSFW 및 해부학적 세부 묘사에 최적화됨"
+    "ultra_desc": "NSFW 및 신체 디테일 표현에 최적화되어 있어요"
+  },
+  "VideoContent": {
+    "motion": "모션",
+    "select_star": "스타 선택",
+    "required": "(필수)",
+    "creative_input": "창의적 입력",
+    "creator_tier": "크리에이터 티어",
+    "select_star_first": "먼저 스타를 선택해 주세요.",
+    "generating": "생성 중...",
+    "generate_video": "동영상 생성",
+    "video_ready": "동영상이 준비되었습니다!"
+  },
+  "EditContent": {
+    "visual_label": "비주얼:",
+    "scene_alt": "편집 중인 장면",
+    "model_label": "모델:",
+    "orientation_label": "방향:",
+    "select_star": "스타 선택",
+    "required": "(필수)",
+    "editing": "편집 중...",
+    "edit_scene": "장면 편집",
+    "edit_complete": "편집이 완료되었습니다!"
+  },
+  "SpeechContent": {
+    "scene_label": "장면",
+    "audio_script": "오디오 스크립트",
+    "voice": "음성",
+    "required": "(필수)",
+    "select_voice_first": "먼저 음성을 선택해 주세요.",
+    "enter_script_first": "먼저 오디오 스크립트를 입력해 주세요.",
+    "generating": "생성 중...",
+    "generate_speech": "음성 생성",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "EnhanceContent": {
+    "description": "향상 기능을 사용하면 이미지가 더 선명해지고 해상도가 개선됩니다",
+    "enhancing": "향상 중...",
+    "enhance_scene": "장면 향상",
+    "enhance_complete": "향상이 완료되었습니다!"
+  },
+  "RemixContent": {
+    "select_star_first": "먼저 스타를 선택해 주세요.",
+    "generating": "생성 중...",
+    "remix_scene": "장면 리믹스",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "StillStylePresent": {
+    "generating": "생성 중...",
+    "generate_image": "이미지 생성",
+    "image_ready": "이미지가 준비되었습니다!"
+  },
+  "StillEditStyle": {
+    "generating": "생성 중...",
+    "generate_image": "이미지 생성",
+    "image_ready": "이미지가 준비되었습니다!",
+    "model_label": "모델:",
+    "orientation_label": "방향:",
+    "visual_label": "비주얼:",
+    "select_image": "이미지 선택"
+  },
+  "AnimatedStylePresent": {
+    "generating": "생성 중...",
+    "generate_scene": "장면 생성",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "AnimatedImageToVideo": {
+    "image": "이미지",
+    "required": "(필수)",
+    "motion": "모션",
+    "creative_input_advanced": "창의적 입력 (고급)",
+    "creator_tier_exclusive": "크리에이터 티어 전용",
+    "generating": "생성 중...",
+    "generate_scene": "장면 생성",
+    "select_image": "이미지 선택",
+    "select_star": "스타 선택",
+    "stars_count": "스타 {count}명",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "AnimatedExtendVideo": {
+    "video": "동영상",
+    "required": "(필수)",
+    "select_star": "스타 선택",
+    "stars_count": "스타 {count}명",
+    "motion": "모션",
+    "creative_input_advanced": "창의적 입력 (고급)",
+    "creator_tier_exclusive": "크리에이터 티어 전용",
+    "generating": "생성 중...",
+    "generate_scene": "장면 생성",
+    "select_video": "동영상 선택",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "AnimatedTalking": {
+    "image_video": "이미지 / 동영상",
+    "required": "(필수)",
+    "select_star": "스타 선택",
+    "stars_count": "스타 {count}명",
+    "voice": "음성",
+    "audio_script": "오디오 스크립트",
+    "generating": "생성 중...",
+    "generate_scene": "장면 생성",
+    "select_image_video": "이미지 / 동영상 선택",
+    "scene_ready": "장면이 준비되었습니다!"
+  },
+  "CreativeInputModal": {
+    "title": "창의적 입력",
+    "placeholder": "장면에 추가할 세부 사항을 설명해 주세요...",
+    "enrich_with_ai": "AI로 보강하기",
+    "enrich_failed": "프롬프트를 보강하지 못했습니다.",
+    "save": "저장"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "아직 생성된 장면이 없습니다",
+    "generating": "생성 중...",
+    "scene_alt": "생성된 장면"
+  },
+  "GenerateScenePage": {
+    "download_started": "다운로드를 준비하는 중...",
+    "download_saved": "다운로드가 저장되었습니다.",
+    "download_failed": "파일을 저장하지 못했습니다. 대신 파일을 엽니다.",
+    "link_copied": "링크가 클립보드에 복사되었습니다!",
+    "copy_failed": "링크를 복사하지 못했습니다.",
+    "scene_deleted": "장면이 삭제되었습니다.",
+    "delete_failed": "장면을 삭제하지 못했습니다.",
+    "not_available": "아직 이용할 수 없습니다.",
+    "scene_not_found": "장면을 찾을 수 없습니다",
+    "scene_alt": "생성된 장면",
+    "thumbnail_alt": "썸네일",
+    "generated_label": "생성된 {type}"
+  },
+  "GenerationToasts": {
+    "complete": "생성이 완료되었습니다!",
+    "restarted": "생성을 다시 시작합니다, 처리 중...",
+    "retry_failed": "재시도에 실패했습니다.",
+    "started": "생성을 시작합니다, 처리 중...",
+    "failed": "생성에 실패했습니다.",
+    "retry": "재시도"
   },
   "CreatePage": {
-    "title": "만들기",
-    "title_highlight": "동반자",
+    "title": "나만의",
+    "title_highlight": "동반자 만들기",
     "prev": "이전",
     "next": "다음",
     "generate": "생성",
-    "image_gen_failed": "Character created but image generation failed to start.",
-    "create_failed": "Failed to create character.",
-    "save_tags_failed": "Failed to save tags."
+    "image_gen_failed": "캐릭터는 생성되었지만 이미지 생성을 시작하지 못했습니다.",
+    "create_failed": "캐릭터를 생성하지 못했습니다.",
+    "save_tags_failed": "태그를 저장하지 못했습니다."
   },
   "CreateStep1": {
-    "ethnic_influence": "민족적 영향",
-    "eye_color": "눈 색깔",
-    "eye_intensity": "눈의 강도",
+    "ethnic_influence": "민족적 특징",
+    "eye_color": "눈동자 색",
+    "eye_intensity": "눈매 강도",
     "facial_shape": "얼굴형",
-    "figure_type": "그림 유형",
+    "figure_type": "체형",
     "hair_color": "헤어 컬러",
     "hair_style": "헤어 스타일",
-    "hip_profile": "고관절 단면도",
+    "hip_profile": "골반 라인",
     "bust_profile": "가슴 라인",
     "skin_tone": "피부 톤"
   },
   "CreateStep2": {
     "character_name": "캐릭터 이름",
-    "character_age": "캐릭터의 나이",
-    "gender": "Gender",
-    "gender_female": "Female",
-    "gender_male": "Male",
-    "gender_non_binary": "Non-binary"
+    "character_age": "캐릭터 나이",
+    "gender": "성별",
+    "gender_female": "여성",
+    "gender_male": "남성",
+    "gender_non_binary": "논바이너리"
   },
   "CharacterInfo": {
     "heading": "캐릭터 정보",
     "voice": "음성",
-    "personality": "성격 아키타입",
-    "relationship": "관계의 역학",
-    "kinks": "기묘함과 편안함",
+    "personality": "성격 유형",
+    "relationship": "관계 성향",
+    "kinks": "취향 & 편안함",
+    "hobby": "취미",
     "select_voice": "음성 선택",
     "select_personality": "성격 선택",
     "select_relationship": "관계 선택",
-    "select_kinks": "특징 선택",
-    "hobby": "Hobby",
-    "select_hobby": "Select Hobby",
-    "custom": "Custom"
+    "select_kinks": "취향 선택",
+    "select_hobby": "취미 선택",
+    "custom": "직접 입력"
   },
   "CharacterInfoCard": {
-    "select": "선택 {title}"
+    "select": "{title} 선택"
   },
   "CreateStep3": {
-    "ai_enrichment": "AI 기능 강화 (자동 완성)",
-    "ai_subtitle": "AI를 활용해 빈 부분을 채우고 더 입체적인 캐릭터를 만들어 보세요",
+    "ai_enrichment": "AI 보강 (자동 완성)",
+    "ai_subtitle": "AI로 빈 부분을 채워 더 입체적인 캐릭터를 만들어 보세요",
     "backstory": "배경 이야기",
-    "backstory_placeholder": "배경 이야기 없음",
-    "custom_physical": "맞춤형 신체 검사",
-    "custom_physical_placeholder": "사용자 정의 물리적 세트가 없음",
-    "custom_face": "사용자 지정 얼굴 세부 정보",
-    "custom_face_placeholder": "사용자 지정 얼굴 세부 정보가 설정되지 않았습니다.",
+    "backstory_placeholder": "설정된 배경 이야기가 없습니다",
+    "custom_physical": "직접 입력한 신체 특징",
+    "custom_physical_placeholder": "설정된 신체 특징이 없습니다",
+    "custom_face": "직접 입력한 얼굴 세부 정보",
+    "custom_face_placeholder": "설정된 얼굴 세부 정보가 없습니다",
     "greeting": "인사말",
-    "greeting_placeholder": "인사말이 설정되어 있지 않습니다.",
-    "personality_details": "성격 상세 정보",
-    "personality_details_placeholder": "성격 관련 세부 정보가 설정되지 않았습니다.",
-    "toast_enriched": "Character enriched with AI.",
-    "toast_enrich_failed": "AI enrichment failed."
+    "greeting_placeholder": "설정된 인사말이 없습니다",
+    "personality_details": "성격 세부 정보",
+    "personality_details_placeholder": "설정된 성격 세부 정보가 없습니다",
+    "toast_enriched": "AI로 캐릭터를 보강했습니다.",
+    "toast_enrich_failed": "AI 보강에 실패했습니다."
   },
   "CreateStep4": {
-    "tab_appearance": "외관",
+    "tab_appearance": "외모",
     "tab_personality": "성격",
     "preview": "캐릭터 미리보기",
-    "generate_process": "프로세스 생성",
+    "generate_process": "생성 과정",
     "meet_companion": "당신의 동반자를 만나보세요",
-    "no_character": "사용 가능한 문자 데이터가 없습니다.",
+    "no_character": "사용 가능한 캐릭터 데이터가 없습니다.",
     "tags": "태그 ({count}/10)",
     "tag_placeholder": "태그 추가...",
     "voice": "음성",
-    "ethnic": "민족적",
+    "ethnic": "민족적 특징",
     "facial_shape": "얼굴형",
     "hair_style": "헤어 스타일",
-    "eye_intensity": "눈의 강도",
-    "figure_type": "그림 유형",
-    "bust": "상반신",
-    "hip": "힙",
+    "eye_intensity": "눈매 강도",
+    "figure_type": "체형",
+    "bust": "가슴",
+    "hip": "골반",
     "personality_attr": "성격",
     "relationship": "관계",
-    "kinks_comforts": "기묘함과 편안함",
+    "kinks_comforts": "취향 & 편안함",
     "social_role": "사회적 역할",
     "backstory": "배경 이야기",
-    "physical": "물리적",
+    "physical": "신체 특징",
     "face_details": "얼굴 세부 정보",
     "greeting": "인사말",
-    "personality_details": "성격 상세 정보",
+    "personality_details": "성격 세부 정보",
     "hair_color": "헤어 컬러",
-    "eye_color": "눈 색깔",
+    "eye_color": "눈동자 색",
     "skin_tone": "피부 톤",
-    "saved": "Saved.",
-    "save_failed": "Failed to save.",
-    "image_failed": "Image generation failed",
-    "retry": "Retry",
-    "save": "Save"
+    "saved": "저장되었습니다.",
+    "save_failed": "저장하지 못했습니다.",
+    "image_failed": "이미지 생성에 실패했습니다",
+    "retry": "재시도",
+    "save": "저장"
   },
   "OptionModal": {
     "loading": "로딩 중...",
-    "search_placeholder": "Search..."
+    "search_placeholder": "검색..."
   },
   "CreateTagsField": {
     "tags": "태그 ({count}/{max})",
-    "no_tags": "태그가 설정되어 있지 않습니다.",
+    "no_tags": "설정된 태그가 없습니다",
     "add_tag": "태그 추가..."
   },
-  "_comment": "i18n coverage: all user-visible strings are extracted. fr.json mirrors en.json structurally and still holds English copy as placeholders pending translation.",
-  "PickOptionModal": {
-    "loading": "Loading options...",
-    "no_results": "No options available."
-  },
-  "VideoContent": {
-    "motion": "Motion",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "creative_input": "Creative Input",
-    "creator_tier": "Creator Tier",
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "generate_video": "Generate Video",
-    "video_ready": "Video ready!"
-  },
-  "EditContent": {
-    "visual_label": "Visual:",
-    "scene_alt": "Scene being edited",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "spark_desc": "Fast and efficient editing",
-    "pro_desc": "High quality, detailed edits",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "editing": "Editing...",
-    "edit_scene": "Edit Scene",
-    "edit_complete": "Edit complete!"
-  },
-  "SpeechContent": {
-    "aurora_sublabel": "(Character default)",
-    "scene_label": "Scene",
-    "audio_script": "Audio Script",
-    "voice": "Voice",
-    "required": "(Required)",
-    "select_voice_first": "Please select a voice first.",
-    "enter_script_first": "Please enter an audio script first.",
-    "generating": "Generating...",
-    "generate_speech": "Generate Speech",
-    "scene_ready": "Scene ready!"
-  },
-  "EnhanceContent": {
-    "description": "Enhancing will make your image sharper and improve its resolution",
-    "enhancing": "Enhancing...",
-    "enhance_scene": "Enhance Scene",
-    "enhance_complete": "Enhancement complete!"
-  },
-  "RemixContent": {
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "remix_scene": "Remix Scene",
-    "scene_ready": "Scene ready!"
-  },
-  "StillStylePresent": {
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!"
-  },
-  "StillEditStyle": {
-    "upload_failed": "Upload failed.",
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "visual_label": "Visual:",
-    "select_image": "Select image"
-  },
-  "AnimatedStylePresent": {
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "scene_label": "Scene {id}",
-    "add": "Add",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedImageToVideo": {
-    "image": "Image",
-    "required": "(Required)",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image": "Select Image",
-    "select_star": "Select Star",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedExtendVideo": {
-    "video": "Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_video": "Select Video",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedTalking": {
-    "image_video": "Image / Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "voice": "Voice",
-    "audio_script": "Audio Script",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image_video": "Select Image / Video",
-    "scene_ready": "Scene ready!"
-  },
-  "CreativeInputModal": {
-    "title": "Creative Input",
-    "placeholder": "Describe extra details for your scene...",
-    "enrich_with_ai": "Enrich with AI",
-    "enrich_failed": "Could not enrich prompt.",
-    "save": "Save"
-  },
-  "GenerateResultGrid": {
-    "no_scenes": "No generated scenes yet",
-    "generating": "Generating...",
-    "scene_alt": "Generated scene"
-  },
-  "GenerateScenePage": {
-    "download_started": "Preparing download...",
-    "download_saved": "Download saved.",
-    "download_failed": "Could not save the file. Opening it instead.",
-    "link_copied": "Link copied to clipboard!",
-    "copy_failed": "Could not copy the link.",
-    "scene_deleted": "Scene deleted.",
-    "delete_failed": "Could not delete the scene.",
-    "not_available": "Not available yet.",
-    "scene_not_found": "Scene not found",
-    "scene_alt": "Generated scene",
-    "thumbnail_alt": "Thumbnail",
-    "generated_label": "Generated {type}"
-  },
-  "GenerationToasts": {
-    "complete": "Generation complete!",
-    "restarted": "Generation restarted, processing...",
-    "retry_failed": "Retry failed.",
-    "started": "Generation started, processing...",
-    "failed": "Generation failed.",
-    "retry": "Retry"
-  },
   "SubscriptionSection": {
-    "title": "Subscription",
-    "current_plan": "Current plan",
-    "renews_expires": "Renews/expires {date}",
-    "plan_free": "Free",
-    "plan_free_caption": "Limited access",
-    "plan_monthly": "Monthly",
-    "plan_monthly_caption": "Billed every month",
-    "plan_yearly": "Yearly",
-    "plan_yearly_caption": "Billed once a year",
-    "change_plan": "Change plan",
-    "upgrade_to_premium": "Upgrade to Premium",
-    "current": "Current",
-    "opening": "Opening…",
-    "action_switch": "Switch",
-    "action_upgrade": "Upgrade",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to unlock premium features",
-    "sign_up_now": "Sign up now",
-    "manage_billing": "Manage billing",
-    "cancel_subscription": "Cancel subscription",
-    "billing_history": "Billing history",
-    "no_invoices": "No invoices yet.",
-    "column_amount": "Amount",
-    "column_date": "Date",
-    "column_status": "Status",
-    "column_invoice": "Invoice",
+    "title": "구독",
+    "current_plan": "현재 요금제",
+    "renews_expires": "{date}에 갱신/만료",
+    "plan_free": "무료",
+    "plan_free_caption": "제한된 이용",
+    "plan_monthly": "월간",
+    "plan_monthly_caption": "매달 결제",
+    "plan_yearly": "연간",
+    "plan_yearly_caption": "연 1회 결제",
+    "change_plan": "요금제 변경",
+    "upgrade_to_premium": "프리미엄으로 업그레이드",
+    "current": "현재",
+    "opening": "여는 중…",
+    "action_switch": "전환",
+    "action_upgrade": "업그레이드",
+    "get_started": "시작하기",
+    "get_started_caption": "가입하고 프리미엄 기능을 이용해 보세요",
+    "sign_up_now": "지금 가입하기",
+    "manage_billing": "결제 관리",
+    "cancel_subscription": "구독 취소",
+    "billing_history": "결제 내역",
+    "no_invoices": "아직 청구서가 없습니다.",
+    "column_amount": "금액",
+    "column_date": "날짜",
+    "column_status": "상태",
+    "column_invoice": "청구서",
     "pdf": "PDF",
-    "cancel_confirm_body": "Are you sure you want to cancel your subscription? You'll keep access until {date}.",
-    "end_of_billing_period": "the end of your billing period",
-    "keep_subscription": "Keep subscription",
-    "confirm_cancel": "Confirm cancel",
-    "toast_payment_received": "Payment received. Your plan updates once Stripe confirms it.",
-    "toast_upgrade_cancelled": "Upgrade cancelled.",
-    "toast_back_from_portal": "Back from the billing portal.",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_subscription_active": "Subscription active.",
-    "toast_payments_unavailable": "Payments are not available yet. You have not been charged.",
-    "toast_portal_failed": "Could not open the billing portal.",
-    "toast_portal_unavailable": "The billing portal is not available yet.",
-    "toast_cancel_failed": "Could not cancel subscription.",
-    "toast_subscription_cancelled": "Subscription cancelled."
+    "cancel_confirm_body": "정말로 구독을 취소하시겠어요? {date}까지는 계속 이용하실 수 있어요.",
+    "end_of_billing_period": "결제 주기가 끝날 때까지",
+    "keep_subscription": "구독 유지",
+    "confirm_cancel": "취소 확정",
+    "toast_payment_received": "결제가 완료되었습니다. Stripe 확인이 끝나면 요금제가 업데이트됩니다.",
+    "toast_upgrade_cancelled": "업그레이드가 취소되었습니다.",
+    "toast_back_from_portal": "결제 포털에서 돌아왔습니다.",
+    "toast_checkout_failed": "결제를 시작하지 못했습니다. 요금이 청구되지 않았습니다.",
+    "toast_subscription_active": "구독이 활성화되었습니다.",
+    "toast_payments_unavailable": "결제 기능을 아직 이용할 수 없습니다. 요금이 청구되지 않았습니다.",
+    "toast_portal_failed": "결제 포털을 열지 못했습니다.",
+    "toast_portal_unavailable": "결제 포털을 아직 이용할 수 없습니다.",
+    "toast_cancel_failed": "구독을 취소하지 못했습니다.",
+    "toast_subscription_cancelled": "구독이 취소되었습니다."
   },
   "WalletSection": {
-    "title": "Wallet",
-    "balance": "Balance",
+    "title": "지갑",
+    "balance": "잔액",
     "dreamcoins": "Dreamcoins",
-    "image_credits": "Image credits:",
-    "video_credits": "Video credits:",
-    "credits_reset": "Credits reset:",
-    "not_scheduled": "Not scheduled",
-    "buy_more_coins": "Buy more coins",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to buy Dreamcoins",
-    "sign_up_now": "Sign up now",
-    "transactions": "Transactions",
-    "no_transactions": "No transactions yet.",
-    "column_reason": "Reason",
-    "column_date": "Date",
-    "column_coins": "Coins",
-    "pagination": "Page {page} of {pageCount} · {total} transactions",
-    "prev": "Prev",
-    "next": "Next",
-    "toast_payment_received": "Payment received. Your coins will appear once Stripe confirms it.",
-    "toast_purchase_cancelled": "Purchase cancelled."
+    "image_credits": "이미지 크레딧:",
+    "video_credits": "동영상 크레딧:",
+    "credits_reset": "크레딧 초기화:",
+    "not_scheduled": "예정 없음",
+    "buy_more_coins": "코인 추가 구매",
+    "get_started": "시작하기",
+    "get_started_caption": "가입하고 Dreamcoins를 구매해 보세요",
+    "sign_up_now": "지금 가입하기",
+    "transactions": "거래 내역",
+    "no_transactions": "아직 거래 내역이 없습니다.",
+    "column_reason": "사유",
+    "column_date": "날짜",
+    "column_coins": "코인",
+    "pagination": "{pageCount}페이지 중 {page}페이지 · 거래 {total}건",
+    "prev": "이전",
+    "next": "다음",
+    "toast_payment_received": "결제가 완료되었습니다. Stripe 확인이 끝나면 코인이 지급됩니다.",
+    "toast_purchase_cancelled": "구매가 취소되었습니다."
   },
   "ProfileSection": {
-    "unnamed": "Unnamed",
-    "visit_profile": "Visit profile",
+    "unnamed": "이름 없음",
+    "visit_profile": "프로필 방문",
     "dreamcoins": "Dreamcoins",
-    "wallet": "Wallet",
-    "wallet_caption": "Buy Dreamcoins and review your transactions",
-    "subscription": "Subscription",
-    "tier_free": "Free",
-    "change_password": "Change password",
-    "change_password_caption": "Update the password you sign in with",
-    "language": "Language",
-    "coming_soon": "Coming soon.",
-    "sign_out": "Sign out"
+    "wallet": "지갑",
+    "wallet_caption": "Dreamcoins를 구매하고 거래 내역을 확인하세요",
+    "subscription": "구독",
+    "tier_free": "무료",
+    "change_password": "비밀번호 변경",
+    "change_password_caption": "로그인에 사용하는 비밀번호를 변경하세요",
+    "language": "언어",
+    "sign_out": "로그아웃"
   },
   "ProfileView": {
-    "unnamed": "Unnamed",
-    "interactions": "interactions",
-    "followers": "followers",
-    "following": "following",
-    "edit_profile": "Edit profile",
-    "tab_highlighted": "Highlighted",
-    "tab_characters": "Characters",
-    "tab_activity": "Activity",
-    "filter_style": "Style",
-    "filter_sort": "Sort",
-    "nothing_to_show": "Nothing to show yet.",
-    "loading": "Loading…",
-    "no_matches": "No characters match your style filters",
-    "create_new_character": "CREATE NEW CHARACTER",
-    "create": "Create"
+    "unnamed": "이름 없음",
+    "interactions": "상호작용",
+    "followers": "팔로워",
+    "following": "팔로잉",
+    "edit_profile": "프로필 편집",
+    "tab_highlighted": "하이라이트",
+    "tab_characters": "캐릭터",
+    "tab_activity": "활동",
+    "filter_style": "스타일",
+    "filter_sort": "정렬",
+    "nothing_to_show": "아직 표시할 항목이 없습니다.",
+    "loading": "불러오는 중…",
+    "no_matches": "스타일 필터와 일치하는 캐릭터가 없습니다",
+    "create_new_character": "새 캐릭터 만들기",
+    "create": "만들기"
   },
   "ProfileEditModal": {
-    "title": "Edit profile",
-    "uploading": "Uploading…",
-    "change_photo": "Change photo",
-    "display_name": "Display name",
-    "display_name_placeholder": "How your name appears",
-    "username": "Username",
-    "username_placeholder": "Your handle",
-    "save": "Save changes",
-    "toast_upload_failed": "Could not upload that image",
-    "toast_save_failed": "Could not save your profile",
-    "toast_saved": "Profile updated"
+    "title": "프로필 편집",
+    "uploading": "업로드 중…",
+    "change_photo": "사진 변경",
+    "display_name": "표시 이름",
+    "display_name_placeholder": "표시될 이름",
+    "username": "사용자 이름",
+    "username_placeholder": "사용자 핸들",
+    "save": "변경사항 저장",
+    "toast_upload_failed": "이미지를 업로드하지 못했습니다",
+    "toast_save_failed": "프로필을 저장하지 못했습니다",
+    "toast_saved": "프로필이 업데이트되었습니다"
   },
   "ChangePasswordModal": {
-    "title": "Change password",
-    "google_account": "This account signs in with Google, so there is no password to change.",
-    "close": "Close",
-    "current_password": "Current password",
-    "new_password": "New password",
-    "confirm_new_password": "Confirm new password",
-    "submit": "Update password",
-    "error_mismatch": "The new passwords do not match.",
-    "error_too_short": "Use at least {count} characters.",
-    "error_same_password": "The new password is the same as the current one.",
-    "error_no_email": "This account has no email address to verify against.",
-    "error_wrong_current": "That current password is not correct.",
-    "toast_changed": "Password changed"
+    "title": "비밀번호 변경",
+    "google_account": "이 계정은 Google로 로그인하므로 변경할 비밀번호가 없습니다.",
+    "close": "닫기",
+    "current_password": "현재 비밀번호",
+    "new_password": "새 비밀번호",
+    "confirm_new_password": "새 비밀번호 확인",
+    "submit": "비밀번호 업데이트",
+    "error_mismatch": "새 비밀번호가 일치하지 않습니다.",
+    "error_too_short": "{count}자 이상 입력해 주세요.",
+    "error_same_password": "새 비밀번호가 현재 비밀번호와 같습니다.",
+    "error_no_email": "이 계정에는 인증에 사용할 이메일 주소가 없습니다.",
+    "error_wrong_current": "현재 비밀번호가 올바르지 않습니다.",
+    "toast_changed": "비밀번호가 변경되었습니다"
   },
   "NavBar": {
-    "log_in": "Log in",
-    "sign_up": "Sign up",
-    "coins": "Coins",
-    "upgrade": "Upgrade",
-    "close_notifications": "Close notifications",
-    "notifications": "Notifications",
-    "loading": "Loading…",
-    "no_notifications": "No notifications to show."
+    "log_in": "로그인",
+    "sign_up": "회원가입",
+    "coins": "코인",
+    "upgrade": "업그레이드",
+    "close_notifications": "알림 닫기",
+    "notifications": "알림",
+    "loading": "불러오는 중…",
+    "no_notifications": "표시할 알림이 없습니다."
   },
   "SideBar": {
-    "create": "Create",
-    "explore": "Explore",
-    "chat": "Chat",
-    "generate": "Generate",
-    "my_ai": "My AI",
-    "feed": "Feed",
-    "upgrade": "Upgrade",
-    "sign_in": "Sign in",
-    "account": "Account",
-    "sign_out": "Sign out"
+    "create": "만들기",
+    "explore": "탐색",
+    "chat": "채팅",
+    "generate": "생성",
+    "my_ai": "내 AI",
+    "feed": "피드",
+    "upgrade": "업그레이드",
+    "sign_in": "로그인",
+    "account": "계정",
+    "sign_out": "로그아웃"
   },
   "ChatTemplate": {
-    "dreamcoins_left": "{count} dreamcoins left",
-    "bonus_on_signup": "+50 on signup",
-    "sign_up_free": "Sign up free",
-    "login": "Login",
-    "join_free": "Join free"
+    "dreamcoins_left": "Dreamcoins {count}개 남음",
+    "bonus_on_signup": "가입 시 +50 지급",
+    "sign_up_free": "무료로 가입하기",
+    "login": "로그인",
+    "join_free": "무료로 시작하기"
   },
   "AuthTemplate": {
     "copyright": "Copyright© {year}. Unscripti AI"
   },
   "ChatMemoryPanel": {
-    "placeholder": "Add a memory…",
-    "add": "Add",
-    "loading": "Loading…",
-    "empty": "No memories yet.",
-    "load_failed": "Could not load memories.",
-    "toast_saved": "Memory saved.",
-    "toast_save_failed": "Could not save memory."
+    "placeholder": "메모리 추가…",
+    "add": "추가",
+    "loading": "불러오는 중…",
+    "empty": "아직 메모리가 없습니다.",
+    "load_failed": "메모리를 불러오지 못했습니다.",
+    "toast_saved": "메모리가 저장되었습니다.",
+    "toast_save_failed": "메모리를 저장하지 못했습니다."
   },
   "ChatInstructionsPanel": {
-    "placeholder": "Add custom instructions…",
-    "save": "Save",
-    "loading": "Loading…",
-    "load_failed": "Could not load instructions.",
-    "toast_saved": "Instructions saved.",
-    "toast_save_failed": "Could not save instructions."
+    "placeholder": "맞춤 지침 추가…",
+    "save": "저장",
+    "loading": "불러오는 중…",
+    "load_failed": "지침을 불러오지 못했습니다.",
+    "toast_saved": "지침이 저장되었습니다.",
+    "toast_save_failed": "지침을 저장하지 못했습니다."
   },
   "ChatVoicePanel": {
-    "loading": "Loading…",
-    "load_failed": "Could not load voices.",
-    "search_placeholder": "Search voices…",
-    "no_voices": "No voices found.",
-    "female": "Female",
-    "male": "Male",
-    "selected": "Selected",
-    "toast_update_failed": "Could not update voice."
+    "loading": "불러오는 중…",
+    "load_failed": "음성을 불러오지 못했습니다.",
+    "search_placeholder": "음성 검색…",
+    "no_voices": "음성을 찾을 수 없습니다.",
+    "female": "여성",
+    "male": "남성",
+    "selected": "선택됨",
+    "toast_update_failed": "음성을 업데이트하지 못했습니다."
   },
   "ChatGuestLimitPrompt": {
-    "title": "You've reached the guest limit",
-    "description": "Sign up to keep chatting — your conversation will be saved to your account.",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "게스트 이용 한도에 도달했습니다",
+    "description": "계속 채팅하려면 가입해 주세요 — 대화 내용이 계정에 저장됩니다.",
+    "sign_up_free": "무료로 가입하기",
+    "log_in": "로그인"
   },
   "ChatMessageActions": {
-    "copy": "Copy message",
-    "edit": "Edit message",
-    "more": "More actions",
-    "duplicate": "Duplicate from here",
-    "delete": "Delete"
+    "copy": "메시지 복사",
+    "edit": "메시지 수정",
+    "more": "더 보기",
+    "duplicate": "여기서부터 복제",
+    "delete": "삭제"
   },
   "ChatMessageBubble": {
-    "play_voice": "Play voice",
-    "cancel": "Cancel",
-    "save": "Save",
-    "toast_voice_failed": "Could not play voice."
+    "play_voice": "음성 재생",
+    "cancel": "취소",
+    "save": "저장",
+    "toast_voice_failed": "음성을 재생하지 못했습니다."
   },
   "CharacterEditSections": {
-    "profile_label": "Profile",
-    "profile_description": "Their avatar, and who can find them.",
-    "appearance_label": "Appearance",
-    "appearance_description": "Changing these updates how new images are generated; regenerate the avatar to match.",
-    "details_label": "Details",
-    "details_description": "Name, age and the traits that shape how they speak.",
-    "story_label": "Story",
-    "story_description": "Backstory, greeting and the prompts behind their personality."
+    "profile_label": "프로필",
+    "profile_description": "아바타와 캐릭터를 찾을 수 있는 대상을 설정해요.",
+    "appearance_label": "외모",
+    "appearance_description": "이 항목을 변경하면 새 이미지 생성 방식에 반영돼요. 맞춰서 아바타도 다시 생성해 주세요.",
+    "details_label": "세부 정보",
+    "details_description": "이름, 나이 등 말투를 결정하는 특성이에요.",
+    "story_label": "스토리",
+    "story_description": "배경 이야기, 인사말, 성격을 만드는 프롬프트예요."
   },
   "CharacterEditNav": {
-    "title": "Manage"
+    "title": "관리"
   },
   "CharacterEditForm": {
-    "back_to_profile": "Back to profile",
-    "save_changes": "Save changes",
-    "toast_saved": "Changes saved",
-    "toast_save_failed": "Could not save changes"
+    "back_to_profile": "프로필로 돌아가기",
+    "save_changes": "변경사항 저장",
+    "toast_saved": "변경사항이 저장되었습니다",
+    "toast_save_failed": "변경사항을 저장하지 못했습니다"
   },
   "CharacterEditAvatar": {
-    "description": "Regenerating is free, and replaces the picture shown everywhere this character appears.",
-    "generating": "Generating…",
-    "regenerate": "Regenerate image",
-    "toast_ready": "New avatar ready",
-    "toast_no_image": "Generation finished without an image",
-    "toast_failed": "Image generation failed",
-    "toast_start_failed": "Could not start image generation"
+    "description": "다시 생성해도 무료이며, 이 캐릭터가 표시되는 모든 곳의 사진이 교체됩니다.",
+    "generating": "생성 중…",
+    "regenerate": "이미지 다시 생성",
+    "toast_ready": "새 아바타가 준비되었습니다",
+    "toast_no_image": "생성은 완료됐지만 이미지가 없습니다",
+    "toast_failed": "이미지 생성에 실패했습니다",
+    "toast_start_failed": "이미지 생성을 시작하지 못했습니다"
   },
   "CharacterVisibilityField": {
-    "title": "Visibility",
-    "public_label": "Public",
-    "public_hint": "Anyone can find this character in Explore.",
-    "unlisted_label": "Unlisted",
-    "unlisted_hint": "Only people with the link can open it.",
-    "private_label": "Private",
-    "private_hint": "Only you can see this character.",
-    "toast_updated": "Character is now {visibility}",
-    "toast_failed": "Could not change visibility"
+    "title": "공개 범위",
+    "public_label": "공개",
+    "public_hint": "누구나 탐색에서 이 캐릭터를 찾을 수 있어요.",
+    "unlisted_label": "링크 공개",
+    "unlisted_hint": "링크가 있는 사람만 열어볼 수 있어요.",
+    "private_label": "비공개",
+    "private_hint": "나만 이 캐릭터를 볼 수 있어요.",
+    "toast_updated": "캐릭터가 {visibility} 상태로 변경되었습니다",
+    "toast_failed": "공개 범위를 변경하지 못했습니다"
   },
   "CharacterDeleteButton": {
-    "delete": "Delete",
-    "confirm_title": "Delete {name}?",
-    "confirm_body": "Their chats and generated media go with them. This cannot be undone.",
-    "confirm_delete": "Delete permanently",
-    "keep": "Keep character",
-    "toast_deleted": "{name} was deleted",
-    "toast_delete_failed": "Could not delete this character"
+    "delete": "삭제",
+    "confirm_title": "{name}을(를) 삭제할까요?",
+    "confirm_body": "관련된 채팅과 생성된 미디어도 함께 삭제되며, 이 작업은 되돌릴 수 없습니다.",
+    "confirm_delete": "영구 삭제",
+    "keep": "캐릭터 유지",
+    "toast_deleted": "{name}이(가) 삭제되었습니다",
+    "toast_delete_failed": "이 캐릭터를 삭제하지 못했습니다"
   },
   "CharacterEditContent": {
-    "unavailable_title": "Character unavailable",
-    "unavailable_body": "We could not load this character. It may have been deleted.",
-    "unavailable_action": "Back to My AI",
-    "not_yours_title": "This character isn't yours",
-    "not_yours_body": "Only the creator of a character can edit it. You can still chat with this one from its profile.",
-    "not_yours_action": "View profile"
+    "unavailable_title": "이용할 수 없는 캐릭터입니다",
+    "unavailable_body": "이 캐릭터를 불러올 수 없습니다. 삭제되었을 수 있어요.",
+    "unavailable_action": "내 AI로 돌아가기",
+    "not_yours_title": "이 캐릭터는 회원님의 것이 아니에요",
+    "not_yours_body": "캐릭터는 제작자만 수정할 수 있어요. 프로필에서 이 캐릭터와 채팅은 계속 이용하실 수 있습니다.",
+    "not_yours_action": "프로필 보기"
   },
   "CharacterManageBar": {
-    "title": "This is your AI",
-    "description": "Edit their details, change who can see them, or delete them.",
-    "manage": "Manage AI"
+    "title": "회원님의 AI예요",
+    "description": "세부 정보를 수정하거나 공개 범위를 바꾸거나 삭제할 수 있어요.",
+    "manage": "AI 관리"
   },
   "AudioModal": {
-    "title": "Audio",
-    "script_placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "scene": "Scene",
-    "voice_preset": "Voice preset",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script.",
-    "scene_happy": "Happy",
-    "scene_natural": "Natural",
-    "scene_sad": "Sad",
-    "scene_angry": "Angry",
-    "scene_fearful": "Fearful",
-    "scene_disgusted": "Disgusted",
-    "scene_surprised": "Surprised"
+    "title": "오디오",
+    "script_placeholder": "이 캐릭터가 할 말을 입력하세요…",
+    "enrich": "AI로 보강하기",
+    "scene": "장면",
+    "voice_preset": "음성 프리셋",
+    "save": "저장",
+    "toast_enrich_failed": "스크립트를 보강하지 못했습니다.",
+    "scene_happy": "행복",
+    "scene_natural": "자연스러움",
+    "scene_sad": "슬픔",
+    "scene_angry": "화남",
+    "scene_fearful": "두려움",
+    "scene_disgusted": "혐오",
+    "scene_surprised": "놀람"
   },
   "ScriptModal": {
-    "title": "Audio script",
-    "placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script."
+    "title": "오디오 스크립트",
+    "placeholder": "이 캐릭터가 할 말을 입력하세요…",
+    "enrich": "AI로 보강하기",
+    "save": "저장",
+    "toast_enrich_failed": "스크립트를 보강하지 못했습니다."
   },
   "SelectMotionModal": {
-    "title": "Select motion",
-    "search_placeholder": "Search motion…",
-    "loading": "Loading motions…",
-    "empty": "No motions found."
+    "title": "모션 선택",
+    "search_placeholder": "모션 검색…",
+    "loading": "모션을 불러오는 중…",
+    "empty": "모션을 찾을 수 없습니다."
   },
   "SelectAssetModal": {
-    "empty": "Nothing generated yet — generate a scene first"
+    "empty": "아직 생성된 항목이 없습니다 — 먼저 장면을 생성해 주세요"
   },
   "VoiceModal": {
-    "title": "Select voice",
-    "empty": "No voices available.",
-    "female": "Female",
-    "male": "Male"
+    "title": "음성 선택",
+    "empty": "이용 가능한 음성이 없습니다.",
+    "female": "여성",
+    "male": "남성"
   },
   "EditStyle": {
-    "select_star": "Select star",
-    "required": "Required",
-    "image": "Image",
-    "select_image": "Select image"
+    "select_star": "스타 선택",
+    "required": "필수",
+    "image": "이미지",
+    "select_image": "이미지 선택"
   },
   "SignUpPromptModal": {
-    "title": "Sign up to continue",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "계속하려면 가입하세요",
+    "sign_up_free": "무료로 가입하기",
+    "log_in": "로그인"
   },
   "InsufficientCoinsModal": {
-    "title": "Out of coins",
-    "balance": "Balance:",
+    "title": "코인이 부족합니다",
+    "balance": "잔액:",
     "dreamcoins": "Dreamcoins",
-    "top_up": "Top up to continue",
-    "not_now": "Not now"
+    "top_up": "충전하고 계속하기",
+    "not_now": "나중에"
   },
   "CoinPackageGrid": {
-    "buy": "Buy",
-    "opening_checkout": "Opening checkout…",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_added": "Dreamcoins added.",
-    "toast_added_count": "{count} Dreamcoins added."
+    "buy": "구매",
+    "opening_checkout": "결제창을 여는 중…",
+    "toast_checkout_failed": "결제를 시작하지 못했습니다. 요금이 청구되지 않았습니다.",
+    "toast_added": "Dreamcoins가 추가되었습니다.",
+    "toast_added_count": "Dreamcoins {count}개가 추가되었습니다."
   },
   "FeedCard": {
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "chat": "Chat",
-    "share": "Share"
+    "mute": "음소거",
+    "unmute": "음소거 해제",
+    "chat": "채팅",
+    "share": "공유"
   },
   "FeedSection": {
-    "loading_more": "Loading more…"
+    "loading_more": "더 불러오는 중…"
   },
   "FeedPaywall": {
-    "title": "Free feed limit reached!",
-    "subtitle": "You must upgrade to premium to get an unlimited feed",
-    "premium_features": "✦ Premium features ✦",
-    "feature_coins": "+1,000 Dreamcoins monthly",
-    "feature_feed": "Unlimited feed",
-    "feature_messages": "Unlimited messages",
-    "feature_media": "Custom images & videos",
-    "feature_calls": "Phone calls",
-    "try_now": "Try now",
-    "much_more": "& much more",
-    "upgrade_cta": "♡ Click here to upgrade now ♡"
+    "title": "무료 피드 한도에 도달했습니다!",
+    "subtitle": "무제한 피드를 이용하려면 프리미엄으로 업그레이드하세요",
+    "premium_features": "✦ 프리미엄 기능 ✦",
+    "feature_coins": "매달 Dreamcoins +1,000개",
+    "feature_feed": "무제한 피드",
+    "feature_messages": "무제한 메시지",
+    "feature_media": "맞춤 이미지 & 동영상",
+    "feature_calls": "전화 통화",
+    "try_now": "지금 시작하기",
+    "much_more": "그 외에도 다양한 혜택",
+    "upgrade_cta": "♡ 지금 업그레이드하려면 클릭하세요 ♡"
   },
   "MyAiCard": {
-    "pending": "Pending",
-    "profile": "Profile",
-    "chat": "Chat"
+    "pending": "대기 중",
+    "profile": "프로필",
+    "chat": "채팅"
   },
   "MyAiSection": {
-    "signup_title": "Sign up to start your collection",
-    "signup_description": "Every AI character you create is saved here to your account.",
-    "sign_up_free": "Sign up free",
-    "start_creating": "Start creating",
-    "empty": "You haven't created any AI characters yet.",
-    "create_first": "Create your first AI",
-    "search_placeholder": "Search by name, style or tag…",
-    "filter_status": "Status",
-    "no_matches": "No characters match your search."
+    "signup_title": "가입하고 나만의 컬렉션을 시작하세요",
+    "signup_description": "회원님이 만든 모든 AI 캐릭터가 계정에 저장돼요.",
+    "sign_up_free": "무료로 가입하기",
+    "start_creating": "만들기 시작",
+    "empty": "아직 만든 AI 캐릭터가 없습니다.",
+    "create_first": "첫 AI 만들기",
+    "search_placeholder": "이름, 스타일, 태그로 검색…",
+    "filter_status": "상태",
+    "no_matches": "검색과 일치하는 캐릭터가 없습니다."
   },
   "ErrorPage": {
-    "title": "Something went wrong",
-    "retry": "Try again"
+    "title": "문제가 발생했습니다",
+    "retry": "다시 시도"
   },
   "Errors": {
-    "not_authenticated": "Not authenticated",
-    "generation_timed_out": "Generation timed out",
-    "generation_failed": "Generation failed"
+    "not_authenticated": "인증되지 않음",
+    "generation_timed_out": "생성 시간이 초과되었습니다",
+    "generation_failed": "생성에 실패했습니다"
   },
   "SignUpPrompts": {
-    "generate_scenes": "Sign up to generate scenes — your creations will be saved to your account.",
-    "create_character": "Sign up to bring your companion to life — your creation will be saved to your account.",
-    "manage_scenes": "Sign up to manage your scenes — deleting is only available on your own account.",
-    "enrich_prompt": "Sign up to enrich your prompt with AI."
+    "generate_scenes": "장면을 생성하려면 가입하세요 — 만든 콘텐츠가 계정에 저장됩니다.",
+    "create_character": "동반자를 실현하려면 가입하세요 — 만든 캐릭터가 계정에 저장됩니다.",
+    "manage_scenes": "장면을 관리하려면 가입하세요 — 삭제는 본인 계정에서만 가능합니다.",
+    "enrich_prompt": "AI로 프롬프트를 보강하려면 가입하세요."
   }
 }

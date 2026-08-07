@@ -1,6 +1,7 @@
 {
-  "LocaleSwitcher": {
-    "change_language": "Change language"
+  "LanguageModal": {
+    "title": "Language",
+    "current": "Current"
   },
   "SignInPage": {
     "title": "Sign in",
@@ -118,6 +119,8 @@
     "new_group": "New group",
     "new_scenario": "New scenario",
     "your_chats": "Your chats ({count})",
+    "your_groups": "Your groups ({count})",
+    "your_scenario": "Your scenario ({count})",
     "loading_more": "Loading...",
     "search_placeholder": "Search chats…"
   },
@@ -542,7 +545,6 @@
     "change_password": "Change password",
     "change_password_caption": "Update the password you sign in with",
     "language": "Language",
-    "coming_soon": "Coming soon.",
     "sign_out": "Sign out"
   },
   "ProfileView": {

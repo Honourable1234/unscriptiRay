@@ -1,60 +1,61 @@
 {
-  "LocaleSwitcher": {
-    "change_language": "變更語言"
+  "LanguageModal": {
+    "title": "語言",
+    "current": "目前"
   },
   "SignInPage": {
     "title": "登入",
     "google_button": "登入",
-    "divider": "繼續使用電子郵件",
+    "divider": "使用電子郵件繼續",
     "email_label": "電子郵件",
-    "email_placeholder": "請輸入您的電子郵件地址",
+    "email_placeholder": "請輸入您的電子郵件",
     "password_label": "密碼",
     "forgot_password": "忘記密碼了嗎？",
     "submit": "登入",
-    "no_account": "還沒有帳號嗎？",
+    "no_account": "還沒有帳號？",
     "sign_up_link": "註冊",
     "login_failed": "登入失敗"
   },
   "SignUpPage": {
-    "title": "建立您的帳戶",
+    "title": "建立您的帳號",
     "google_button": "註冊",
-    "divider": "繼續使用電子郵件",
+    "divider": "使用電子郵件繼續",
     "email_label": "電子郵件",
-    "email_placeholder": "請輸入您的電子郵件地址",
+    "email_placeholder": "請輸入您的電子郵件",
     "password_label": "密碼",
     "confirm_password_label": "確認密碼",
     "submit": "註冊",
-    "have_account": "已有帳號嗎？",
+    "have_account": "已經有帳號了嗎？",
     "sign_in_link": "登入",
-    "passwords_mismatch": "密碼不符",
-    "password_too_short": "密碼必須至少有 8 個字元",
+    "passwords_mismatch": "密碼不相符",
+    "password_too_short": "密碼至少須為 8 個字元",
     "sign_up_failed": "註冊失敗",
-    "check_email": "請檢查您的電子郵件以確認您的帳號。"
+    "check_email": "請查看您的電子郵件以確認帳號。"
   },
   "ForgotPasswordPage": {
     "title": "忘記密碼了嗎？",
-    "subtitle": "系統將向您的電子郵件寄送一個連結，供您重設密碼",
+    "subtitle": "我們將寄送一個連結到您的電子郵件，協助您重設密碼",
     "email_label": "電子郵件",
-    "email_placeholder": "請輸入您的電子郵件地址",
-    "submit": "提交",
-    "check_email": "請查看您的電子郵件，尋找重設連結。",
-    "remember_password": "Remember your password?",
-    "sign_in_link": "Sign in"
+    "email_placeholder": "請輸入您的電子郵件",
+    "submit": "送出",
+    "check_email": "請查看您的電子郵件，取得重設連結。",
+    "remember_password": "想起密碼了嗎？",
+    "sign_in_link": "登入"
   },
   "NewPasswordPage": {
     "title": "新密碼",
     "subtitle": "請輸入您的新密碼",
     "new_password_label": "新密碼",
     "confirm_password_label": "確認密碼",
-    "submit": "提交",
-    "passwords_mismatch": "密碼不符",
-    "password_too_short": "密碼必須至少有 8 個字元"
+    "submit": "送出",
+    "passwords_mismatch": "密碼不相符",
+    "password_too_short": "密碼至少須為 8 個字元"
   },
   "GoogleButton": {
-    "with_google": "透過 Google"
+    "with_google": "使用 Google"
   },
   "ExplorePage": {
-    "title": "探索您的",
+    "title": "探索你的",
     "title_highlight": "幻想"
   },
   "ExploreSection": {
@@ -65,20 +66,19 @@
     "filter_sort": "排序"
   },
   "ExploreCharacters": {
-    "loading": "請稍候，我們正在載入媒體內容……",
     "error": "無法載入角色。",
-    "per_page": "每頁：",
-    "loading_more": "載入中...",
+    "per_page": "每頁顯示：",
+    "loading_more": "載入中……",
     "load_more": "載入更多"
   },
   "CharacterModal": {
     "show_more": "顯示更多",
     "show_less": "顯示較少",
-    "profile": "個人簡介",
-    "more_tags": "+{count} 更多",
+    "profile": "個人檔案",
+    "more_tags": "還有 {count} 個",
     "want_more": "想看更多嗎？",
     "view_content": "檢視內容",
-    "generate": "產生",
+    "generate": "生成",
     "chat": "聊天"
   },
   "SearchBar": {
@@ -86,783 +86,765 @@
   },
   "CharacterHeader": {
     "chat": "聊天",
-    "new_group": "建立一個新群組",
-    "generate": "產生",
+    "new_group": "建立新群組",
+    "generate": "生成",
     "new_scenario": "新情境"
   },
   "CharacterContent": {
     "error": "無法載入角色。"
   },
   "CharacterUnlockButton": {
-    "unlock": "解鎖「 {name} 」—— 50 枚金幣",
+    "unlock": "解鎖 {name}",
+    "sign_up_prompt": "建立帳號即可解鎖 {name} 的收藏——你的金幣與已解鎖內容都會保留在你的帳號中。",
+    "unlocked": "收藏已解鎖",
+    "already_unlocked": "你已擁有這個收藏",
     "purchase_failed": "購買失敗",
-    "error": "發生了錯誤",
-    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
-    "unlocked": "Collection unlocked",
-    "already_unlocked": "You already own this collection"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "被鎖住的秘密",
-    "tap_to_reveal": "點擊以顯示"
+    "error": "發生錯誤"
   },
   "ChatRoom": {
-    "clear_confirm": "清除所有訊息嗎？",
+    "clear_confirm": "要清除所有訊息嗎？",
     "clear": "清除",
-    "cancel": "Cancel",
-    "toast_cleared": "Chat cleared.",
-    "toast_clear_failed": "Could not clear chat.",
-    "toast_deleted": "Chat room deleted.",
-    "toast_delete_failed": "Could not delete chat room."
+    "toast_cleared": "聊天記錄已清除。",
+    "toast_clear_failed": "無法清除聊天記錄。",
+    "toast_deleted": "聊天室已刪除。",
+    "toast_delete_failed": "無法刪除聊天室。"
   },
   "ChatInputBar": {
-    "getting_suggestions": "徵求建議…",
-    "placeholder": "傳送訊息...",
-    "generating_suggestion": "Generating suggestion…",
-    "send_message": "Send message"
+    "generating_suggestion": "正在產生建議……",
+    "placeholder": "傳送訊息……",
+    "send_message": "傳送訊息"
   },
   "ChatSideBar": {
-    "new_chat": "新聊天室",
+    "new_chat": "新聊天",
     "new_group": "新群組",
     "new_scenario": "新情境",
-    "your_chats": "您的聊天記錄 ({count})",
-    "loading_more": "載入中...",
-    "load_more": "載入更多",
-    "close_sidebar": "關閉側邊欄",
-    "search_placeholder": "Search chats…"
+    "your_chats": "你的聊天記錄（{count}）",
+    "your_groups": "你的群組（{count}）",
+    "your_scenario": "你的情境（{count}）",
+    "loading_more": "載入中……",
+    "search_placeholder": "搜尋聊天記錄……"
   },
   "ChatRightPanel": {
     "view_media": "檢視媒體",
     "call_me": "打電話給我",
-    "voice": "聲音",
+    "voice": "語音",
     "memory": "記憶",
     "settings": "設定",
-    "instructions": "Instructions",
-    "toast_call_started": "Call started!",
-    "toast_call_failed": "Could not start call."
+    "instructions": "指示",
+    "toast_call_started": "通話已開始！",
+    "toast_call_failed": "無法開始通話。"
   },
   "ChatRatingPrompt": {
     "question": "這場對話進行得如何？",
-    "toast_thanks": "Thanks for your rating!",
-    "toast_failed": "Could not submit rating."
+    "toast_thanks": "感謝您的評分！",
+    "toast_failed": "無法送出評分。"
   },
   "ChatSettingsPanel": {
-    "loading": "載入…",
+    "loading": "載入中……",
     "error": "無法載入設定。",
-    "saving": "拯救…",
-    "allow_messages": "允許發送文字訊息",
+    "saving": "儲存中……",
+    "allow_messages": "允許角色傳送訊息",
     "background_display": "背景顯示",
     "lust_level": "慾望程度",
     "response_length": "回應長度",
     "language": "語言",
-    "toast_saved": "Settings saved.",
-    "toast_save_failed": "Could not save settings."
+    "toast_saved": "設定已儲存。",
+    "toast_save_failed": "無法儲存設定。"
   },
   "NewGroupView": {
-    "heading": "你想將誰加入這個群組？",
-    "group_name_label": "為您的群組取個名字",
+    "heading": "你想邀請誰加入這個群組？",
+    "group_name_label": "為你的群組取個名字",
     "group_name_placeholder": "MyGroup"
   },
   "NewScenarioView": {
-    "heading": "在這個情境中，你想扮演哪個角色？",
+    "heading": "你想在這個情境中加入哪個角色？",
     "create_label": "建立情境",
-    "placeholder": "請在此輸入您的情境..."
+    "placeholder": "請在此輸入你的情境……"
   },
   "SelectedCharacterBar": {
-    "selected_list": "精選角色列表（{count}/{max}）",
-    "no_selection": "您尚未選取任何角色",
+    "selected_list": "已選角色清單（{count}/{max}）",
+    "no_selection": "你尚未選擇任何角色",
     "coming_soon": "即將推出",
     "create_group": "建立群組"
   },
   "GeneratePage": {
-    "title": "打造您的",
-    "title_highlight": "奇幻場景"
+    "title": "打造你的",
+    "title_highlight": "幻想場景"
   },
   "GenerateOptionsGrid": {
-    "select_star": "選擇星號",
-    "required": "(必填)",
-    "optional": "（可選）",
+    "select_star": "選擇明星",
+    "stars_count": "{count} 位明星",
+    "required": "（必填）",
+    "optional": "（選填）",
     "action": "動作",
-    "setting": "背景",
-    "mood": "心情",
+    "setting": "場景設定",
+    "mood": "氛圍",
     "creative_input": "創意輸入（進階）",
-    "creator_tier": "創作者級別專屬",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars"
+    "creator_tier": "創作者專屬等級"
   },
   "GenerateTypeToggle": {
-    "still_images": "靜態影像",
-    "animated_scenes": "動畫場景",
+    "still_images": "靜態圖片",
+    "animated_scenes": "動態場景",
     "mode": "模式"
   },
   "GenerateControls": {
     "visual_label": "視覺效果：",
-    "orientation_label": "導覽：",
-    "cinematic_desc": "高品質的結果，且提示準確度極高",
-    "realistic_desc": "超寫實的視覺效果，搭配強化光照效果",
-    "anime_desc": "風格化的動漫美學，配以鮮豔的色彩"
+    "orientation_label": "方向：",
+    "cinematic_desc": "高品質成果，精準呈現提示內容",
+    "realistic_desc": "超寫實視覺效果，搭配強化光影"
   },
   "GenerateButton": {
-    "generate_image": "產生圖片"
+    "generate_image": "生成圖片"
   },
   "SelectStarModal": {
-    "title": "選擇星號",
-    "search_placeholder": "搜尋字元...",
-    "loading": "正在載入角色...",
-    "no_results": "未找到任何字元。",
-    "selected_count": "{count} of {max} selected",
-    "done": "Done"
+    "title": "選擇明星",
+    "search_placeholder": "搜尋角色……",
+    "no_results": "找不到角色。",
+    "selected_count": "已選 {count}／{max}",
+    "done": "完成"
+  },
+  "PickOptionModal": {
+    "loading": "載入選項中……",
+    "no_results": "目前沒有可用的選項。"
   },
   "GenerateSceneModal": {
-    "title_remix": "混音版",
+    "title_remix": "混合重製",
     "title_video": "圖片轉影片",
     "title_edit": "編輯圖片",
     "title_speech": "對嘴影片",
-    "title_enhance": "增強影像",
+    "title_enhance": "強化圖片",
     "title_more": "更多"
   },
   "GenerateVideoControls": {
     "quality_label": "品質等級：",
-    "orientation_label": "導覽：",
+    "orientation_label": "方向：",
     "duration_label": "時長：",
     "audio": "音訊",
-    "balanced_label": "平衡 (480p)",
-    "balanced_desc": "最適合用於服裝、背景和特效",
-    "ultra_label": "Ultra（1080p）",
-    "ultra_desc": "針對不適合在工作場所瀏覽的內容及解剖學細節進行了優化"
+    "balanced_label": "平衡（480p）",
+    "balanced_desc": "最適合服裝、背景與特效",
+    "ultra_label": "極致（1080p）",
+    "ultra_desc": "針對限制級內容與人體細節最佳化"
+  },
+  "VideoContent": {
+    "motion": "動作",
+    "select_star": "選擇明星",
+    "required": "（必填）",
+    "creative_input": "創意輸入",
+    "creator_tier": "創作者等級",
+    "select_star_first": "請先選擇一位明星。",
+    "generating": "生成中……",
+    "generate_video": "生成影片",
+    "video_ready": "影片已完成！"
+  },
+  "EditContent": {
+    "visual_label": "視覺效果：",
+    "scene_alt": "正在編輯的場景",
+    "model_label": "模型：",
+    "orientation_label": "方向：",
+    "select_star": "選擇明星",
+    "required": "（必填）",
+    "editing": "編輯中……",
+    "edit_scene": "編輯場景",
+    "edit_complete": "編輯完成！"
+  },
+  "SpeechContent": {
+    "scene_label": "場景",
+    "audio_script": "語音腳本",
+    "voice": "語音",
+    "required": "（必填）",
+    "select_voice_first": "請先選擇語音。",
+    "enter_script_first": "請先輸入語音腳本。",
+    "generating": "生成中……",
+    "generate_speech": "生成語音",
+    "scene_ready": "場景已完成！"
+  },
+  "EnhanceContent": {
+    "description": "強化功能可讓你的圖片更清晰、提升解析度",
+    "enhancing": "強化中……",
+    "enhance_scene": "強化場景",
+    "enhance_complete": "強化完成！"
+  },
+  "RemixContent": {
+    "select_star_first": "請先選擇一位明星。",
+    "generating": "生成中……",
+    "remix_scene": "混合重製場景",
+    "scene_ready": "場景已完成！"
+  },
+  "StillStylePresent": {
+    "generating": "生成中……",
+    "generate_image": "生成圖片",
+    "image_ready": "圖片已完成！"
+  },
+  "StillEditStyle": {
+    "generating": "生成中……",
+    "generate_image": "生成圖片",
+    "image_ready": "圖片已完成！",
+    "model_label": "模型：",
+    "orientation_label": "方向：",
+    "visual_label": "視覺效果：",
+    "select_image": "選擇圖片"
+  },
+  "AnimatedStylePresent": {
+    "generating": "生成中……",
+    "generate_scene": "生成場景",
+    "scene_ready": "場景已完成！"
+  },
+  "AnimatedImageToVideo": {
+    "image": "圖片",
+    "required": "（必填）",
+    "motion": "動作",
+    "creative_input_advanced": "創意輸入（進階）",
+    "creator_tier_exclusive": "創作者專屬等級",
+    "generating": "生成中……",
+    "generate_scene": "生成場景",
+    "select_image": "選擇圖片",
+    "select_star": "選擇明星",
+    "stars_count": "{count} 位明星",
+    "scene_ready": "場景已完成！"
+  },
+  "AnimatedExtendVideo": {
+    "video": "影片",
+    "required": "（必填）",
+    "select_star": "選擇明星",
+    "stars_count": "{count} 位明星",
+    "motion": "動作",
+    "creative_input_advanced": "創意輸入（進階）",
+    "creator_tier_exclusive": "創作者專屬等級",
+    "generating": "生成中……",
+    "generate_scene": "生成場景",
+    "select_video": "選擇影片",
+    "scene_ready": "場景已完成！"
+  },
+  "AnimatedTalking": {
+    "image_video": "圖片／影片",
+    "required": "（必填）",
+    "select_star": "選擇明星",
+    "stars_count": "{count} 位明星",
+    "voice": "語音",
+    "audio_script": "語音腳本",
+    "generating": "生成中……",
+    "generate_scene": "生成場景",
+    "select_image_video": "選擇圖片／影片",
+    "scene_ready": "場景已完成！"
+  },
+  "CreativeInputModal": {
+    "title": "創意輸入",
+    "placeholder": "描述你想為場景加入的額外細節……",
+    "enrich_with_ai": "使用 AI 豐富內容",
+    "enrich_failed": "無法豐富提示內容。",
+    "save": "儲存"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "尚未生成任何場景",
+    "generating": "生成中……",
+    "scene_alt": "已生成的場景"
+  },
+  "GenerateScenePage": {
+    "download_started": "正在準備下載……",
+    "download_saved": "下載已儲存。",
+    "download_failed": "無法儲存檔案，改為直接開啟。",
+    "link_copied": "連結已複製到剪貼簿！",
+    "copy_failed": "無法複製連結。",
+    "scene_deleted": "場景已刪除。",
+    "delete_failed": "無法刪除場景。",
+    "not_available": "尚未提供。",
+    "scene_not_found": "找不到場景",
+    "scene_alt": "已生成的場景",
+    "thumbnail_alt": "縮圖",
+    "generated_label": "已生成的 {type}"
+  },
+  "GenerationToasts": {
+    "complete": "生成完成！",
+    "restarted": "生成已重新開始，處理中……",
+    "retry_failed": "重試失敗。",
+    "started": "生成已開始，處理中……",
+    "failed": "生成失敗。",
+    "retry": "重試"
   },
   "CreatePage": {
     "title": "建立一個",
     "title_highlight": "伴侶",
-    "prev": "上一頁",
-    "next": "下一頁",
-    "generate": "產生",
-    "image_gen_failed": "Character created but image generation failed to start.",
-    "create_failed": "Failed to create character.",
-    "save_tags_failed": "Failed to save tags."
+    "prev": "上一步",
+    "next": "下一步",
+    "generate": "生成",
+    "image_gen_failed": "角色已建立，但圖片生成無法啟動。",
+    "create_failed": "無法建立角色。",
+    "save_tags_failed": "無法儲存標籤。"
   },
   "CreateStep1": {
-    "ethnic_influence": "族群影響",
-    "eye_color": "眼色",
-    "eye_intensity": "眼神的張力",
+    "ethnic_influence": "族裔特徵",
+    "eye_color": "眼睛顏色",
+    "eye_intensity": "眼神強度",
     "facial_shape": "臉型",
-    "figure_type": "圖表類型",
+    "figure_type": "身材類型",
     "hair_color": "髮色",
     "hair_style": "髮型",
-    "hip_profile": "髖關節輪廓",
-    "bust_profile": "胸圍輪廓",
+    "hip_profile": "臀部曲線",
+    "bust_profile": "胸部曲線",
     "skin_tone": "膚色"
   },
   "CreateStep2": {
     "character_name": "角色名稱",
     "character_age": "角色年齡",
-    "gender": "Gender",
-    "gender_female": "Female",
-    "gender_male": "Male",
-    "gender_non_binary": "Non-binary"
+    "gender": "性別",
+    "gender_female": "女性",
+    "gender_male": "男性",
+    "gender_non_binary": "非二元性別"
   },
   "CharacterInfo": {
     "heading": "角色資訊",
-    "voice": "聲音",
+    "voice": "語音",
     "personality": "人格原型",
-    "relationship": "人際關係的動態",
-    "kinks": "怪癖與舒適",
+    "relationship": "關係互動模式",
+    "kinks": "偏好與舒適領域",
+    "hobby": "興趣愛好",
     "select_voice": "選擇語音",
     "select_personality": "選擇個性",
     "select_relationship": "選擇關係",
-    "select_kinks": "選擇「Kinks」",
-    "hobby": "Hobby",
-    "select_hobby": "Select Hobby",
-    "custom": "Custom"
+    "select_kinks": "選擇偏好",
+    "select_hobby": "選擇興趣愛好",
+    "custom": "自訂"
   },
   "CharacterInfoCard": {
     "select": "選擇 {title}"
   },
   "CreateStep3": {
-    "ai_enrichment": "AI 增強功能（自動完成）",
-    "ai_subtitle": "運用人工智慧來填補空白，並塑造更立體的角色",
+    "ai_enrichment": "AI 智慧補完（自動完成）",
+    "ai_subtitle": "使用 AI 補齊細節，打造更立體的角色",
     "backstory": "背景故事",
-    "backstory_placeholder": "未設定背景故事",
-    "custom_physical": "客製化體檢",
-    "custom_physical_placeholder": "沒有自訂實體集",
+    "backstory_placeholder": "尚未設定背景故事",
+    "custom_physical": "自訂體態",
+    "custom_physical_placeholder": "尚未設定自訂體態",
     "custom_face": "自訂臉部細節",
-    "custom_face_placeholder": "未設定自訂臉部細節",
-    "greeting": "問候",
-    "greeting_placeholder": "未設定問候語",
+    "custom_face_placeholder": "尚未設定自訂臉部細節",
+    "greeting": "招呼語",
+    "greeting_placeholder": "尚未設定招呼語",
     "personality_details": "個性詳情",
-    "personality_details_placeholder": "未設定任何人物詳細資料",
-    "toast_enriched": "Character enriched with AI.",
-    "toast_enrich_failed": "AI enrichment failed."
+    "personality_details_placeholder": "尚未設定個性詳情",
+    "toast_enriched": "已使用 AI 豐富角色設定。",
+    "toast_enrich_failed": "AI 豐富設定失敗。"
   },
   "CreateStep4": {
     "tab_appearance": "外觀",
     "tab_personality": "個性",
     "preview": "預覽角色",
-    "generate_process": "產生流程",
-    "meet_companion": "認識您的夥伴",
-    "no_character": "沒有可用的人物資料。",
-    "tags": "標籤 ({count}/10)",
-    "tag_placeholder": "新增標籤...",
-    "voice": "聲音",
+    "generate_process": "生成流程",
+    "meet_companion": "認識你的伴侶",
+    "no_character": "沒有可用的角色資料。",
+    "tags": "標籤（{count}/10）",
+    "tag_placeholder": "新增標籤……",
+    "voice": "語音",
     "ethnic": "族裔",
     "facial_shape": "臉型",
     "hair_style": "髮型",
-    "eye_intensity": "眼神的張力",
-    "figure_type": "圖表類型",
-    "bust": "胸像",
-    "hip": "髖部",
+    "eye_intensity": "眼神強度",
+    "figure_type": "身材類型",
+    "bust": "胸部",
+    "hip": "臀部",
     "personality_attr": "個性",
     "relationship": "關係",
-    "kinks_comforts": "怪癖與舒適",
+    "kinks_comforts": "偏好與舒適領域",
     "social_role": "社會角色",
     "backstory": "背景故事",
-    "physical": "物理",
+    "physical": "體態",
     "face_details": "臉部細節",
-    "greeting": "問候",
+    "greeting": "招呼語",
     "personality_details": "個性詳情",
     "hair_color": "髮色",
-    "eye_color": "眼色",
+    "eye_color": "眼睛顏色",
     "skin_tone": "膚色",
-    "saved": "Saved.",
-    "save_failed": "Failed to save.",
-    "image_failed": "Image generation failed",
-    "retry": "Retry",
-    "save": "Save"
+    "saved": "已儲存。",
+    "save_failed": "儲存失敗。",
+    "image_failed": "圖片生成失敗",
+    "retry": "重試",
+    "save": "儲存"
   },
   "OptionModal": {
-    "loading": "載入中...",
-    "search_placeholder": "Search..."
+    "loading": "載入中……",
+    "search_placeholder": "搜尋……"
   },
   "CreateTagsField": {
-    "tags": "標籤 ({count}/{max})",
-    "no_tags": "未設定標籤",
-    "add_tag": "新增標籤..."
-  },
-  "_comment": "i18n coverage: all user-visible strings are extracted. fr.json mirrors en.json structurally and still holds English copy as placeholders pending translation.",
-  "PickOptionModal": {
-    "loading": "Loading options...",
-    "no_results": "No options available."
-  },
-  "VideoContent": {
-    "motion": "Motion",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "creative_input": "Creative Input",
-    "creator_tier": "Creator Tier",
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "generate_video": "Generate Video",
-    "video_ready": "Video ready!"
-  },
-  "EditContent": {
-    "visual_label": "Visual:",
-    "scene_alt": "Scene being edited",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "spark_desc": "Fast and efficient editing",
-    "pro_desc": "High quality, detailed edits",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "editing": "Editing...",
-    "edit_scene": "Edit Scene",
-    "edit_complete": "Edit complete!"
-  },
-  "SpeechContent": {
-    "aurora_sublabel": "(Character default)",
-    "scene_label": "Scene",
-    "audio_script": "Audio Script",
-    "voice": "Voice",
-    "required": "(Required)",
-    "select_voice_first": "Please select a voice first.",
-    "enter_script_first": "Please enter an audio script first.",
-    "generating": "Generating...",
-    "generate_speech": "Generate Speech",
-    "scene_ready": "Scene ready!"
-  },
-  "EnhanceContent": {
-    "description": "Enhancing will make your image sharper and improve its resolution",
-    "enhancing": "Enhancing...",
-    "enhance_scene": "Enhance Scene",
-    "enhance_complete": "Enhancement complete!"
-  },
-  "RemixContent": {
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "remix_scene": "Remix Scene",
-    "scene_ready": "Scene ready!"
-  },
-  "StillStylePresent": {
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!"
-  },
-  "StillEditStyle": {
-    "upload_failed": "Upload failed.",
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "visual_label": "Visual:",
-    "select_image": "Select image"
-  },
-  "AnimatedStylePresent": {
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "scene_label": "Scene {id}",
-    "add": "Add",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedImageToVideo": {
-    "image": "Image",
-    "required": "(Required)",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image": "Select Image",
-    "select_star": "Select Star",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedExtendVideo": {
-    "video": "Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_video": "Select Video",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedTalking": {
-    "image_video": "Image / Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "voice": "Voice",
-    "audio_script": "Audio Script",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image_video": "Select Image / Video",
-    "scene_ready": "Scene ready!"
-  },
-  "CreativeInputModal": {
-    "title": "Creative Input",
-    "placeholder": "Describe extra details for your scene...",
-    "enrich_with_ai": "Enrich with AI",
-    "enrich_failed": "Could not enrich prompt.",
-    "save": "Save"
-  },
-  "GenerateResultGrid": {
-    "no_scenes": "No generated scenes yet",
-    "generating": "Generating...",
-    "scene_alt": "Generated scene"
-  },
-  "GenerateScenePage": {
-    "download_started": "Preparing download...",
-    "download_saved": "Download saved.",
-    "download_failed": "Could not save the file. Opening it instead.",
-    "link_copied": "Link copied to clipboard!",
-    "copy_failed": "Could not copy the link.",
-    "scene_deleted": "Scene deleted.",
-    "delete_failed": "Could not delete the scene.",
-    "not_available": "Not available yet.",
-    "scene_not_found": "Scene not found",
-    "scene_alt": "Generated scene",
-    "thumbnail_alt": "Thumbnail",
-    "generated_label": "Generated {type}"
-  },
-  "GenerationToasts": {
-    "complete": "Generation complete!",
-    "restarted": "Generation restarted, processing...",
-    "retry_failed": "Retry failed.",
-    "started": "Generation started, processing...",
-    "failed": "Generation failed.",
-    "retry": "Retry"
+    "tags": "標籤（{count}/{max}）",
+    "no_tags": "尚未設定標籤",
+    "add_tag": "新增標籤……"
   },
   "SubscriptionSection": {
-    "title": "Subscription",
-    "current_plan": "Current plan",
-    "renews_expires": "Renews/expires {date}",
-    "plan_free": "Free",
-    "plan_free_caption": "Limited access",
-    "plan_monthly": "Monthly",
-    "plan_monthly_caption": "Billed every month",
-    "plan_yearly": "Yearly",
-    "plan_yearly_caption": "Billed once a year",
-    "change_plan": "Change plan",
-    "upgrade_to_premium": "Upgrade to Premium",
-    "current": "Current",
-    "opening": "Opening…",
-    "action_switch": "Switch",
-    "action_upgrade": "Upgrade",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to unlock premium features",
-    "sign_up_now": "Sign up now",
-    "manage_billing": "Manage billing",
-    "cancel_subscription": "Cancel subscription",
-    "billing_history": "Billing history",
-    "no_invoices": "No invoices yet.",
-    "column_amount": "Amount",
-    "column_date": "Date",
-    "column_status": "Status",
-    "column_invoice": "Invoice",
+    "title": "訂閱",
+    "current_plan": "目前方案",
+    "renews_expires": "續訂／到期日 {date}",
+    "plan_free": "免費",
+    "plan_free_caption": "有限使用權限",
+    "plan_monthly": "月付方案",
+    "plan_monthly_caption": "每月扣款",
+    "plan_yearly": "年付方案",
+    "plan_yearly_caption": "每年扣款一次",
+    "change_plan": "變更方案",
+    "upgrade_to_premium": "升級至進階方案",
+    "current": "目前",
+    "opening": "開啟中……",
+    "action_switch": "切換",
+    "action_upgrade": "升級",
+    "get_started": "立即開始",
+    "get_started_caption": "註冊即可解鎖進階功能",
+    "sign_up_now": "立即註冊",
+    "manage_billing": "管理帳單",
+    "cancel_subscription": "取消訂閱",
+    "billing_history": "帳單記錄",
+    "no_invoices": "目前沒有帳單。",
+    "column_amount": "金額",
+    "column_date": "日期",
+    "column_status": "狀態",
+    "column_invoice": "發票",
     "pdf": "PDF",
-    "cancel_confirm_body": "Are you sure you want to cancel your subscription? You'll keep access until {date}.",
-    "end_of_billing_period": "the end of your billing period",
-    "keep_subscription": "Keep subscription",
-    "confirm_cancel": "Confirm cancel",
-    "toast_payment_received": "Payment received. Your plan updates once Stripe confirms it.",
-    "toast_upgrade_cancelled": "Upgrade cancelled.",
-    "toast_back_from_portal": "Back from the billing portal.",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_subscription_active": "Subscription active.",
-    "toast_payments_unavailable": "Payments are not available yet. You have not been charged.",
-    "toast_portal_failed": "Could not open the billing portal.",
-    "toast_portal_unavailable": "The billing portal is not available yet.",
-    "toast_cancel_failed": "Could not cancel subscription.",
-    "toast_subscription_cancelled": "Subscription cancelled."
+    "cancel_confirm_body": "確定要取消訂閱嗎？你仍可使用至 {date}。",
+    "end_of_billing_period": "本期帳單結束時",
+    "keep_subscription": "保留訂閱",
+    "confirm_cancel": "確認取消",
+    "toast_payment_received": "已收到付款。方案將在 Stripe 確認後更新。",
+    "toast_upgrade_cancelled": "升級已取消。",
+    "toast_back_from_portal": "已從帳單入口返回。",
+    "toast_checkout_failed": "無法開始結帳，尚未向您收費。",
+    "toast_subscription_active": "訂閱已生效。",
+    "toast_payments_unavailable": "付款功能尚未開放，尚未向您收費。",
+    "toast_portal_failed": "無法開啟帳單入口。",
+    "toast_portal_unavailable": "帳單入口尚未開放。",
+    "toast_cancel_failed": "無法取消訂閱。",
+    "toast_subscription_cancelled": "訂閱已取消。"
   },
   "WalletSection": {
-    "title": "Wallet",
-    "balance": "Balance",
+    "title": "錢包",
+    "balance": "餘額",
     "dreamcoins": "Dreamcoins",
-    "image_credits": "Image credits:",
-    "video_credits": "Video credits:",
-    "credits_reset": "Credits reset:",
-    "not_scheduled": "Not scheduled",
-    "buy_more_coins": "Buy more coins",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to buy Dreamcoins",
-    "sign_up_now": "Sign up now",
-    "transactions": "Transactions",
-    "no_transactions": "No transactions yet.",
-    "column_reason": "Reason",
-    "column_date": "Date",
-    "column_coins": "Coins",
-    "pagination": "Page {page} of {pageCount} · {total} transactions",
-    "prev": "Prev",
-    "next": "Next",
-    "toast_payment_received": "Payment received. Your coins will appear once Stripe confirms it.",
-    "toast_purchase_cancelled": "Purchase cancelled."
+    "image_credits": "圖片點數：",
+    "video_credits": "影片點數：",
+    "credits_reset": "點數重置：",
+    "not_scheduled": "尚未排定",
+    "buy_more_coins": "購買更多金幣",
+    "get_started": "立即開始",
+    "get_started_caption": "註冊即可購買 Dreamcoins",
+    "sign_up_now": "立即註冊",
+    "transactions": "交易記錄",
+    "no_transactions": "目前沒有交易記錄。",
+    "column_reason": "原因",
+    "column_date": "日期",
+    "column_coins": "金幣",
+    "pagination": "第 {page} 頁，共 {pageCount} 頁．共 {total} 筆交易",
+    "prev": "上一頁",
+    "next": "下一頁",
+    "toast_payment_received": "已收到付款。金幣將在 Stripe 確認後顯示。",
+    "toast_purchase_cancelled": "購買已取消。"
   },
   "ProfileSection": {
-    "unnamed": "Unnamed",
-    "visit_profile": "Visit profile",
+    "unnamed": "未命名",
+    "visit_profile": "查看個人檔案",
     "dreamcoins": "Dreamcoins",
-    "wallet": "Wallet",
-    "wallet_caption": "Buy Dreamcoins and review your transactions",
-    "subscription": "Subscription",
-    "tier_free": "Free",
-    "change_password": "Change password",
-    "change_password_caption": "Update the password you sign in with",
-    "language": "Language",
-    "coming_soon": "Coming soon.",
-    "sign_out": "Sign out"
+    "wallet": "錢包",
+    "wallet_caption": "購買 Dreamcoins 並查看你的交易記錄",
+    "subscription": "訂閱",
+    "tier_free": "免費",
+    "change_password": "變更密碼",
+    "change_password_caption": "更新你的登入密碼",
+    "language": "語言",
+    "sign_out": "登出"
   },
   "ProfileView": {
-    "unnamed": "Unnamed",
-    "interactions": "interactions",
-    "followers": "followers",
-    "following": "following",
-    "edit_profile": "Edit profile",
-    "tab_highlighted": "Highlighted",
-    "tab_characters": "Characters",
-    "tab_activity": "Activity",
-    "filter_style": "Style",
-    "filter_sort": "Sort",
-    "nothing_to_show": "Nothing to show yet.",
-    "loading": "Loading…",
-    "no_matches": "No characters match your style filters",
-    "create_new_character": "CREATE NEW CHARACTER",
-    "create": "Create"
+    "unnamed": "未命名",
+    "interactions": "互動次數",
+    "followers": "粉絲",
+    "following": "追蹤中",
+    "edit_profile": "編輯個人檔案",
+    "tab_highlighted": "精選",
+    "tab_characters": "角色",
+    "tab_activity": "動態",
+    "filter_style": "風格",
+    "filter_sort": "排序",
+    "nothing_to_show": "目前沒有內容可顯示。",
+    "loading": "載入中……",
+    "no_matches": "沒有角色符合你的風格篩選條件",
+    "create_new_character": "建立新角色",
+    "create": "建立"
   },
   "ProfileEditModal": {
-    "title": "Edit profile",
-    "uploading": "Uploading…",
-    "change_photo": "Change photo",
-    "display_name": "Display name",
-    "display_name_placeholder": "How your name appears",
-    "username": "Username",
-    "username_placeholder": "Your handle",
-    "save": "Save changes",
-    "toast_upload_failed": "Could not upload that image",
-    "toast_save_failed": "Could not save your profile",
-    "toast_saved": "Profile updated"
+    "title": "編輯個人檔案",
+    "uploading": "上傳中……",
+    "change_photo": "更換照片",
+    "display_name": "顯示名稱",
+    "display_name_placeholder": "你的名稱顯示方式",
+    "username": "使用者名稱",
+    "username_placeholder": "你的帳號代稱",
+    "save": "儲存變更",
+    "toast_upload_failed": "無法上傳該圖片",
+    "toast_save_failed": "無法儲存你的個人檔案",
+    "toast_saved": "個人檔案已更新"
   },
   "ChangePasswordModal": {
-    "title": "Change password",
-    "google_account": "This account signs in with Google, so there is no password to change.",
-    "close": "Close",
-    "current_password": "Current password",
-    "new_password": "New password",
-    "confirm_new_password": "Confirm new password",
-    "submit": "Update password",
-    "error_mismatch": "The new passwords do not match.",
-    "error_too_short": "Use at least {count} characters.",
-    "error_same_password": "The new password is the same as the current one.",
-    "error_no_email": "This account has no email address to verify against.",
-    "error_wrong_current": "That current password is not correct.",
-    "toast_changed": "Password changed"
+    "title": "變更密碼",
+    "google_account": "此帳號使用 Google 登入，因此沒有密碼可以變更。",
+    "close": "關閉",
+    "current_password": "目前密碼",
+    "new_password": "新密碼",
+    "confirm_new_password": "確認新密碼",
+    "submit": "更新密碼",
+    "error_mismatch": "新密碼不相符。",
+    "error_too_short": "請至少使用 {count} 個字元。",
+    "error_same_password": "新密碼與目前密碼相同。",
+    "error_no_email": "此帳號沒有可供驗證的電子郵件地址。",
+    "error_wrong_current": "目前密碼輸入錯誤。",
+    "toast_changed": "密碼已變更"
   },
   "NavBar": {
-    "log_in": "Log in",
-    "sign_up": "Sign up",
-    "coins": "Coins",
-    "upgrade": "Upgrade",
-    "close_notifications": "Close notifications",
-    "notifications": "Notifications",
-    "loading": "Loading…",
-    "no_notifications": "No notifications to show."
+    "log_in": "登入",
+    "sign_up": "註冊",
+    "coins": "金幣",
+    "upgrade": "升級",
+    "close_notifications": "關閉通知",
+    "notifications": "通知",
+    "loading": "載入中……",
+    "no_notifications": "目前沒有通知。"
   },
   "SideBar": {
-    "create": "Create",
-    "explore": "Explore",
-    "chat": "Chat",
-    "generate": "Generate",
-    "my_ai": "My AI",
-    "feed": "Feed",
-    "upgrade": "Upgrade",
-    "sign_in": "Sign in",
-    "account": "Account",
-    "sign_out": "Sign out"
+    "create": "建立",
+    "explore": "探索",
+    "chat": "聊天",
+    "generate": "生成",
+    "my_ai": "我的 AI",
+    "feed": "動態消息",
+    "upgrade": "升級",
+    "sign_in": "登入",
+    "account": "帳號",
+    "sign_out": "登出"
   },
   "ChatTemplate": {
-    "dreamcoins_left": "{count} dreamcoins left",
-    "bonus_on_signup": "+50 on signup",
-    "sign_up_free": "Sign up free",
-    "login": "Login",
-    "join_free": "Join free"
+    "dreamcoins_left": "剩餘 {count} 枚 Dreamcoins",
+    "bonus_on_signup": "註冊即贈 50 枚",
+    "sign_up_free": "免費註冊",
+    "login": "登入",
+    "join_free": "免費加入"
   },
   "AuthTemplate": {
-    "copyright": "Copyright© {year}. Unscripti AI"
+    "copyright": "版權所有© {year}. Unscripti AI"
   },
   "ChatMemoryPanel": {
-    "placeholder": "Add a memory…",
-    "add": "Add",
-    "loading": "Loading…",
-    "empty": "No memories yet.",
-    "load_failed": "Could not load memories.",
-    "toast_saved": "Memory saved.",
-    "toast_save_failed": "Could not save memory."
+    "placeholder": "新增一則記憶……",
+    "add": "新增",
+    "loading": "載入中……",
+    "empty": "目前沒有任何記憶。",
+    "load_failed": "無法載入記憶。",
+    "toast_saved": "記憶已儲存。",
+    "toast_save_failed": "無法儲存記憶。"
   },
   "ChatInstructionsPanel": {
-    "placeholder": "Add custom instructions…",
-    "save": "Save",
-    "loading": "Loading…",
-    "load_failed": "Could not load instructions.",
-    "toast_saved": "Instructions saved.",
-    "toast_save_failed": "Could not save instructions."
+    "placeholder": "新增自訂指示……",
+    "save": "儲存",
+    "loading": "載入中……",
+    "load_failed": "無法載入指示。",
+    "toast_saved": "指示已儲存。",
+    "toast_save_failed": "無法儲存指示。"
   },
   "ChatVoicePanel": {
-    "loading": "Loading…",
-    "load_failed": "Could not load voices.",
-    "search_placeholder": "Search voices…",
-    "no_voices": "No voices found.",
-    "female": "Female",
-    "male": "Male",
-    "selected": "Selected",
-    "toast_update_failed": "Could not update voice."
+    "loading": "載入中……",
+    "load_failed": "無法載入語音。",
+    "search_placeholder": "搜尋語音……",
+    "no_voices": "找不到語音。",
+    "female": "女性",
+    "male": "男性",
+    "selected": "已選擇",
+    "toast_update_failed": "無法更新語音。"
   },
   "ChatGuestLimitPrompt": {
-    "title": "You've reached the guest limit",
-    "description": "Sign up to keep chatting — your conversation will be saved to your account.",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "你已達訪客使用上限",
+    "description": "註冊即可繼續聊天——你的對話將會儲存到你的帳號中。",
+    "sign_up_free": "免費註冊",
+    "log_in": "登入"
   },
   "ChatMessageActions": {
-    "copy": "Copy message",
-    "edit": "Edit message",
-    "more": "More actions",
-    "duplicate": "Duplicate from here",
-    "delete": "Delete"
+    "copy": "複製訊息",
+    "edit": "編輯訊息",
+    "more": "更多操作",
+    "duplicate": "從此處複製",
+    "delete": "刪除"
   },
   "ChatMessageBubble": {
-    "play_voice": "Play voice",
-    "cancel": "Cancel",
-    "save": "Save",
-    "toast_voice_failed": "Could not play voice."
+    "play_voice": "播放語音",
+    "cancel": "取消",
+    "save": "儲存",
+    "toast_voice_failed": "無法播放語音。"
   },
   "CharacterEditSections": {
-    "profile_label": "Profile",
-    "profile_description": "Their avatar, and who can find them.",
-    "appearance_label": "Appearance",
-    "appearance_description": "Changing these updates how new images are generated; regenerate the avatar to match.",
-    "details_label": "Details",
-    "details_description": "Name, age and the traits that shape how they speak.",
-    "story_label": "Story",
-    "story_description": "Backstory, greeting and the prompts behind their personality."
+    "profile_label": "個人檔案",
+    "profile_description": "他們的頭像，以及誰能找到他們。",
+    "appearance_label": "外觀",
+    "appearance_description": "變更這些設定會影響新圖片的生成方式；請重新生成頭像以保持一致。",
+    "details_label": "詳細資料",
+    "details_description": "姓名、年齡，以及影響他們說話方式的特質。",
+    "story_label": "故事",
+    "story_description": "背景故事、招呼語，以及塑造其個性的提示內容。"
   },
   "CharacterEditNav": {
-    "title": "Manage"
+    "title": "管理"
   },
   "CharacterEditForm": {
-    "back_to_profile": "Back to profile",
-    "save_changes": "Save changes",
-    "toast_saved": "Changes saved",
-    "toast_save_failed": "Could not save changes"
+    "back_to_profile": "返回個人檔案",
+    "save_changes": "儲存變更",
+    "toast_saved": "變更已儲存",
+    "toast_save_failed": "無法儲存變更"
   },
   "CharacterEditAvatar": {
-    "description": "Regenerating is free, and replaces the picture shown everywhere this character appears.",
-    "generating": "Generating…",
-    "regenerate": "Regenerate image",
-    "toast_ready": "New avatar ready",
-    "toast_no_image": "Generation finished without an image",
-    "toast_failed": "Image generation failed",
-    "toast_start_failed": "Could not start image generation"
+    "description": "重新生成是免費的，將會取代此角色在各處顯示的圖片。",
+    "generating": "生成中……",
+    "regenerate": "重新生成圖片",
+    "toast_ready": "新頭像已完成",
+    "toast_no_image": "生成已完成，但沒有產出圖片",
+    "toast_failed": "圖片生成失敗",
+    "toast_start_failed": "無法啟動圖片生成"
   },
   "CharacterVisibilityField": {
-    "title": "Visibility",
-    "public_label": "Public",
-    "public_hint": "Anyone can find this character in Explore.",
-    "unlisted_label": "Unlisted",
-    "unlisted_hint": "Only people with the link can open it.",
-    "private_label": "Private",
-    "private_hint": "Only you can see this character.",
-    "toast_updated": "Character is now {visibility}",
-    "toast_failed": "Could not change visibility"
+    "title": "可見度",
+    "public_label": "公開",
+    "public_hint": "任何人都能在「探索」中找到這個角色。",
+    "unlisted_label": "不公開列出",
+    "unlisted_hint": "只有擁有連結的人才能開啟。",
+    "private_label": "私人",
+    "private_hint": "只有你能看到這個角色。",
+    "toast_updated": "角色目前已設為 {visibility}",
+    "toast_failed": "無法變更可見度"
   },
   "CharacterDeleteButton": {
-    "delete": "Delete",
-    "confirm_title": "Delete {name}?",
-    "confirm_body": "Their chats and generated media go with them. This cannot be undone.",
-    "confirm_delete": "Delete permanently",
-    "keep": "Keep character",
-    "toast_deleted": "{name} was deleted",
-    "toast_delete_failed": "Could not delete this character"
+    "delete": "刪除",
+    "confirm_title": "要刪除 {name} 嗎？",
+    "confirm_body": "他們的聊天記錄與生成的媒體內容也會一併刪除，此動作無法復原。",
+    "confirm_delete": "永久刪除",
+    "keep": "保留角色",
+    "toast_deleted": "{name} 已被刪除",
+    "toast_delete_failed": "無法刪除此角色"
   },
   "CharacterEditContent": {
-    "unavailable_title": "Character unavailable",
-    "unavailable_body": "We could not load this character. It may have been deleted.",
-    "unavailable_action": "Back to My AI",
-    "not_yours_title": "This character isn't yours",
-    "not_yours_body": "Only the creator of a character can edit it. You can still chat with this one from its profile.",
-    "not_yours_action": "View profile"
+    "unavailable_title": "角色無法使用",
+    "unavailable_body": "我們無法載入這個角色，該角色可能已被刪除。",
+    "unavailable_action": "返回我的 AI",
+    "not_yours_title": "這不是你的角色",
+    "not_yours_body": "只有角色的創作者才能編輯。你仍可以從個人檔案與這個角色聊天。",
+    "not_yours_action": "查看個人檔案"
   },
   "CharacterManageBar": {
-    "title": "This is your AI",
-    "description": "Edit their details, change who can see them, or delete them.",
-    "manage": "Manage AI"
+    "title": "這是你的 AI",
+    "description": "編輯他們的詳細資料、變更可見範圍，或將其刪除。",
+    "manage": "管理 AI"
   },
   "AudioModal": {
-    "title": "Audio",
-    "script_placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "scene": "Scene",
-    "voice_preset": "Voice preset",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script.",
-    "scene_happy": "Happy",
-    "scene_natural": "Natural",
-    "scene_sad": "Sad",
-    "scene_angry": "Angry",
-    "scene_fearful": "Fearful",
-    "scene_disgusted": "Disgusted",
-    "scene_surprised": "Surprised"
+    "title": "音訊",
+    "script_placeholder": "輸入你想讓他們說的話……",
+    "enrich": "使用 AI 豐富內容",
+    "scene": "場景",
+    "voice_preset": "語音預設",
+    "save": "儲存",
+    "toast_enrich_failed": "無法豐富腳本內容。",
+    "scene_happy": "開心",
+    "scene_natural": "自然",
+    "scene_sad": "難過",
+    "scene_angry": "生氣",
+    "scene_fearful": "害怕",
+    "scene_disgusted": "厭惡",
+    "scene_surprised": "驚訝"
   },
   "ScriptModal": {
-    "title": "Audio script",
-    "placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script."
+    "title": "語音腳本",
+    "placeholder": "輸入你想讓他們說的話……",
+    "enrich": "使用 AI 豐富內容",
+    "save": "儲存",
+    "toast_enrich_failed": "無法豐富腳本內容。"
   },
   "SelectMotionModal": {
-    "title": "Select motion",
-    "search_placeholder": "Search motion…",
-    "loading": "Loading motions…",
-    "empty": "No motions found."
+    "title": "選擇動作",
+    "search_placeholder": "搜尋動作……",
+    "loading": "載入動作中……",
+    "empty": "找不到動作。"
   },
   "SelectAssetModal": {
-    "empty": "Nothing generated yet — generate a scene first"
+    "empty": "尚未生成任何內容——請先生成場景"
   },
   "VoiceModal": {
-    "title": "Select voice",
-    "empty": "No voices available.",
-    "female": "Female",
-    "male": "Male"
+    "title": "選擇語音",
+    "empty": "目前沒有可用的語音。",
+    "female": "女性",
+    "male": "男性"
   },
   "EditStyle": {
-    "select_star": "Select star",
-    "required": "Required",
-    "image": "Image",
-    "select_image": "Select image"
+    "select_star": "選擇明星",
+    "required": "必填",
+    "image": "圖片",
+    "select_image": "選擇圖片"
   },
   "SignUpPromptModal": {
-    "title": "Sign up to continue",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "註冊以繼續",
+    "sign_up_free": "免費註冊",
+    "log_in": "登入"
   },
   "InsufficientCoinsModal": {
-    "title": "Out of coins",
-    "balance": "Balance:",
+    "title": "金幣不足",
+    "balance": "餘額：",
     "dreamcoins": "Dreamcoins",
-    "top_up": "Top up to continue",
-    "not_now": "Not now"
+    "top_up": "儲值以繼續",
+    "not_now": "暫時不要"
   },
   "CoinPackageGrid": {
-    "buy": "Buy",
-    "opening_checkout": "Opening checkout…",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_added": "Dreamcoins added.",
-    "toast_added_count": "{count} Dreamcoins added."
+    "buy": "購買",
+    "opening_checkout": "開啟結帳中……",
+    "toast_checkout_failed": "無法開始結帳，尚未向您收費。",
+    "toast_added": "Dreamcoins 已加入。",
+    "toast_added_count": "已加入 {count} 枚 Dreamcoins。"
   },
   "FeedCard": {
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "chat": "Chat",
-    "share": "Share"
+    "mute": "靜音",
+    "unmute": "取消靜音",
+    "chat": "聊天",
+    "share": "分享"
   },
   "FeedSection": {
-    "loading_more": "Loading more…"
+    "loading_more": "載入更多中……"
   },
   "FeedPaywall": {
-    "title": "Free feed limit reached!",
-    "subtitle": "You must upgrade to premium to get an unlimited feed",
-    "premium_features": "✦ Premium features ✦",
-    "feature_coins": "+1,000 Dreamcoins monthly",
-    "feature_feed": "Unlimited feed",
-    "feature_messages": "Unlimited messages",
-    "feature_media": "Custom images & videos",
-    "feature_calls": "Phone calls",
-    "try_now": "Try now",
-    "much_more": "& much more",
-    "upgrade_cta": "♡ Click here to upgrade now ♡"
+    "title": "已達免費動態消息瀏覽上限！",
+    "subtitle": "升級至進階方案即可無限瀏覽動態消息",
+    "premium_features": "✦ 進階功能 ✦",
+    "feature_coins": "每月贈送 1,000 枚 Dreamcoins",
+    "feature_feed": "無限動態消息",
+    "feature_messages": "無限訊息",
+    "feature_media": "自訂圖片與影片",
+    "feature_calls": "語音通話",
+    "try_now": "立即試用",
+    "much_more": "以及更多功能",
+    "upgrade_cta": "♡ 點此立即升級 ♡"
   },
   "MyAiCard": {
-    "pending": "Pending",
-    "profile": "Profile",
-    "chat": "Chat"
+    "pending": "處理中",
+    "profile": "個人檔案",
+    "chat": "聊天"
   },
   "MyAiSection": {
-    "signup_title": "Sign up to start your collection",
-    "signup_description": "Every AI character you create is saved here to your account.",
-    "sign_up_free": "Sign up free",
-    "start_creating": "Start creating",
-    "empty": "You haven't created any AI characters yet.",
-    "create_first": "Create your first AI",
-    "search_placeholder": "Search by name, style or tag…",
-    "filter_status": "Status",
-    "no_matches": "No characters match your search."
+    "signup_title": "註冊即可開始你的收藏",
+    "signup_description": "你建立的每個 AI 角色都會儲存在此帳號中。",
+    "sign_up_free": "免費註冊",
+    "start_creating": "開始創作",
+    "empty": "你尚未建立任何 AI 角色。",
+    "create_first": "建立你的第一個 AI",
+    "search_placeholder": "依名稱、風格或標籤搜尋……",
+    "filter_status": "狀態",
+    "no_matches": "沒有角色符合你的搜尋條件。"
   },
   "ErrorPage": {
-    "title": "Something went wrong",
-    "retry": "Try again"
+    "title": "發生錯誤",
+    "retry": "再試一次"
   },
   "Errors": {
-    "not_authenticated": "Not authenticated",
-    "generation_timed_out": "Generation timed out",
-    "generation_failed": "Generation failed"
+    "not_authenticated": "尚未驗證身分",
+    "generation_timed_out": "生成逾時",
+    "generation_failed": "生成失敗"
   },
   "SignUpPrompts": {
-    "generate_scenes": "Sign up to generate scenes — your creations will be saved to your account.",
-    "create_character": "Sign up to bring your companion to life — your creation will be saved to your account.",
-    "manage_scenes": "Sign up to manage your scenes — deleting is only available on your own account.",
-    "enrich_prompt": "Sign up to enrich your prompt with AI."
+    "generate_scenes": "註冊即可生成場景——你的創作將會儲存到你的帳號中。",
+    "create_character": "註冊即可讓你的伴侶栩栩如生——你的創作將會儲存到你的帳號中。",
+    "manage_scenes": "註冊即可管理你的場景——刪除功能僅限於自己的帳號使用。",
+    "enrich_prompt": "註冊即可使用 AI 豐富你的提示內容。"
   }
 }

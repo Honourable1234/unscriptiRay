@@ -1,15 +1,16 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { ChevronRightIcon, CoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/context/WalletContext';
 import { Link } from '@/libs/I18nNavigation';
 import { supabase } from '@/libs/supabase';
+import { LOCALE_NAMES } from '@/utils/locales';
 import { ChangePasswordModal } from './ChangePasswordModal';
+import { LanguageModal } from './LanguageModal';
 
 const RightChevron = () => (
   <span className="h-6 w-6 overflow-hidden [&>svg]:h-6 [&>svg]:w-3"><ChevronRightIcon /></span>
@@ -32,15 +33,13 @@ const SettingsRow = (props: { label: string; value?: string; onClick: () => void
   </button>
 );
 
-const PlaceholderRow = (props: { label: string; value?: string; comingSoon: string }) => (
-  <SettingsRow label={props.label} value={props.value} onClick={() => toast.info(props.comingSoon)} />
-);
-
 export const ProfileSection = () => {
   const t = useTranslations('ProfileSection');
   const { user } = useAuth();
   const { balance } = useWallet();
+  const locale = useLocale();
   const [changingPassword, setChangingPassword] = useState(false);
+  const [changingLanguage, setChangingLanguage] = useState(false);
   const tierLabel = user?.subscription_tier || t('tier_free');
   const avatarInitial = (user?.display_name ?? user?.username ?? user?.email ?? '?').charAt(0).toUpperCase();
 
@@ -106,7 +105,7 @@ export const ProfileSection = () => {
           value={t('change_password_caption')}
           onClick={() => setChangingPassword(true)}
         />
-        <PlaceholderRow label={t('language')} value="Français" comingSoon={t('coming_soon')} />
+        <SettingsRow label={t('language')} value={LOCALE_NAMES[locale] ?? locale} onClick={() => setChangingLanguage(true)} />
       </div>
 
       <button
@@ -117,6 +116,7 @@ export const ProfileSection = () => {
       </button>
 
       {changingPassword && <ChangePasswordModal onClose={() => setChangingPassword(false)} />}
+      {changingLanguage && <LanguageModal current={locale} onClose={() => setChangingLanguage(false)} />}
     </div>
   );
 };

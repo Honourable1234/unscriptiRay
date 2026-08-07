@@ -50,7 +50,7 @@ export const OptionModal = (props: {
           if (typeof item === 'string') {
             return { key: item, value: item, label: item, imageUrl: null, locked };
           }
-          const value = String(item.value ?? item.id ?? item.name ?? item[labelKey]);
+          const value = String(item.value ?? item.id ?? item.name ?? item.shortName ?? item[labelKey]);
           return {
             key: value,
             value,

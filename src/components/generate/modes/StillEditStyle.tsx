@@ -9,6 +9,7 @@ import { SelectAssetModal } from '@/components/generate/SelectAssetModal';
 import { SelectStarModal } from '@/components/generate/SelectStarModal';
 import { StackedCoinIcon } from '@/components/icons';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
+import { useSessionState } from '@/hooks/useSessionState';
 import { presetsOfType, useGenerateService } from '@/services/generateService';
 
 type StarCharacter = { id: string; name: string; image: string };
@@ -34,22 +35,30 @@ export const StillEditStyle = (props: {
   const tPrompt = useTranslations('SignUpPrompts');
   const { generateImage, getPresets } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
-  const [model, setModel] = useState('Spark');
-  const [orientation, setOrientation] = useState('16:9');
+  const [model, setModel] = useSessionState('generate:still_edit_style:model', 'Spark');
+  const [orientation, setOrientation] = useSessionState('generate:still_edit_style:orientation', '16:9');
   const [modelOpen, setModelOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
-  const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
+  const [sourceImage, setSourceImage] = useSessionState<{ id: string; url: string } | null>('generate:still_edit_style:source_image', null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [visual, setVisual] = useState('Cinematic');
+  const [visual, setVisual] = useSessionState('generate:still_edit_style:visual', 'Cinematic');
   const [visualOpen, setVisualOpen] = useState(false);
   const [visualOptions, setVisualOptions] = useState<{ value: string; description: string }[]>([
     { value: 'Cinematic', description: '' },
     { value: 'Realistic', description: '' },
   ]);
-  const [star, setStar] = useState<StarCharacter | null>(null);
+  const [star, setStar] = useSessionState<StarCharacter | null>('generate:still_edit_style:star', null);
   const [starModalOpen, setStarModalOpen] = useState(false);
 
   const activeModel = modelOptions.find(m => m.value === model) ?? modelOptions[0]!;
+
+  const resetForm = () => {
+    setModel('Spark');
+    setOrientation('16:9');
+    setSourceImage(null);
+    setVisual(visualOptions[0]?.value ?? 'Cinematic');
+    setStar(null);
+  };
 
   useEffect(() => {
     getPresets().then((res) => {
@@ -76,7 +85,10 @@ export const StillEditStyle = (props: {
       quality: model === 'Eclipse' ? 'ultra' : 'balance',
     }), {
       successMessage: t('image_ready'),
-      onComplete: props.onGenerated,
+      onComplete: () => {
+        props.onGenerated?.();
+        resetForm();
+      },
       onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });

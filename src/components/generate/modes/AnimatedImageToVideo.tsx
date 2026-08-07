@@ -17,6 +17,7 @@ import { SelectStarModal } from '@/components/generate/SelectStarModal';
 import { CaptureIcon, MotionIcon, SelectStarIcon } from '@/components/icons';
 import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
+import { useSessionState } from '@/hooks/useSessionState';
 import { useGenerateService } from '@/services/generateService';
 
 type StarCharacter = { id: string; name: string; image: string };
@@ -32,25 +33,36 @@ export const AnimatedImageToVideo = (props: {
   const tPrompt = useTranslations('SignUpPrompts');
   const { generateVideo } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
-  const [quality, setQuality] = useState('Balanced');
-  const [orientation, setOrientation] = useState('16:9');
-  const [duration, setDuration] = useState('5s');
+  const [quality, setQuality] = useSessionState('generate:animated_image_to_video:quality', 'Balanced');
+  const [orientation, setOrientation] = useSessionState('generate:animated_image_to_video:orientation', '16:9');
+  const [duration, setDuration] = useSessionState('generate:animated_image_to_video:duration', '5s');
   const [audioOpen, setAudioOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [motionModalOpen, setMotionModalOpen] = useState(false);
-  const [audio, setAudio] = useState<{ script: string; sceneEmotion: Scene; voiceType: string }>({
+  const [audio, setAudio] = useSessionState<{ script: string; sceneEmotion: Scene; voiceType: string }>('generate:animated_image_to_video:audio', {
     script: '',
     sceneEmotion: 'Happy',
     voiceType: 'Aurora',
   });
   const [starModalOpen, setStarModalOpen] = useState(false);
-  const [stars, setStars] = useState<StarCharacter[]>([]);
-  const [sourceImage, setSourceImage] = useState<{ id: string; url: string } | null>(null);
-  const [motion, setMotion] = useState<Motion | null>(null);
+  const [stars, setStars] = useSessionState<StarCharacter[]>('generate:animated_image_to_video:stars', []);
+  const [sourceImage, setSourceImage] = useSessionState<{ id: string; url: string } | null>('generate:animated_image_to_video:source_image', null);
+  const [motion, setMotion] = useSessionState<Motion | null>('generate:animated_image_to_video:motion', null);
   const [creativeOpen, setCreativeOpen] = useState(false);
-  const [creativePrompt, setCreativePrompt] = useState('');
+  const [creativePrompt, setCreativePrompt] = useSessionState('generate:animated_image_to_video:creative_prompt', '');
 
   const isIncomplete = stars.length === 0 || !sourceImage || !motion;
+
+  const resetForm = () => {
+    setQuality('Balanced');
+    setOrientation('16:9');
+    setDuration('5s');
+    setAudio({ script: '', sceneEmotion: 'Happy', voiceType: 'Aurora' });
+    setStars([]);
+    setSourceImage(null);
+    setMotion(null);
+    setCreativePrompt('');
+  };
 
   const handleGenerate = () => {
     if (stars.length === 0 || !sourceImage || !motion) {
@@ -72,7 +84,10 @@ export const AnimatedImageToVideo = (props: {
       }),
     }), {
       successMessage: t('scene_ready'),
-      onComplete: props.onGenerated,
+      onComplete: () => {
+        props.onGenerated?.();
+        resetForm();
+      },
       onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });

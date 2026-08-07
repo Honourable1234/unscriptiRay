@@ -16,12 +16,34 @@ import { AnimatedTalking } from '@/components/generate/modes/AnimatedTalking';
 import { StillEditStyle } from '@/components/generate/modes/StillEditStyle';
 import { StillStylePresent } from '@/components/generate/modes/StillStylePresent';
 import { useAuth } from '@/context/AuthContext';
+import { clearSessionState } from '@/hooks/useSessionState';
 import { guestToken } from '@/libs/guestToken';
 import { useGenerateService } from '@/services/generateService';
 
 type Tab = 'All' | 'Images' | 'Videos';
 
 const skeletonKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+/**
+ * Storage key prefix for a type/mode combination's persisted fields.
+ * @param type - Active generation type.
+ * @param mode - Active mode within that type.
+ */
+const modeStorageKey = (type: GenerateType, mode: GenerateMode) => {
+  if (type === 'still') {
+    return mode === 'edit_style' ? 'generate:still_edit_style:' : 'generate:still_style_present:';
+  }
+  if (mode === 'image_to_video') {
+    return 'generate:animated_image_to_video:';
+  }
+  if (mode === 'extend_video') {
+    return 'generate:animated_extend_video:';
+  }
+  if (mode === 'talking') {
+    return 'generate:animated_talking:';
+  }
+  return 'generate:animated_style_present:';
+};
 
 export default function GeneratePage() {
   const t = useTranslations('GeneratePage');
@@ -40,6 +62,11 @@ export default function GeneratePage() {
   const [assets, setAssets] = useState<GeneratedAssetsResponse['content'] | null>(null);
   const [pending, setPending] = useState<{ id: string; orientation: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleModeChange = (nextMode: GenerateMode) => {
+    clearSessionState(modeStorageKey(activeType, mode));
+    setMode(nextMode);
+  };
 
   const handleGenerationStart = (generationId: string, orientation: string) => {
     setPending(prev => [...prev, { id: generationId, orientation }]);
@@ -110,7 +137,7 @@ export default function GeneratePage() {
           active={activeType}
           mode={mode}
           onChange={setActiveType}
-          onModeChange={setMode}
+          onModeChange={handleModeChange}
         />
         {modeComponent}
       </div>

@@ -14,6 +14,7 @@ import { SelectStarModal } from '@/components/generate/SelectStarModal';
 import { SelectStarIcon, VoiceIcon } from '@/components/icons';
 import { ImageFrameIcon } from '@/components/icons/ImageFramIcon';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
+import { useSessionState } from '@/hooks/useSessionState';
 import { useGenerateService } from '@/services/generateService';
 import { VoiceModal } from '../VoiceModal';
 
@@ -36,11 +37,11 @@ export const AnimatedTalking = (props: {
   const [scriptModalOpen, setScriptModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [starModalOpen, setStarModalOpen] = useState(false);
-  const [stars, setStars] = useState<StarCharacter[]>([]);
-  const [voice, setVoice] = useState<SelectedVoice | null>(null);
-  const [source, setSource] = useState<{ id: string; url: string; type: string } | null>(null);
-  const [script, setScript] = useState('');
-  const [sceneEmotion, setSceneEmotion] = useState<Scene>('Happy');
+  const [stars, setStars] = useSessionState<StarCharacter[]>('generate:animated_talking:stars', []);
+  const [voice, setVoice] = useSessionState<SelectedVoice | null>('generate:animated_talking:voice', null);
+  const [source, setSource] = useSessionState<{ id: string; url: string; type: string } | null>('generate:animated_talking:source', null);
+  const [script, setScript] = useSessionState('generate:animated_talking:script', '');
+  const [sceneEmotion, setSceneEmotion] = useSessionState<Scene>('generate:animated_talking:scene_emotion', 'Happy');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handlePlayVoice = () => {
@@ -51,6 +52,14 @@ export const AnimatedTalking = (props: {
     const audio = new Audio(voice.sampleUrl);
     audioRef.current = audio;
     audio.play().catch(() => {});
+  };
+
+  const resetForm = () => {
+    setStars([]);
+    setVoice(null);
+    setSource(null);
+    setScript('');
+    setSceneEmotion('Happy');
   };
 
   const handleGenerate = () => {
@@ -69,7 +78,10 @@ export const AnimatedTalking = (props: {
       voice_type: voice.shortName,
     }), {
       successMessage: t('scene_ready'),
-      onComplete: props.onGenerated,
+      onComplete: () => {
+        props.onGenerated?.();
+        resetForm();
+      },
       onStart: id => props.onGenerationStart?.(id, '16:9'),
       onSettled: props.onGenerationEnd,
     });

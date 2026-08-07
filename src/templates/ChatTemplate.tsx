@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { ChatSideBar } from '@/components/chat/ChatSideBar';
 import { NavBar } from '@/components/dashboard/NavBar';
-import { SideBar } from '@/components/dashboard/SideBar';
 import { StackedCoinIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { useChatNavigation } from '@/context/ChatContext';
@@ -13,9 +12,9 @@ const ChatGuestBanner = () => {
   const t = useTranslations('ChatTemplate');
 
   return (
-    // The left padding leaves room for the two sidebar triggers that float over
+    // The left padding leaves room for the sidebar trigger that floats over
     // the bar on mobile.
-    <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-black-40 bg-black-100 py-2.5 pr-4 pl-22 sm:pr-6 md:px-8">
+    <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-black-40 bg-black-100 py-2.5 pr-4 pl-9 sm:pr-6 md:px-8">
       <div className="flex items-center gap-2 rounded-full bg-black-60 py-1.5 pr-1.5 pl-3 text-xs font-medium text-white">
         <span className="flex items-center gap-1.5">
           <StackedCoinIcon />
@@ -43,13 +42,12 @@ export const ChatTemplate = (props: { children: React.ReactNode }) => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-black-80">
-      <SideBar />
       <ChatSideBar />
       <div className={`flex w-full flex-col overflow-hidden ${activeChat ? 'bg-black-100' : ''}`}>
         {authLoading || isAuthenticated
-          // The left padding leaves room for the two sidebar triggers that float
+          // The left padding leaves room for the sidebar trigger that floats
           // over the bar on mobile.
-          ? <NavBar className={`pl-18 md:pl-0 ${activeChat ? 'bg-black-100' : ''}`} />
+          ? <NavBar className={`pl-9 md:pl-0 ${activeChat ? 'bg-black-100' : ''}`} />
           : <ChatGuestBanner />}
         <div className={`flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${activeChat ? 'overflow-hidden' : 'overflow-y-auto px-4 sm:px-6 md:px-8'}`}>
           {props.children}

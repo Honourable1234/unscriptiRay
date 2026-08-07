@@ -135,8 +135,13 @@ export const useCharacterService = () => {
   // guest token stands in for the signed-in one on characters made before sign-up.
   const getCharacter = (id: string) => api.get(`/characters/${id}`, token ?? guestToken.get() ?? undefined);
 
-  const getCharacterMedia = (id: string, type: 'images' | 'videos') =>
-    api.get(`/characters/${id}/media?type=${type}`, token ?? guestToken.get() ?? undefined) as Promise<CharacterMediaResponse>;
+  const getCharacterMedia = (id: string, type: 'images' | 'videos', limit?: number) => {
+    const query = new URLSearchParams({ type });
+    if (limit !== undefined) {
+      query.set('limit', String(limit));
+    }
+    return api.get(`/characters/${id}/media?${query.toString()}`, token ?? guestToken.get() ?? undefined) as Promise<CharacterMediaResponse>;
+  };
 
   const likeCharacter = (id: string) => {
     if (!token) {

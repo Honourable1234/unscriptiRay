@@ -189,7 +189,7 @@ export default function GenerateScenePage() {
       </button>
 
       {/* Main content */}
-      <div className="flex flex-1 items-center justify-center px-2">
+      <div className="flex min-h-0 flex-1 items-center justify-center px-2 py-5">
         {isLoading
           ? <Skeleton className="h-full max-h-123 w-full max-w-105 rounded-lg" />
           : !activeAsset
