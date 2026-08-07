@@ -16,7 +16,7 @@ import { CharacterMediaGrid } from './CharacterMediaGrid';
 import { CharacterUnlockButton } from './CharacterUnlockButton';
 
 type Tab = 'All' | 'Images' | 'Videos';
-type MediaItem = { type: 'image' | 'video'; url: string; locked: boolean; aspectRatio: string };
+type MediaItem = { id: string; type: 'image' | 'video'; url: string; locked: boolean; aspectRatio: string };
 
 /**
  * Checks whether a value is a src `next/image` can render: an absolute URL or a root-relative path.
@@ -71,20 +71,42 @@ export const CharacterContent = (props: { id: string }) => {
       }
     });
 
-    const parseMedia = (items: CharacterMediaItem[] | undefined, type: 'image' | 'video'): MediaItem[] =>
+    const parseMedia = (items: CharacterMediaItem[] | undefined, bucket: 'image' | 'video'): MediaItem[] =>
       (items ?? []).map((item): MediaItem | null => {
         const aspectRatio = assetAspectRatio({
           width: item.width ?? null,
           height: item.height ?? null,
           orientation: item.orientation ?? null,
         });
-        // A locked item arrives without its real asset, leaving only the blur.
+        // The `type=images`/`type=videos` query param is a request to the
+        // API, not a guarantee about what comes back, so classify by which
+        // URL the item actually has rather than trusting the bucket it
+        // arrived in — otherwise a leaked video renders (and filters) as
+        // an image, or vice versa.
+        const type: 'image' | 'video' = item.video_url ? 'video' : item.image_url ? 'image' : bucket;
+        // Locked items commonly share one generic placeholder `blur_url`
+        // across many assets, so the item's own id (not the URL) is what
+        // keeps each tile distinct across renders.
+        const id = `${type}-${item.id}`;
         const source = type === 'video' ? item.video_url : item.image_url;
-        const url = source ?? item.blur_url ?? null;
-        if (!url || !isRenderableSrc(url)) {
+        const locked = item.locked || !source;
+        if (locked) {
+          // A locked item must never render its real (permission-gated)
+          // asset — some still carry a populated source URL, but fetching
+          // that directly 403s for anyone who hasn't unlocked it. If there
+          // is no blur preview to show instead (common for videos, which
+          // often have no blurred preview asset at all), there is nothing
+          // safe to render, so the item is dropped rather than shown
+          // pointing at a URL that will fail.
+          if (!item.blur_url || !isRenderableSrc(item.blur_url)) {
+            return null;
+          }
+          return { id, type, url: item.blur_url, locked, aspectRatio };
+        }
+        if (!source || !isRenderableSrc(source)) {
           return null;
         }
-        return { type, url, locked: item.locked || !source, aspectRatio };
+        return { id, type, url: source, locked, aspectRatio };
       }).filter((m): m is MediaItem => m !== null);
 
     const imagesReq = getCharacterMedia(props.id, 'images');

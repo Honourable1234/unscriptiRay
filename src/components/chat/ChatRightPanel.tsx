@@ -85,12 +85,14 @@ export const ChatRightPanel = (props: {
       }
     }).catch(() => {});
 
-    getCharacterMedia(activeChat.characterId, 'images').then((res) => {
+    const previewImageLimit = 5;
+    getCharacterMedia(activeChat.characterId, 'images', previewImageLimit).then((res) => {
       const items: unknown = res?.content?.items;
       if (Array.isArray(items)) {
         const urls = (items as Record<string, unknown>[])
           .map(i => (i.image_url ?? i.blur_url) as string | null)
-          .filter((u): u is string => !!u);
+          .filter((u): u is string => !!u)
+          .slice(0, previewImageLimit);
         if (urls.length > 0) {
           setImages(urls);
         }

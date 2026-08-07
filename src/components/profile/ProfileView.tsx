@@ -1,6 +1,7 @@
 'use client';
 
 import type { MyCharacter } from '@/services/useMyAiService';
+import type { WalletTransaction } from '@/services/useWalletService';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -9,6 +10,8 @@ import { EditIcon } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/libs/I18nNavigation';
 import { useMyAiService } from '@/services/useMyAiService';
+import { useWalletService } from '@/services/useWalletService';
+import { pagesToShow, signedAmount } from '@/utils/Helpers';
 import { MyAiCard } from '../my-ai/MyAiCard';
 import { ProfileEditModal } from './ProfileEditModal';
 
@@ -18,14 +21,21 @@ const tabs: Tab[] = ['Highlighted', 'Characters', 'Activity'];
 
 export const ProfileView = () => {
   const t = useTranslations('ProfileView');
+  const tWallet = useTranslations('WalletSection');
   const { user, token } = useAuth();
   const { getMyCharacters } = useMyAiService();
+  const { getTransactions } = useWalletService();
   const [characters, setCharacters] = useState<MyCharacter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('Characters');
   const [style, setStyle] = useState('Any Style');
   const [sort, setSort] = useState('Newest');
   const [editing, setEditing] = useState(false);
+  const [transactions, setTransactions] = useState<WalletTransaction[] | null>(null);
+  const [txPage, setTxPage] = useState(1);
+  const [txPageCount, setTxPageCount] = useState(1);
+  const [txTotal, setTxTotal] = useState(0);
+  const [isTxPaging, setIsTxPaging] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -40,6 +50,35 @@ export const ProfileView = () => {
       .catch(() => {})
       .finally(() => setIsLoading(false));
   }, [token]);
+
+  /**
+   * Loads a page of activity, replacing the table on page 1.
+   * @param nextPage - One-based page to fetch.
+   * @returns A promise that settles once the page is applied.
+   */
+  const fetchTransactions = (nextPage: number) =>
+    getTransactions(nextPage).then((res) => {
+      setTransactions(res.content.rows);
+      setTxPage(res.content.pagination.page);
+      setTxPageCount(res.content.pagination.pageCount);
+      setTxTotal(res.content.pagination.total);
+    });
+
+  const goToTxPage = (nextPage: number) => {
+    if (isTxPaging || nextPage === txPage || nextPage < 1 || nextPage > txPageCount) {
+      return;
+    }
+    setIsTxPaging(true);
+    fetchTransactions(nextPage).catch(() => {}).finally(() => setIsTxPaging(false));
+  };
+
+  // Loaded lazily the first time the tab is opened, not on mount.
+  useEffect(() => {
+    if (tab !== 'Activity' || !token || transactions !== null) {
+      return;
+    }
+    fetchTransactions(1).catch(() => setTransactions([]));
+  }, [tab, token]);
 
   const styleOptions = ['Any Style', ...Array.from(new Set(characters.map(c => c.style).filter(Boolean)))];
 
@@ -117,13 +156,99 @@ export const ProfileView = () => {
       </div>
 
       {/* Content */}
-      {tab !== 'Characters'
-        ? (
-            <div className="flex justify-center py-16">
-              <p className="text-sm text-white-50">{t('nothing_to_show')}</p>
-            </div>
-          )
-        : isLoading
+      {tab === 'Highlighted' && (
+        <div className="flex justify-center py-16">
+          <p className="text-sm text-white-50">{t('nothing_to_show')}</p>
+        </div>
+      )}
+
+      {tab === 'Activity' && (
+        transactions === null
+          ? (
+              <div className="flex flex-col gap-2">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="h-14 animate-pulse rounded-2xl bg-black-60" />
+                ))}
+              </div>
+            )
+          : transactions.length === 0
+            ? (
+                <div className="rounded-2xl border border-black-40 bg-black-100 px-4 py-6 text-center">
+                  <p className="text-sm text-white-50">{tWallet('no_transactions')}</p>
+                </div>
+              )
+            : (
+                <div className="flex flex-col gap-2">
+                  <div className="overflow-x-auto rounded-2xl border border-black-40 bg-black-100">
+                    <table className="w-full text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-black-40 text-xs text-white-50">
+                          <th className="px-4 py-3 font-medium">{tWallet('column_reason')}</th>
+                          <th className="px-4 py-3 font-medium">{tWallet('column_date')}</th>
+                          <th className="px-4 py-3 text-right font-medium">{tWallet('column_coins')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {transactions.map(transaction => (
+                          <tr key={transaction.id} className="border-b border-black-40 last:border-0">
+                            <td className="px-4 py-3 whitespace-nowrap text-white capitalize">
+                              {transaction.reason.replace(/[_-]+/g, ' ')}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-white-75">
+                              {new Date(transaction.created_at).toLocaleString()}
+                            </td>
+                            <td className={`px-4 py-3 text-right font-semibold whitespace-nowrap ${transaction.amount < 0 ? 'text-white-75' : 'text-primary-100'}`}>
+                              {signedAmount(transaction.amount)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {txPageCount > 1 && (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs text-white-50">
+                        {tWallet('pagination', { page: txPage, pageCount: txPageCount, total: txTotal })}
+                      </p>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => goToTxPage(txPage - 1)}
+                          disabled={isTxPaging || txPage === 1}
+                          className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          {tWallet('prev')}
+                        </button>
+                        {pagesToShow(txPage, txPageCount).map((pageNumber, i) => (
+                          pageNumber === null
+                            // eslint-disable-next-line react/no-array-index-key -- gaps have no id of their own
+                            ? <span key={`gap-${i}`} className="px-1 text-xs text-white-50">…</span>
+                            : (
+                                <button
+                                  key={pageNumber}
+                                  onClick={() => goToTxPage(pageNumber)}
+                                  disabled={isTxPaging}
+                                  className={`min-w-8 cursor-pointer rounded-lg px-2.5 py-1.5 text-xs font-semibold disabled:cursor-not-allowed ${pageNumber === txPage ? 'bg-primary-100 text-white' : 'bg-black-60 text-white-75 hover:bg-black-40'}`}
+                                >
+                                  {pageNumber}
+                                </button>
+                              )
+                        ))}
+                        <button
+                          onClick={() => goToTxPage(txPage + 1)}
+                          disabled={isTxPaging || txPage === txPageCount}
+                          className="cursor-pointer rounded-lg bg-black-60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black-40 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          {tWallet('next')}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+      )}
+
+      {tab === 'Characters' && (
+        isLoading
           ? (
               <div className="flex justify-center py-16">
                 <p className="text-sm text-white-50">{t('loading')}</p>
@@ -147,7 +272,8 @@ export const ProfileView = () => {
                   ))}
                 </div>
               </>
-            )}
+            )
+      )}
 
       {editing && <ProfileEditModal onClose={() => setEditing(false)} />}
     </div>

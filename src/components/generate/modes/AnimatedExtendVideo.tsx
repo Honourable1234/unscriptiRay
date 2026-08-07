@@ -16,6 +16,7 @@ import { SelectMotionModal } from '@/components/generate/SelectMotionModal';
 import { SelectStarModal } from '@/components/generate/SelectStarModal';
 import { CaptureIcon, MotionIcon, SelectStarIcon, VideoIcon } from '@/components/icons';
 import { useGenerationRun } from '@/hooks/useGenerationRun';
+import { useSessionState } from '@/hooks/useSessionState';
 import { useGenerateService } from '@/services/generateService';
 
 type StarCharacter = { id: string; name: string; image: string };
@@ -31,23 +32,34 @@ export const AnimatedExtendVideo = (props: {
   const tPrompt = useTranslations('SignUpPrompts');
   const { generateVideo } = useGenerateService();
   const { isGenerating, needsSignUp, dismissSignUpPrompt, start } = useGenerationRun();
-  const [quality, setQuality] = useState('Balanced');
-  const [orientation, setOrientation] = useState('16:9');
-  const [duration, setDuration] = useState('5s');
-  const [sourceVideo, setSourceVideo] = useState<{ id: string; url: string } | null>(null);
-  const [motion, setMotion] = useState<Motion | null>(null);
-  const [stars, setStars] = useState<StarCharacter[]>([]);
+  const [quality, setQuality] = useSessionState('generate:animated_extend_video:quality', 'Balanced');
+  const [orientation, setOrientation] = useSessionState('generate:animated_extend_video:orientation', '16:9');
+  const [duration, setDuration] = useSessionState('generate:animated_extend_video:duration', '5s');
+  const [sourceVideo, setSourceVideo] = useSessionState<{ id: string; url: string } | null>('generate:animated_extend_video:source_video', null);
+  const [motion, setMotion] = useSessionState<Motion | null>('generate:animated_extend_video:motion', null);
+  const [stars, setStars] = useSessionState<StarCharacter[]>('generate:animated_extend_video:stars', []);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [motionModalOpen, setMotionModalOpen] = useState(false);
   const [starModalOpen, setStarModalOpen] = useState(false);
   const [creativeOpen, setCreativeOpen] = useState(false);
-  const [creativePrompt, setCreativePrompt] = useState('');
+  const [creativePrompt, setCreativePrompt] = useSessionState('generate:animated_extend_video:creative_prompt', '');
   const [audioOpen, setAudioOpen] = useState(false);
-  const [audio, setAudio] = useState<{ script: string; sceneEmotion: Scene; voiceType: string }>({
+  const [audio, setAudio] = useSessionState<{ script: string; sceneEmotion: Scene; voiceType: string }>('generate:animated_extend_video:audio', {
     script: '',
     sceneEmotion: 'Happy',
     voiceType: 'Aurora',
   });
+
+  const resetForm = () => {
+    setQuality('Balanced');
+    setOrientation('16:9');
+    setDuration('5s');
+    setSourceVideo(null);
+    setMotion(null);
+    setStars([]);
+    setCreativePrompt('');
+    setAudio({ script: '', sceneEmotion: 'Happy', voiceType: 'Aurora' });
+  };
 
   const handleGenerate = () => {
     if (stars.length === 0 || !sourceVideo || !motion) {
@@ -69,7 +81,10 @@ export const AnimatedExtendVideo = (props: {
       }),
     }), {
       successMessage: t('scene_ready'),
-      onComplete: props.onGenerated,
+      onComplete: () => {
+        props.onGenerated?.();
+        resetForm();
+      },
       onStart: id => props.onGenerationStart?.(id, orientation),
       onSettled: props.onGenerationEnd,
     });

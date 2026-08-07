@@ -39,7 +39,7 @@ export const CharacterModal = (props: {
 }) => {
   const t = useTranslations('CharacterModal');
   const { authLoading } = useAuth();
-  const { getCharacter } = useCharacterService();
+  const { getCharacter, getCharacterMedia } = useCharacterService();
   const [expanded, setExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
@@ -62,13 +62,10 @@ export const CharacterModal = (props: {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
     setLoading(true);
-    getCharacter(String(props.character.id)).then((res) => {
-      const c = res?.content;
-      if (c) {
-        setImageCount((c.image_count as number) ?? 0);
-        setVideoCount((c.video_count as number) ?? 0);
-      }
+    const characterId = String(props.character.id);
 
+    const characterReq = getCharacter(characterId).then((res) => {
+      const c = res?.content;
       const seen = new Set<string>();
       const urls: string[] = [];
       const imgs: unknown = c?.character_images;
@@ -84,7 +81,19 @@ export const CharacterModal = (props: {
       if (urls.length > 0) {
         setDetailImages(urls);
       }
-    }).catch(() => {}).finally(() => {
+    });
+
+    // The `image_count`/`video_count` fields on the character payload are
+    // unreliable (often zero), so count the actual media items instead.
+    const mediaReq = Promise.all([
+      getCharacterMedia(characterId, 'images'),
+      getCharacterMedia(characterId, 'videos'),
+    ]).then(([imageRes, videoRes]) => {
+      setImageCount(imageRes?.content?.items?.length ?? 0);
+      setVideoCount(videoRes?.content?.items?.length ?? 0);
+    });
+
+    Promise.all([characterReq, mediaReq]).catch(() => {}).finally(() => {
       setLoading(false);
     });
   }, [props.character.id, authLoading]);
@@ -103,6 +112,7 @@ export const CharacterModal = (props: {
   }, []);
 
   const images = detailImages.length > 0 ? detailImages : [props.character.image];
+  const hasMultipleImages = images.length > 1;
   const tags = props.character.tags;
   const visibleTags = tags.slice(0, MAX_TAGS_VISIBLE);
   const extraCount = tags.length - MAX_TAGS_VISIBLE;
@@ -202,15 +212,17 @@ export const CharacterModal = (props: {
                   )}
                 </div>
                 <div className="relative mx-4 mb-8 flex items-center justify-center" style={{ aspectRatio: '4/3' }}>
-                  <div className="absolute top-1/2 left-0 z-10 h-[76%] w-[49%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
-                    <Image
-                      src={images[(imageIndex - 1 + images.length) % images.length] ?? props.character.image}
-                      alt={props.character.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover blur-[4px]"
-                    />
-                  </div>
+                  {hasMultipleImages && (
+                    <div className="absolute top-1/2 left-0 z-10 h-[76%] w-[49%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
+                      <Image
+                        src={images[(imageIndex - 1 + images.length) % images.length] ?? props.character.image}
+                        alt={props.character.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover blur-[4px]"
+                      />
+                    </div>
+                  )}
                   <div className="relative z-20 mx-auto h-full w-[70%] overflow-hidden rounded-3xl">
                     <Image
                       src={images[imageIndex] ?? props.character.image}
@@ -219,28 +231,32 @@ export const CharacterModal = (props: {
                       sizes="(max-width: 640px) 100vw, 50vw"
                       className={`object-cover transition-all duration-300 ${navClicks >= 3 ? 'blur-[3px]' : ''}`}
                     />
-                    <button
-                      className="absolute top-1/2 -left-2.5 z-30 -translate-y-1/2 cursor-pointer"
-                      onClick={() => {
-                        setImageIndex(i => (i - 1 + images.length) % images.length);
-                        setNavClicks(n => Math.max(n - 1, 0));
-                      }}
-                    >
-                      <ChevronLeftIcon />
-                    </button>
-                    <button
-                      className="absolute top-1/2 -right-2.5 z-30 -translate-y-1/2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
-                      disabled={navClicks >= 3}
-                      onClick={() => {
-                        setImageIndex(i => (i + 1) % images.length);
-                        setNavClicks(n => n + 1);
-                      }}
-                    >
-                      <ChevronRightIcon />
-                    </button>
+                    {hasMultipleImages && (
+                      <>
+                        <button
+                          className="absolute top-1/2 -left-2.5 z-30 -translate-y-1/2 cursor-pointer"
+                          onClick={() => {
+                            setImageIndex(i => (i - 1 + images.length) % images.length);
+                            setNavClicks(n => Math.max(n - 1, 0));
+                          }}
+                        >
+                          <ChevronLeftIcon />
+                        </button>
+                        <button
+                          className="absolute top-1/2 -right-2.5 z-30 -translate-y-1/2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
+                          disabled={navClicks >= 3}
+                          onClick={() => {
+                            setImageIndex(i => (i + 1) % images.length);
+                            setNavClicks(n => n + 1);
+                          }}
+                        >
+                          <ChevronRightIcon />
+                        </button>
+                      </>
+                    )}
                   </div>
 
-                  {navClicks >= 3 && (
+                  {hasMultipleImages && navClicks >= 3 && (
                     <div className="pointer-events-none absolute left-1/2 z-40 flex h-full w-[70%] -translate-x-1/2 flex-col items-center justify-center gap-[2px] rounded-lg">
                       <p className="text-sm font-bold text-white sm:text-[20px]">{t('want_more')}</p>
                       <Link href={`/character/${props.character.id}`} className="pointer-events-auto rounded-xl bg-primary-100 px-2 py-2 text-xs font-semibold text-white sm:px-8">
@@ -248,15 +264,17 @@ export const CharacterModal = (props: {
                       </Link>
                     </div>
                   )}
-                  <div className="absolute top-1/2 right-0 z-10 h-[76%] w-[41%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
-                    <Image
-                      src={images[(imageIndex + 1) % images.length] ?? props.character.image}
-                      alt={props.character.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover blur-[4px]"
-                    />
-                  </div>
+                  {hasMultipleImages && (
+                    <div className="absolute top-1/2 right-0 z-10 h-[76%] w-[41%] -translate-y-1/2 overflow-hidden rounded-3xl opacity-50">
+                      <Image
+                        src={images[(imageIndex + 1) % images.length] ?? props.character.image}
+                        alt={props.character.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover blur-[4px]"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-3 border-t border-black-40 p-4">
                   <button

@@ -1,61 +1,62 @@
 {
-  "LocaleSwitcher": {
-    "change_language": "言語を変更する"
+  "LanguageModal": {
+    "title": "言語",
+    "current": "現在"
   },
   "SignInPage": {
     "title": "ログイン",
     "google_button": "ログイン",
     "divider": "メールで続ける",
-    "email_label": "電子メール",
+    "email_label": "メールアドレス",
     "email_placeholder": "メールアドレスを入力してください",
     "password_label": "パスワード",
     "forgot_password": "パスワードをお忘れですか？",
     "submit": "ログイン",
-    "no_account": "アカウントをお持ちではありませんか？",
-    "sign_up_link": "登録する",
+    "no_account": "アカウントをお持ちでないですか？",
+    "sign_up_link": "新規登録",
     "login_failed": "ログインに失敗しました"
   },
   "SignUpPage": {
-    "title": "アカウントを作成する",
-    "google_button": "登録する",
+    "title": "アカウントを作成",
+    "google_button": "新規登録",
     "divider": "メールで続ける",
-    "email_label": "電子メール",
+    "email_label": "メールアドレス",
     "email_placeholder": "メールアドレスを入力してください",
     "password_label": "パスワード",
-    "confirm_password_label": "パスワードの確認",
-    "submit": "登録する",
+    "confirm_password_label": "パスワード（確認）",
+    "submit": "新規登録",
     "have_account": "アカウントをお持ちですか？",
     "sign_in_link": "ログイン",
     "passwords_mismatch": "パスワードが一致しません",
-    "password_too_short": "パスワードは8文字以上である必要があります",
+    "password_too_short": "パスワードは8文字以上で入力してください",
     "sign_up_failed": "登録に失敗しました",
     "check_email": "メールを確認して、アカウントを認証してください。"
   },
   "ForgotPasswordPage": {
     "title": "パスワードをお忘れですか？",
-    "subtitle": "パスワードをリセットするためのリンクが、ご登録のメールアドレス宛に送信されます",
-    "email_label": "電子メール",
+    "subtitle": "パスワード再設定用のリンクをメールでお送りします",
+    "email_label": "メールアドレス",
     "email_placeholder": "メールアドレスを入力してください",
     "submit": "送信",
-    "check_email": "メールにリセット用のリンクが届いているかご確認ください。",
-    "remember_password": "Remember your password?",
-    "sign_in_link": "Sign in"
+    "check_email": "再設定用のリンクが記載されたメールをご確認ください。",
+    "remember_password": "パスワードを思い出しましたか？",
+    "sign_in_link": "ログイン"
   },
   "NewPasswordPage": {
     "title": "新しいパスワード",
     "subtitle": "新しいパスワードを入力してください",
     "new_password_label": "新しいパスワード",
-    "confirm_password_label": "パスワードの確認",
+    "confirm_password_label": "パスワード（確認）",
     "submit": "送信",
     "passwords_mismatch": "パスワードが一致しません",
-    "password_too_short": "パスワードは8文字以上である必要があります"
+    "password_too_short": "パスワードは8文字以上で入力してください"
   },
   "GoogleButton": {
-    "with_google": "Googleと"
+    "with_google": "Googleで続ける"
   },
   "ExplorePage": {
     "title": "あなたの",
-    "title_highlight": "空想"
+    "title_highlight": "空想を探す"
   },
   "ExploreSection": {
     "filter_identity": "アイデンティティ",
@@ -65,7 +66,6 @@
     "filter_sort": "並べ替え"
   },
   "ExploreCharacters": {
-    "loading": "メディアの読み込み中ですので、しばらくお待ちください...",
     "error": "キャラクターの読み込みに失敗しました。",
     "per_page": "1ページあたり：",
     "loading_more": "読み込み中...",
@@ -73,11 +73,11 @@
   },
   "CharacterModal": {
     "show_more": "もっと見る",
-    "show_less": "表示を縮小",
+    "show_less": "表示を減らす",
     "profile": "プロフィール",
-    "more_tags": "+{count} 続きを読む",
+    "more_tags": "他{count}件",
     "want_more": "もっと見たいですか？",
-    "view_content": "コンテンツを表示",
+    "view_content": "コンテンツを見る",
     "generate": "生成",
     "chat": "チャット"
   },
@@ -86,7 +86,7 @@
   },
   "CharacterHeader": {
     "chat": "チャット",
-    "new_group": "新しいグループを作成する",
+    "new_group": "新しいグループを作成",
     "generate": "生成",
     "new_scenario": "新しいシナリオ"
   },
@@ -94,775 +94,757 @@
     "error": "キャラクターの読み込みに失敗しました。"
   },
   "CharacterUnlockButton": {
-    "unlock": "「 {name} 」のロックを解除 — コイン50枚",
+    "unlock": "{name}のロックを解除",
+    "sign_up_prompt": "アカウントを作成すると{name}のコレクションを解除できます。コインと解除状況はアカウントに保存されます。",
+    "unlocked": "コレクションを解除しました",
+    "already_unlocked": "このコレクションはすでに購入済みです",
     "purchase_failed": "購入に失敗しました",
-    "error": "何か問題が発生しました",
-    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
-    "unlocked": "Collection unlocked",
-    "already_unlocked": "You already own this collection"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "秘められた秘密",
-    "tap_to_reveal": "タップして表示"
+    "error": "何か問題が発生しました"
   },
   "ChatRoom": {
     "clear_confirm": "すべてのメッセージを削除しますか？",
     "clear": "クリア",
-    "cancel": "Cancel",
-    "toast_cleared": "Chat cleared.",
-    "toast_clear_failed": "Could not clear chat.",
-    "toast_deleted": "Chat room deleted.",
-    "toast_delete_failed": "Could not delete chat room."
+    "toast_cleared": "チャットを削除しました。",
+    "toast_clear_failed": "チャットを削除できませんでした。",
+    "toast_deleted": "チャットルームを削除しました。",
+    "toast_delete_failed": "チャットルームを削除できませんでした。"
   },
   "ChatInputBar": {
-    "getting_suggestions": "提案を募集しています…",
-    "placeholder": "メッセージを送る...",
-    "generating_suggestion": "Generating suggestion…",
-    "send_message": "Send message"
+    "generating_suggestion": "提案を生成中…",
+    "placeholder": "メッセージを送信...",
+    "send_message": "メッセージを送信"
   },
   "ChatSideBar": {
     "new_chat": "新しいチャット",
     "new_group": "新しいグループ",
     "new_scenario": "新しいシナリオ",
-    "your_chats": "あなたのチャット ({count})",
+    "your_chats": "あなたのチャット（{count}）",
+    "your_groups": "あなたのグループ（{count}）",
+    "your_scenario": "あなたのシナリオ（{count}）",
     "loading_more": "読み込み中...",
-    "load_more": "さらに読み込む",
-    "close_sidebar": "サイドバーを閉じる",
-    "search_placeholder": "Search chats…"
+    "search_placeholder": "チャットを検索…"
   },
   "ChatRightPanel": {
-    "view_media": "メディアを表示",
-    "call_me": "電話して",
+    "view_media": "メディアを見る",
+    "call_me": "電話する",
     "voice": "音声",
-    "memory": "メモリ",
+    "memory": "メモリー",
     "settings": "設定",
-    "instructions": "Instructions",
-    "toast_call_started": "Call started!",
-    "toast_call_failed": "Could not start call."
+    "instructions": "指示",
+    "toast_call_started": "通話を開始しました！",
+    "toast_call_failed": "通話を開始できませんでした。"
   },
   "ChatRatingPrompt": {
-    "question": "会話はどうですか？",
-    "toast_thanks": "Thanks for your rating!",
-    "toast_failed": "Could not submit rating."
+    "question": "会話の調子はいかがですか？",
+    "toast_thanks": "評価ありがとうございます！",
+    "toast_failed": "評価を送信できませんでした。"
   },
   "ChatSettingsPanel": {
-    "loading": "… を読み込み中",
+    "loading": "読み込み中…",
     "error": "設定の読み込みに失敗しました。",
-    "saving": "… の保存",
-    "allow_messages": "文字メッセージを許可する",
+    "saving": "保存中…",
+    "allow_messages": "キャラクターからのメッセージを許可",
     "background_display": "背景表示",
     "lust_level": "欲望レベル",
-    "response_length": "応答の長さ",
+    "response_length": "返信の長さ",
     "language": "言語",
-    "toast_saved": "Settings saved.",
-    "toast_save_failed": "Could not save settings."
+    "toast_saved": "設定を保存しました。",
+    "toast_save_failed": "設定を保存できませんでした。"
   },
   "NewGroupView": {
-    "heading": "このグループに誰を追加したいですか？",
-    "group_name_label": "グループに名前をつけましょう",
+    "heading": "グループに誰を追加しますか？",
+    "group_name_label": "グループの名前を入力してください",
     "group_name_placeholder": "MyGroup"
   },
   "NewScenarioView": {
-    "heading": "このシナリオでは、どのキャラクターを選びますか？",
-    "create_label": "シナリオを作成する",
+    "heading": "このシナリオに登場させるキャラクターは？",
+    "create_label": "シナリオを作成",
     "placeholder": "ここにシナリオを入力してください..."
   },
   "SelectedCharacterBar": {
-    "selected_list": "登場人物一覧（{count}/{max}）",
+    "selected_list": "選択中のキャラクター（{count}/{max}）",
     "no_selection": "まだキャラクターを選択していません",
     "coming_soon": "近日公開",
-    "create_group": "グループを作成する"
+    "create_group": "グループを作成"
   },
   "GeneratePage": {
     "title": "あなただけの",
-    "title_highlight": "ファンタジーの情景"
+    "title_highlight": "ファンタジーシーンを作ろう"
   },
   "GenerateOptionsGrid": {
     "select_star": "スターを選択",
-    "required": "(必須)",
+    "stars_count": "スター{count}人",
+    "required": "（必須）",
     "optional": "（任意）",
     "action": "アクション",
     "setting": "設定",
-    "mood": "気分",
-    "creative_input": "クリエイティブなアイデア（上級）",
-    "creator_tier": "クリエイターティア限定",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars"
+    "mood": "ムード",
+    "creative_input": "クリエイティブ入力（上級）",
+    "creator_tier": "クリエイタープラン限定"
   },
   "GenerateTypeToggle": {
     "still_images": "静止画",
-    "animated_scenes": "アニメーションシーン",
+    "animated_scenes": "アニメーション",
     "mode": "モード"
   },
   "GenerateControls": {
-    "visual_label": "画像：",
-    "orientation_label": "オリエンテーション：",
-    "cinematic_desc": "プロンプトの精度が高く、高品質な結果が得られる",
-    "realistic_desc": "照明効果を強化した、極めてリアルなビジュアル",
-    "anime_desc": "鮮やかな色彩を特徴とする、スタイリッシュなアニメ調の美学"
+    "visual_label": "ビジュアル：",
+    "orientation_label": "向き：",
+    "cinematic_desc": "プロンプト精度が高く、高品質な仕上がり",
+    "realistic_desc": "照明を強化した、超リアルなビジュアル"
   },
   "GenerateButton": {
-    "generate_image": "画像を生成する"
+    "generate_image": "画像を生成"
   },
   "SelectStarModal": {
     "title": "スターを選択",
-    "search_placeholder": "文字を検索...",
-    "loading": "キャラクターを読み込み中...",
-    "no_results": "該当する文字が見つかりませんでした。",
-    "selected_count": "{count} of {max} selected",
-    "done": "Done"
+    "search_placeholder": "キャラクターを検索...",
+    "no_results": "キャラクターが見つかりませんでした。",
+    "selected_count": "{max}人中{count}人を選択",
+    "done": "完了"
+  },
+  "PickOptionModal": {
+    "loading": "オプションを読み込み中...",
+    "no_results": "利用可能なオプションがありません。"
   },
   "GenerateSceneModal": {
     "title_remix": "リミックス",
     "title_video": "画像から動画へ",
-    "title_edit": "画像を編集する",
+    "title_edit": "画像を編集",
     "title_speech": "リップシンク動画",
-    "title_enhance": "画像を拡大する",
-    "title_more": "続きを読む"
+    "title_enhance": "画像を高画質化",
+    "title_more": "その他"
   },
   "GenerateVideoControls": {
-    "quality_label": "品質レベル：",
-    "orientation_label": "オリエンテーション：",
-    "duration_label": "所要時間：",
+    "quality_label": "画質レベル：",
+    "orientation_label": "向き：",
+    "duration_label": "長さ：",
     "audio": "音声",
     "balanced_label": "バランス（480p）",
     "balanced_desc": "衣装、背景、エフェクトに最適",
     "ultra_label": "ウルトラ（1080p）",
-    "ultra_desc": "NSFWおよび解剖学的ディテールに最適化されています"
+    "ultra_desc": "NSFWや身体表現のディテールに最適化されています"
+  },
+  "VideoContent": {
+    "motion": "モーション",
+    "select_star": "スターを選択",
+    "required": "（必須）",
+    "creative_input": "クリエイティブ入力",
+    "creator_tier": "クリエイタープラン",
+    "select_star_first": "まずスターを選択してください。",
+    "generating": "生成中...",
+    "generate_video": "動画を生成",
+    "video_ready": "動画の準備ができました！"
+  },
+  "EditContent": {
+    "visual_label": "ビジュアル：",
+    "scene_alt": "編集中のシーン",
+    "model_label": "モデル：",
+    "orientation_label": "向き：",
+    "select_star": "スターを選択",
+    "required": "（必須）",
+    "editing": "編集中...",
+    "edit_scene": "シーンを編集",
+    "edit_complete": "編集が完了しました！"
+  },
+  "SpeechContent": {
+    "scene_label": "シーン",
+    "audio_script": "音声スクリプト",
+    "voice": "音声",
+    "required": "（必須）",
+    "select_voice_first": "まず音声を選択してください。",
+    "enter_script_first": "まず音声スクリプトを入力してください。",
+    "generating": "生成中...",
+    "generate_speech": "音声を生成",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "EnhanceContent": {
+    "description": "高画質化すると、画像がよりシャープになり解像度が向上します",
+    "enhancing": "高画質化中...",
+    "enhance_scene": "シーンを高画質化",
+    "enhance_complete": "高画質化が完了しました！"
+  },
+  "RemixContent": {
+    "select_star_first": "まずスターを選択してください。",
+    "generating": "生成中...",
+    "remix_scene": "シーンをリミックス",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "StillStylePresent": {
+    "generating": "生成中...",
+    "generate_image": "画像を生成",
+    "image_ready": "画像の準備ができました！"
+  },
+  "StillEditStyle": {
+    "generating": "生成中...",
+    "generate_image": "画像を生成",
+    "image_ready": "画像の準備ができました！",
+    "model_label": "モデル：",
+    "orientation_label": "向き：",
+    "visual_label": "ビジュアル：",
+    "select_image": "画像を選択"
+  },
+  "AnimatedStylePresent": {
+    "generating": "生成中...",
+    "generate_scene": "シーンを生成",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "AnimatedImageToVideo": {
+    "image": "画像",
+    "required": "（必須）",
+    "motion": "モーション",
+    "creative_input_advanced": "クリエイティブ入力（上級）",
+    "creator_tier_exclusive": "クリエイタープラン限定",
+    "generating": "生成中...",
+    "generate_scene": "シーンを生成",
+    "select_image": "画像を選択",
+    "select_star": "スターを選択",
+    "stars_count": "スター{count}人",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "AnimatedExtendVideo": {
+    "video": "動画",
+    "required": "（必須）",
+    "select_star": "スターを選択",
+    "stars_count": "スター{count}人",
+    "motion": "モーション",
+    "creative_input_advanced": "クリエイティブ入力（上級）",
+    "creator_tier_exclusive": "クリエイタープラン限定",
+    "generating": "生成中...",
+    "generate_scene": "シーンを生成",
+    "select_video": "動画を選択",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "AnimatedTalking": {
+    "image_video": "画像／動画",
+    "required": "（必須）",
+    "select_star": "スターを選択",
+    "stars_count": "スター{count}人",
+    "voice": "音声",
+    "audio_script": "音声スクリプト",
+    "generating": "生成中...",
+    "generate_scene": "シーンを生成",
+    "select_image_video": "画像／動画を選択",
+    "scene_ready": "シーンの準備ができました！"
+  },
+  "CreativeInputModal": {
+    "title": "クリエイティブ入力",
+    "placeholder": "シーンの追加ディテールを入力...",
+    "enrich_with_ai": "AIで強化",
+    "enrich_failed": "プロンプトを強化できませんでした。",
+    "save": "保存"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "まだ生成されたシーンはありません",
+    "generating": "生成中...",
+    "scene_alt": "生成されたシーン"
+  },
+  "GenerateScenePage": {
+    "download_started": "ダウンロードを準備中...",
+    "download_saved": "ダウンロードを保存しました。",
+    "download_failed": "ファイルを保存できませんでした。代わりに開きます。",
+    "link_copied": "リンクをコピーしました！",
+    "copy_failed": "リンクをコピーできませんでした。",
+    "scene_deleted": "シーンを削除しました。",
+    "delete_failed": "シーンを削除できませんでした。",
+    "not_available": "まだ利用できません。",
+    "scene_not_found": "シーンが見つかりません",
+    "scene_alt": "生成されたシーン",
+    "thumbnail_alt": "サムネイル",
+    "generated_label": "生成された{type}"
+  },
+  "GenerationToasts": {
+    "complete": "生成が完了しました！",
+    "restarted": "生成を再開しました。処理中...",
+    "retry_failed": "再試行に失敗しました。",
+    "started": "生成を開始しました。処理中...",
+    "failed": "生成に失敗しました。",
+    "retry": "再試行"
   },
   "CreatePage": {
-    "title": "[作成]",
-    "title_highlight": "コンパニオン",
-    "prev": "前へ",
+    "title": "あなただけの",
+    "title_highlight": "コンパニオンを作成",
+    "prev": "戻る",
     "next": "次へ",
     "generate": "生成",
-    "image_gen_failed": "Character created but image generation failed to start.",
-    "create_failed": "Failed to create character.",
-    "save_tags_failed": "Failed to save tags."
+    "image_gen_failed": "キャラクターは作成されましたが、画像生成を開始できませんでした。",
+    "create_failed": "キャラクターの作成に失敗しました。",
+    "save_tags_failed": "タグの保存に失敗しました。"
   },
   "CreateStep1": {
-    "ethnic_influence": "民族的な影響",
+    "ethnic_influence": "民族的特徴",
     "eye_color": "瞳の色",
-    "eye_intensity": "目の輝き",
+    "eye_intensity": "目力の強さ",
     "facial_shape": "顔の形",
-    "figure_type": "図の種類",
-    "hair_color": "ヘアカラー",
-    "hair_style": "ヘアスタイル",
-    "hip_profile": "ヒップのプロファイル",
-    "bust_profile": "バストのプロフィール",
+    "figure_type": "体型",
+    "hair_color": "髪の色",
+    "hair_style": "髪型",
+    "hip_profile": "ヒップライン",
+    "bust_profile": "バストライン",
     "skin_tone": "肌の色"
   },
   "CreateStep2": {
     "character_name": "キャラクター名",
     "character_age": "キャラクターの年齢",
-    "gender": "Gender",
-    "gender_female": "Female",
-    "gender_male": "Male",
-    "gender_non_binary": "Non-binary"
+    "gender": "性別",
+    "gender_female": "女性",
+    "gender_male": "男性",
+    "gender_non_binary": "ノンバイナリー"
   },
   "CharacterInfo": {
     "heading": "キャラクター情報",
     "voice": "音声",
-    "personality": "パーソナリティ・アーキタイプ",
-    "relationship": "人間関係の力学",
-    "kinks": "「キンクス＆コンフォーツ」",
+    "personality": "パーソナリティタイプ",
+    "relationship": "関係性",
+    "kinks": "好みと安心感",
+    "hobby": "趣味",
     "select_voice": "音声を選択",
     "select_personality": "性格を選択",
-    "select_relationship": "関係を選択してください",
-    "select_kinks": "「キンクス」を選択",
-    "hobby": "Hobby",
-    "select_hobby": "Select Hobby",
-    "custom": "Custom"
+    "select_relationship": "関係性を選択",
+    "select_kinks": "好みを選択",
+    "select_hobby": "趣味を選択",
+    "custom": "カスタム"
   },
   "CharacterInfoCard": {
-    "select": "選択 {title}"
+    "select": "{title}を選択"
   },
   "CreateStep3": {
-    "ai_enrichment": "AIによる機能強化（オートコンプリート）",
-    "ai_subtitle": "AIを活用して空白を埋め、より深みのあるキャラクターを作り上げる",
-    "backstory": "背景",
-    "backstory_placeholder": "「バックストーリー」が設定されていません",
-    "custom_physical": "カスタム・フィジカル",
-    "custom_physical_placeholder": "カスタム物理セットなし",
-    "custom_face": "カスタムフェイスの詳細",
-    "custom_face_placeholder": "カスタムフェイスの詳細が設定されていません",
-    "greeting": "ご挨拶",
-    "greeting_placeholder": "挨拶文が設定されていません",
+    "ai_enrichment": "AIによる補完（オートコンプリート）",
+    "ai_subtitle": "AIで空欄を埋めて、より深みのあるキャラクターに",
+    "backstory": "バックストーリー",
+    "backstory_placeholder": "バックストーリーが未設定です",
+    "custom_physical": "カスタム体型設定",
+    "custom_physical_placeholder": "カスタム体型設定が未設定です",
+    "custom_face": "カスタム顔設定",
+    "custom_face_placeholder": "カスタム顔設定が未設定です",
+    "greeting": "あいさつ文",
+    "greeting_placeholder": "あいさつ文が未設定です",
     "personality_details": "性格の詳細",
-    "personality_details_placeholder": "人物に関する詳細が設定されていません",
-    "toast_enriched": "Character enriched with AI.",
-    "toast_enrich_failed": "AI enrichment failed."
+    "personality_details_placeholder": "性格の詳細が未設定です",
+    "toast_enriched": "AIによってキャラクターが強化されました。",
+    "toast_enrich_failed": "AIによる強化に失敗しました。"
   },
   "CreateStep4": {
-    "tab_appearance": "外観",
+    "tab_appearance": "外見",
     "tab_personality": "性格",
-    "preview": "キャラクターのプレビュー",
-    "generate_process": "プロセスの生成",
-    "meet_companion": "あなたのパートナーをご紹介",
-    "no_character": "文字データが見つかりません。",
-    "tags": "タグ ({count}/10)",
+    "preview": "キャラクターをプレビュー",
+    "generate_process": "生成プロセス",
+    "meet_companion": "あなたのコンパニオンと対面",
+    "no_character": "キャラクターデータがありません。",
+    "tags": "タグ（{count}/10）",
     "tag_placeholder": "タグを追加...",
     "voice": "音声",
     "ethnic": "民族",
     "facial_shape": "顔の形",
-    "hair_style": "ヘアスタイル",
-    "eye_intensity": "目の輝き",
-    "figure_type": "図の種類",
+    "hair_style": "髪型",
+    "eye_intensity": "目力の強さ",
+    "figure_type": "体型",
     "bust": "バスト",
     "hip": "ヒップ",
     "personality_attr": "性格",
-    "relationship": "関係",
-    "kinks_comforts": "「キンクス＆コンフォーツ」",
+    "relationship": "関係性",
+    "kinks_comforts": "好みと安心感",
     "social_role": "社会的役割",
-    "backstory": "背景",
-    "physical": "物理的",
+    "backstory": "バックストーリー",
+    "physical": "体型",
     "face_details": "顔の詳細",
-    "greeting": "ご挨拶",
+    "greeting": "あいさつ文",
     "personality_details": "性格の詳細",
-    "hair_color": "ヘアカラー",
+    "hair_color": "髪の色",
     "eye_color": "瞳の色",
     "skin_tone": "肌の色",
-    "saved": "Saved.",
-    "save_failed": "Failed to save.",
-    "image_failed": "Image generation failed",
-    "retry": "Retry",
-    "save": "Save"
+    "saved": "保存しました。",
+    "save_failed": "保存に失敗しました。",
+    "image_failed": "画像生成に失敗しました",
+    "retry": "再試行",
+    "save": "保存"
   },
   "OptionModal": {
     "loading": "読み込み中...",
-    "search_placeholder": "Search..."
+    "search_placeholder": "検索..."
   },
   "CreateTagsField": {
-    "tags": "タグ ({count}/{max})",
-    "no_tags": "タグは設定されていません",
+    "tags": "タグ（{count}/{max}）",
+    "no_tags": "タグが未設定です",
     "add_tag": "タグを追加..."
   },
-  "_comment": "i18n coverage: all user-visible strings are extracted. fr.json mirrors en.json structurally and still holds English copy as placeholders pending translation.",
-  "PickOptionModal": {
-    "loading": "Loading options...",
-    "no_results": "No options available."
-  },
-  "VideoContent": {
-    "motion": "Motion",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "creative_input": "Creative Input",
-    "creator_tier": "Creator Tier",
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "generate_video": "Generate Video",
-    "video_ready": "Video ready!"
-  },
-  "EditContent": {
-    "visual_label": "Visual:",
-    "scene_alt": "Scene being edited",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "spark_desc": "Fast and efficient editing",
-    "pro_desc": "High quality, detailed edits",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "editing": "Editing...",
-    "edit_scene": "Edit Scene",
-    "edit_complete": "Edit complete!"
-  },
-  "SpeechContent": {
-    "aurora_sublabel": "(Character default)",
-    "scene_label": "Scene",
-    "audio_script": "Audio Script",
-    "voice": "Voice",
-    "required": "(Required)",
-    "select_voice_first": "Please select a voice first.",
-    "enter_script_first": "Please enter an audio script first.",
-    "generating": "Generating...",
-    "generate_speech": "Generate Speech",
-    "scene_ready": "Scene ready!"
-  },
-  "EnhanceContent": {
-    "description": "Enhancing will make your image sharper and improve its resolution",
-    "enhancing": "Enhancing...",
-    "enhance_scene": "Enhance Scene",
-    "enhance_complete": "Enhancement complete!"
-  },
-  "RemixContent": {
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "remix_scene": "Remix Scene",
-    "scene_ready": "Scene ready!"
-  },
-  "StillStylePresent": {
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!"
-  },
-  "StillEditStyle": {
-    "upload_failed": "Upload failed.",
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "visual_label": "Visual:",
-    "select_image": "Select image"
-  },
-  "AnimatedStylePresent": {
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "scene_label": "Scene {id}",
-    "add": "Add",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedImageToVideo": {
-    "image": "Image",
-    "required": "(Required)",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image": "Select Image",
-    "select_star": "Select Star",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedExtendVideo": {
-    "video": "Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_video": "Select Video",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedTalking": {
-    "image_video": "Image / Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "voice": "Voice",
-    "audio_script": "Audio Script",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image_video": "Select Image / Video",
-    "scene_ready": "Scene ready!"
-  },
-  "CreativeInputModal": {
-    "title": "Creative Input",
-    "placeholder": "Describe extra details for your scene...",
-    "enrich_with_ai": "Enrich with AI",
-    "enrich_failed": "Could not enrich prompt.",
-    "save": "Save"
-  },
-  "GenerateResultGrid": {
-    "no_scenes": "No generated scenes yet",
-    "generating": "Generating...",
-    "scene_alt": "Generated scene"
-  },
-  "GenerateScenePage": {
-    "download_started": "Preparing download...",
-    "download_saved": "Download saved.",
-    "download_failed": "Could not save the file. Opening it instead.",
-    "link_copied": "Link copied to clipboard!",
-    "copy_failed": "Could not copy the link.",
-    "scene_deleted": "Scene deleted.",
-    "delete_failed": "Could not delete the scene.",
-    "not_available": "Not available yet.",
-    "scene_not_found": "Scene not found",
-    "scene_alt": "Generated scene",
-    "thumbnail_alt": "Thumbnail",
-    "generated_label": "Generated {type}"
-  },
-  "GenerationToasts": {
-    "complete": "Generation complete!",
-    "restarted": "Generation restarted, processing...",
-    "retry_failed": "Retry failed.",
-    "started": "Generation started, processing...",
-    "failed": "Generation failed.",
-    "retry": "Retry"
-  },
   "SubscriptionSection": {
-    "title": "Subscription",
-    "current_plan": "Current plan",
-    "renews_expires": "Renews/expires {date}",
-    "plan_free": "Free",
-    "plan_free_caption": "Limited access",
-    "plan_monthly": "Monthly",
-    "plan_monthly_caption": "Billed every month",
-    "plan_yearly": "Yearly",
-    "plan_yearly_caption": "Billed once a year",
-    "change_plan": "Change plan",
-    "upgrade_to_premium": "Upgrade to Premium",
-    "current": "Current",
-    "opening": "Opening…",
-    "action_switch": "Switch",
-    "action_upgrade": "Upgrade",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to unlock premium features",
-    "sign_up_now": "Sign up now",
-    "manage_billing": "Manage billing",
-    "cancel_subscription": "Cancel subscription",
-    "billing_history": "Billing history",
-    "no_invoices": "No invoices yet.",
-    "column_amount": "Amount",
-    "column_date": "Date",
-    "column_status": "Status",
-    "column_invoice": "Invoice",
+    "title": "サブスクリプション",
+    "current_plan": "現在のプラン",
+    "renews_expires": "{date}に更新/失効",
+    "plan_free": "無料",
+    "plan_free_caption": "利用制限あり",
+    "plan_monthly": "月額",
+    "plan_monthly_caption": "毎月請求",
+    "plan_yearly": "年額",
+    "plan_yearly_caption": "年1回請求",
+    "change_plan": "プランを変更",
+    "upgrade_to_premium": "プレミアムにアップグレード",
+    "current": "現在",
+    "opening": "開いています…",
+    "action_switch": "切り替え",
+    "action_upgrade": "アップグレード",
+    "get_started": "はじめる",
+    "get_started_caption": "登録してプレミアム機能を解除",
+    "sign_up_now": "今すぐ登録",
+    "manage_billing": "請求情報を管理",
+    "cancel_subscription": "サブスクリプションを解約",
+    "billing_history": "請求履歴",
+    "no_invoices": "請求書はまだありません。",
+    "column_amount": "金額",
+    "column_date": "日付",
+    "column_status": "ステータス",
+    "column_invoice": "請求書",
     "pdf": "PDF",
-    "cancel_confirm_body": "Are you sure you want to cancel your subscription? You'll keep access until {date}.",
-    "end_of_billing_period": "the end of your billing period",
-    "keep_subscription": "Keep subscription",
-    "confirm_cancel": "Confirm cancel",
-    "toast_payment_received": "Payment received. Your plan updates once Stripe confirms it.",
-    "toast_upgrade_cancelled": "Upgrade cancelled.",
-    "toast_back_from_portal": "Back from the billing portal.",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_subscription_active": "Subscription active.",
-    "toast_payments_unavailable": "Payments are not available yet. You have not been charged.",
-    "toast_portal_failed": "Could not open the billing portal.",
-    "toast_portal_unavailable": "The billing portal is not available yet.",
-    "toast_cancel_failed": "Could not cancel subscription.",
-    "toast_subscription_cancelled": "Subscription cancelled."
+    "cancel_confirm_body": "サブスクリプションを解約してもよろしいですか？{date}まではご利用いただけます。",
+    "end_of_billing_period": "請求期間の終了日",
+    "keep_subscription": "解約しない",
+    "confirm_cancel": "解約する",
+    "toast_payment_received": "お支払いを受け付けました。Stripeでの確認が完了次第、プランが更新されます。",
+    "toast_upgrade_cancelled": "アップグレードをキャンセルしました。",
+    "toast_back_from_portal": "請求ポータルから戻りました。",
+    "toast_checkout_failed": "決済を開始できませんでした。お客様への請求は発生していません。",
+    "toast_subscription_active": "サブスクリプションが有効になりました。",
+    "toast_payments_unavailable": "現在お支払い機能はご利用いただけません。お客様への請求は発生していません。",
+    "toast_portal_failed": "請求ポータルを開けませんでした。",
+    "toast_portal_unavailable": "請求ポータルは現在ご利用いただけません。",
+    "toast_cancel_failed": "サブスクリプションを解約できませんでした。",
+    "toast_subscription_cancelled": "サブスクリプションを解約しました。"
   },
   "WalletSection": {
-    "title": "Wallet",
-    "balance": "Balance",
+    "title": "ウォレット",
+    "balance": "残高",
     "dreamcoins": "Dreamcoins",
-    "image_credits": "Image credits:",
-    "video_credits": "Video credits:",
-    "credits_reset": "Credits reset:",
-    "not_scheduled": "Not scheduled",
-    "buy_more_coins": "Buy more coins",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to buy Dreamcoins",
-    "sign_up_now": "Sign up now",
-    "transactions": "Transactions",
-    "no_transactions": "No transactions yet.",
-    "column_reason": "Reason",
-    "column_date": "Date",
-    "column_coins": "Coins",
-    "pagination": "Page {page} of {pageCount} · {total} transactions",
-    "prev": "Prev",
-    "next": "Next",
-    "toast_payment_received": "Payment received. Your coins will appear once Stripe confirms it.",
-    "toast_purchase_cancelled": "Purchase cancelled."
+    "image_credits": "画像クレジット：",
+    "video_credits": "動画クレジット：",
+    "credits_reset": "クレジットのリセット：",
+    "not_scheduled": "未定",
+    "buy_more_coins": "コインを購入",
+    "get_started": "はじめる",
+    "get_started_caption": "登録してDreamcoinsを購入",
+    "sign_up_now": "今すぐ登録",
+    "transactions": "取引履歴",
+    "no_transactions": "取引履歴はまだありません。",
+    "column_reason": "内容",
+    "column_date": "日付",
+    "column_coins": "コイン",
+    "pagination": "{pageCount}ページ中{page}ページ目 ・ 取引{total}件",
+    "prev": "前へ",
+    "next": "次へ",
+    "toast_payment_received": "お支払いを受け付けました。Stripeでの確認が完了次第、コインが反映されます。",
+    "toast_purchase_cancelled": "購入をキャンセルしました。"
   },
   "ProfileSection": {
-    "unnamed": "Unnamed",
-    "visit_profile": "Visit profile",
+    "unnamed": "名前未設定",
+    "visit_profile": "プロフィールを見る",
     "dreamcoins": "Dreamcoins",
-    "wallet": "Wallet",
-    "wallet_caption": "Buy Dreamcoins and review your transactions",
-    "subscription": "Subscription",
-    "tier_free": "Free",
-    "change_password": "Change password",
-    "change_password_caption": "Update the password you sign in with",
-    "language": "Language",
-    "coming_soon": "Coming soon.",
-    "sign_out": "Sign out"
+    "wallet": "ウォレット",
+    "wallet_caption": "Dreamcoinsの購入と取引履歴の確認",
+    "subscription": "サブスクリプション",
+    "tier_free": "無料",
+    "change_password": "パスワードを変更",
+    "change_password_caption": "ログインに使用するパスワードを更新",
+    "language": "言語",
+    "sign_out": "ログアウト"
   },
   "ProfileView": {
-    "unnamed": "Unnamed",
-    "interactions": "interactions",
-    "followers": "followers",
-    "following": "following",
-    "edit_profile": "Edit profile",
-    "tab_highlighted": "Highlighted",
-    "tab_characters": "Characters",
-    "tab_activity": "Activity",
-    "filter_style": "Style",
-    "filter_sort": "Sort",
-    "nothing_to_show": "Nothing to show yet.",
-    "loading": "Loading…",
-    "no_matches": "No characters match your style filters",
-    "create_new_character": "CREATE NEW CHARACTER",
-    "create": "Create"
+    "unnamed": "名前未設定",
+    "interactions": "インタラクション",
+    "followers": "フォロワー",
+    "following": "フォロー中",
+    "edit_profile": "プロフィールを編集",
+    "tab_highlighted": "ハイライト",
+    "tab_characters": "キャラクター",
+    "tab_activity": "アクティビティ",
+    "filter_style": "スタイル",
+    "filter_sort": "並べ替え",
+    "nothing_to_show": "まだ表示するものがありません。",
+    "loading": "読み込み中…",
+    "no_matches": "スタイルフィルターに一致するキャラクターがありません",
+    "create_new_character": "新しいキャラクターを作成",
+    "create": "作成"
   },
   "ProfileEditModal": {
-    "title": "Edit profile",
-    "uploading": "Uploading…",
-    "change_photo": "Change photo",
-    "display_name": "Display name",
-    "display_name_placeholder": "How your name appears",
-    "username": "Username",
-    "username_placeholder": "Your handle",
-    "save": "Save changes",
-    "toast_upload_failed": "Could not upload that image",
-    "toast_save_failed": "Could not save your profile",
-    "toast_saved": "Profile updated"
+    "title": "プロフィールを編集",
+    "uploading": "アップロード中…",
+    "change_photo": "写真を変更",
+    "display_name": "表示名",
+    "display_name_placeholder": "表示される名前",
+    "username": "ユーザー名",
+    "username_placeholder": "あなたのハンドル名",
+    "save": "変更を保存",
+    "toast_upload_failed": "画像をアップロードできませんでした",
+    "toast_save_failed": "プロフィールを保存できませんでした",
+    "toast_saved": "プロフィールを更新しました"
   },
   "ChangePasswordModal": {
-    "title": "Change password",
-    "google_account": "This account signs in with Google, so there is no password to change.",
-    "close": "Close",
-    "current_password": "Current password",
-    "new_password": "New password",
-    "confirm_new_password": "Confirm new password",
-    "submit": "Update password",
-    "error_mismatch": "The new passwords do not match.",
-    "error_too_short": "Use at least {count} characters.",
-    "error_same_password": "The new password is the same as the current one.",
-    "error_no_email": "This account has no email address to verify against.",
-    "error_wrong_current": "That current password is not correct.",
-    "toast_changed": "Password changed"
+    "title": "パスワードを変更",
+    "google_account": "このアカウントはGoogleでログインしているため、変更するパスワードはありません。",
+    "close": "閉じる",
+    "current_password": "現在のパスワード",
+    "new_password": "新しいパスワード",
+    "confirm_new_password": "新しいパスワード（確認）",
+    "submit": "パスワードを更新",
+    "error_mismatch": "新しいパスワードが一致しません。",
+    "error_too_short": "{count}文字以上で入力してください。",
+    "error_same_password": "新しいパスワードが現在のパスワードと同じです。",
+    "error_no_email": "このアカウントには確認用のメールアドレスが登録されていません。",
+    "error_wrong_current": "現在のパスワードが正しくありません。",
+    "toast_changed": "パスワードを変更しました"
   },
   "NavBar": {
-    "log_in": "Log in",
-    "sign_up": "Sign up",
-    "coins": "Coins",
-    "upgrade": "Upgrade",
-    "close_notifications": "Close notifications",
-    "notifications": "Notifications",
-    "loading": "Loading…",
-    "no_notifications": "No notifications to show."
+    "log_in": "ログイン",
+    "sign_up": "新規登録",
+    "coins": "コイン",
+    "upgrade": "アップグレード",
+    "close_notifications": "通知を閉じる",
+    "notifications": "通知",
+    "loading": "読み込み中…",
+    "no_notifications": "表示する通知はありません。"
   },
   "SideBar": {
-    "create": "Create",
-    "explore": "Explore",
-    "chat": "Chat",
-    "generate": "Generate",
-    "my_ai": "My AI",
-    "feed": "Feed",
-    "upgrade": "Upgrade",
-    "sign_in": "Sign in",
-    "account": "Account",
-    "sign_out": "Sign out"
+    "create": "作成",
+    "explore": "探索",
+    "chat": "チャット",
+    "generate": "生成",
+    "my_ai": "マイAI",
+    "feed": "フィード",
+    "upgrade": "アップグレード",
+    "sign_in": "ログイン",
+    "account": "アカウント",
+    "sign_out": "ログアウト"
   },
   "ChatTemplate": {
-    "dreamcoins_left": "{count} dreamcoins left",
-    "bonus_on_signup": "+50 on signup",
-    "sign_up_free": "Sign up free",
-    "login": "Login",
-    "join_free": "Join free"
+    "dreamcoins_left": "残りDreamcoins {count}枚",
+    "bonus_on_signup": "登録で+50",
+    "sign_up_free": "無料登録",
+    "login": "ログイン",
+    "join_free": "無料で参加"
   },
   "AuthTemplate": {
     "copyright": "Copyright© {year}. Unscripti AI"
   },
   "ChatMemoryPanel": {
-    "placeholder": "Add a memory…",
-    "add": "Add",
-    "loading": "Loading…",
-    "empty": "No memories yet.",
-    "load_failed": "Could not load memories.",
-    "toast_saved": "Memory saved.",
-    "toast_save_failed": "Could not save memory."
+    "placeholder": "メモリーを追加…",
+    "add": "追加",
+    "loading": "読み込み中…",
+    "empty": "メモリーはまだありません。",
+    "load_failed": "メモリーを読み込めませんでした。",
+    "toast_saved": "メモリーを保存しました。",
+    "toast_save_failed": "メモリーを保存できませんでした。"
   },
   "ChatInstructionsPanel": {
-    "placeholder": "Add custom instructions…",
-    "save": "Save",
-    "loading": "Loading…",
-    "load_failed": "Could not load instructions.",
-    "toast_saved": "Instructions saved.",
-    "toast_save_failed": "Could not save instructions."
+    "placeholder": "カスタム指示を追加…",
+    "save": "保存",
+    "loading": "読み込み中…",
+    "load_failed": "指示を読み込めませんでした。",
+    "toast_saved": "指示を保存しました。",
+    "toast_save_failed": "指示を保存できませんでした。"
   },
   "ChatVoicePanel": {
-    "loading": "Loading…",
-    "load_failed": "Could not load voices.",
-    "search_placeholder": "Search voices…",
-    "no_voices": "No voices found.",
-    "female": "Female",
-    "male": "Male",
-    "selected": "Selected",
-    "toast_update_failed": "Could not update voice."
+    "loading": "読み込み中…",
+    "load_failed": "音声を読み込めませんでした。",
+    "search_placeholder": "音声を検索…",
+    "no_voices": "音声が見つかりませんでした。",
+    "female": "女性",
+    "male": "男性",
+    "selected": "選択中",
+    "toast_update_failed": "音声を更新できませんでした。"
   },
   "ChatGuestLimitPrompt": {
-    "title": "You've reached the guest limit",
-    "description": "Sign up to keep chatting — your conversation will be saved to your account.",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "ゲスト利用の上限に達しました",
+    "description": "登録してチャットを続けましょう。会話はアカウントに保存されます。",
+    "sign_up_free": "無料登録",
+    "log_in": "ログイン"
   },
   "ChatMessageActions": {
-    "copy": "Copy message",
-    "edit": "Edit message",
-    "more": "More actions",
-    "duplicate": "Duplicate from here",
-    "delete": "Delete"
+    "copy": "メッセージをコピー",
+    "edit": "メッセージを編集",
+    "more": "その他の操作",
+    "duplicate": "ここから複製",
+    "delete": "削除"
   },
   "ChatMessageBubble": {
-    "play_voice": "Play voice",
-    "cancel": "Cancel",
-    "save": "Save",
-    "toast_voice_failed": "Could not play voice."
+    "play_voice": "音声を再生",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "toast_voice_failed": "音声を再生できませんでした。"
   },
   "CharacterEditSections": {
-    "profile_label": "Profile",
-    "profile_description": "Their avatar, and who can find them.",
-    "appearance_label": "Appearance",
-    "appearance_description": "Changing these updates how new images are generated; regenerate the avatar to match.",
-    "details_label": "Details",
-    "details_description": "Name, age and the traits that shape how they speak.",
-    "story_label": "Story",
-    "story_description": "Backstory, greeting and the prompts behind their personality."
+    "profile_label": "プロフィール",
+    "profile_description": "アバターと公開範囲。",
+    "appearance_label": "外見",
+    "appearance_description": "変更すると新しく生成される画像に反映されます。アバターも合わせて再生成してください。",
+    "details_label": "詳細",
+    "details_description": "名前、年齢、話し方を形づくる特徴。",
+    "story_label": "ストーリー",
+    "story_description": "バックストーリー、あいさつ文、性格を形づくるプロンプト。"
   },
   "CharacterEditNav": {
-    "title": "Manage"
+    "title": "管理"
   },
   "CharacterEditForm": {
-    "back_to_profile": "Back to profile",
-    "save_changes": "Save changes",
-    "toast_saved": "Changes saved",
-    "toast_save_failed": "Could not save changes"
+    "back_to_profile": "プロフィールに戻る",
+    "save_changes": "変更を保存",
+    "toast_saved": "変更を保存しました",
+    "toast_save_failed": "変更を保存できませんでした"
   },
   "CharacterEditAvatar": {
-    "description": "Regenerating is free, and replaces the picture shown everywhere this character appears.",
-    "generating": "Generating…",
-    "regenerate": "Regenerate image",
-    "toast_ready": "New avatar ready",
-    "toast_no_image": "Generation finished without an image",
-    "toast_failed": "Image generation failed",
-    "toast_start_failed": "Could not start image generation"
+    "description": "再生成は無料で、このキャラクターが表示されるすべての場所の画像が置き換わります。",
+    "generating": "生成中…",
+    "regenerate": "画像を再生成",
+    "toast_ready": "新しいアバターの準備ができました",
+    "toast_no_image": "生成は完了しましたが画像がありません",
+    "toast_failed": "画像生成に失敗しました",
+    "toast_start_failed": "画像生成を開始できませんでした"
   },
   "CharacterVisibilityField": {
-    "title": "Visibility",
-    "public_label": "Public",
-    "public_hint": "Anyone can find this character in Explore.",
-    "unlisted_label": "Unlisted",
-    "unlisted_hint": "Only people with the link can open it.",
-    "private_label": "Private",
-    "private_hint": "Only you can see this character.",
-    "toast_updated": "Character is now {visibility}",
-    "toast_failed": "Could not change visibility"
+    "title": "公開範囲",
+    "public_label": "公開",
+    "public_hint": "誰でも「探索」でこのキャラクターを見つけられます。",
+    "unlisted_label": "限定公開",
+    "unlisted_hint": "リンクを知っている人のみ閲覧できます。",
+    "private_label": "非公開",
+    "private_hint": "あなただけがこのキャラクターを見られます。",
+    "toast_updated": "キャラクターの公開設定を{visibility}に変更しました",
+    "toast_failed": "公開設定を変更できませんでした"
   },
   "CharacterDeleteButton": {
-    "delete": "Delete",
-    "confirm_title": "Delete {name}?",
-    "confirm_body": "Their chats and generated media go with them. This cannot be undone.",
-    "confirm_delete": "Delete permanently",
-    "keep": "Keep character",
-    "toast_deleted": "{name} was deleted",
-    "toast_delete_failed": "Could not delete this character"
+    "delete": "削除",
+    "confirm_title": "{name}を削除しますか？",
+    "confirm_body": "チャットや生成されたメディアもすべて削除されます。この操作は取り消せません。",
+    "confirm_delete": "完全に削除",
+    "keep": "キャラクターを残す",
+    "toast_deleted": "{name}を削除しました",
+    "toast_delete_failed": "このキャラクターを削除できませんでした"
   },
   "CharacterEditContent": {
-    "unavailable_title": "Character unavailable",
-    "unavailable_body": "We could not load this character. It may have been deleted.",
-    "unavailable_action": "Back to My AI",
-    "not_yours_title": "This character isn't yours",
-    "not_yours_body": "Only the creator of a character can edit it. You can still chat with this one from its profile.",
-    "not_yours_action": "View profile"
+    "unavailable_title": "キャラクターを利用できません",
+    "unavailable_body": "このキャラクターを読み込めませんでした。削除された可能性があります。",
+    "unavailable_action": "マイAIに戻る",
+    "not_yours_title": "このキャラクターはあなたのものではありません",
+    "not_yours_body": "編集できるのはキャラクターの作成者のみです。プロフィールからチャットすることは可能です。",
+    "not_yours_action": "プロフィールを見る"
   },
   "CharacterManageBar": {
-    "title": "This is your AI",
-    "description": "Edit their details, change who can see them, or delete them.",
-    "manage": "Manage AI"
+    "title": "あなたのAIです",
+    "description": "詳細の編集、公開範囲の変更、削除ができます。",
+    "manage": "AIを管理"
   },
   "AudioModal": {
-    "title": "Audio",
-    "script_placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "scene": "Scene",
-    "voice_preset": "Voice preset",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script.",
-    "scene_happy": "Happy",
-    "scene_natural": "Natural",
-    "scene_sad": "Sad",
-    "scene_angry": "Angry",
-    "scene_fearful": "Fearful",
-    "scene_disgusted": "Disgusted",
-    "scene_surprised": "Surprised"
+    "title": "音声",
+    "script_placeholder": "話してほしい内容を入力…",
+    "enrich": "AIで強化",
+    "scene": "シーン",
+    "voice_preset": "音声プリセット",
+    "save": "保存",
+    "toast_enrich_failed": "スクリプトを強化できませんでした。",
+    "scene_happy": "嬉しい",
+    "scene_natural": "自然",
+    "scene_sad": "悲しい",
+    "scene_angry": "怒り",
+    "scene_fearful": "恐れ",
+    "scene_disgusted": "嫌悪",
+    "scene_surprised": "驚き"
   },
   "ScriptModal": {
-    "title": "Audio script",
-    "placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script."
+    "title": "音声スクリプト",
+    "placeholder": "話してほしい内容を入力…",
+    "enrich": "AIで強化",
+    "save": "保存",
+    "toast_enrich_failed": "スクリプトを強化できませんでした。"
   },
   "SelectMotionModal": {
-    "title": "Select motion",
-    "search_placeholder": "Search motion…",
-    "loading": "Loading motions…",
-    "empty": "No motions found."
+    "title": "モーションを選択",
+    "search_placeholder": "モーションを検索…",
+    "loading": "モーションを読み込み中…",
+    "empty": "モーションが見つかりませんでした。"
   },
   "SelectAssetModal": {
-    "empty": "Nothing generated yet — generate a scene first"
+    "empty": "まだ何も生成されていません。先にシーンを生成してください"
   },
   "VoiceModal": {
-    "title": "Select voice",
-    "empty": "No voices available.",
-    "female": "Female",
-    "male": "Male"
+    "title": "音声を選択",
+    "empty": "利用可能な音声がありません。",
+    "female": "女性",
+    "male": "男性"
   },
   "EditStyle": {
-    "select_star": "Select star",
-    "required": "Required",
-    "image": "Image",
-    "select_image": "Select image"
+    "select_star": "スターを選択",
+    "required": "必須",
+    "image": "画像",
+    "select_image": "画像を選択"
   },
   "SignUpPromptModal": {
-    "title": "Sign up to continue",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "登録して続ける",
+    "sign_up_free": "無料登録",
+    "log_in": "ログイン"
   },
   "InsufficientCoinsModal": {
-    "title": "Out of coins",
-    "balance": "Balance:",
+    "title": "コインが不足しています",
+    "balance": "残高：",
     "dreamcoins": "Dreamcoins",
-    "top_up": "Top up to continue",
-    "not_now": "Not now"
+    "top_up": "チャージして続ける",
+    "not_now": "今はしない"
   },
   "CoinPackageGrid": {
-    "buy": "Buy",
-    "opening_checkout": "Opening checkout…",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_added": "Dreamcoins added.",
-    "toast_added_count": "{count} Dreamcoins added."
+    "buy": "購入",
+    "opening_checkout": "決済画面を開いています…",
+    "toast_checkout_failed": "決済を開始できませんでした。お客様への請求は発生していません。",
+    "toast_added": "Dreamcoinsを追加しました。",
+    "toast_added_count": "Dreamcoinsを{count}枚追加しました。"
   },
   "FeedCard": {
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "chat": "Chat",
-    "share": "Share"
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "chat": "チャット",
+    "share": "シェア"
   },
   "FeedSection": {
-    "loading_more": "Loading more…"
+    "loading_more": "さらに読み込み中…"
   },
   "FeedPaywall": {
-    "title": "Free feed limit reached!",
-    "subtitle": "You must upgrade to premium to get an unlimited feed",
-    "premium_features": "✦ Premium features ✦",
-    "feature_coins": "+1,000 Dreamcoins monthly",
-    "feature_feed": "Unlimited feed",
-    "feature_messages": "Unlimited messages",
-    "feature_media": "Custom images & videos",
-    "feature_calls": "Phone calls",
-    "try_now": "Try now",
-    "much_more": "& much more",
-    "upgrade_cta": "♡ Click here to upgrade now ♡"
+    "title": "無料フィードの上限に達しました！",
+    "subtitle": "フィードを無制限に見るにはプレミアムへのアップグレードが必要です",
+    "premium_features": "✦ プレミアム特典 ✦",
+    "feature_coins": "毎月+1,000 Dreamcoins",
+    "feature_feed": "無制限のフィード",
+    "feature_messages": "無制限のメッセージ",
+    "feature_media": "オリジナル画像・動画",
+    "feature_calls": "通話",
+    "try_now": "今すぐ試す",
+    "much_more": "その他多数",
+    "upgrade_cta": "♡ 今すぐアップグレード ♡"
   },
   "MyAiCard": {
-    "pending": "Pending",
-    "profile": "Profile",
-    "chat": "Chat"
+    "pending": "生成中",
+    "profile": "プロフィール",
+    "chat": "チャット"
   },
   "MyAiSection": {
-    "signup_title": "Sign up to start your collection",
-    "signup_description": "Every AI character you create is saved here to your account.",
-    "sign_up_free": "Sign up free",
-    "start_creating": "Start creating",
-    "empty": "You haven't created any AI characters yet.",
-    "create_first": "Create your first AI",
-    "search_placeholder": "Search by name, style or tag…",
-    "filter_status": "Status",
-    "no_matches": "No characters match your search."
+    "signup_title": "登録してコレクションを始めよう",
+    "signup_description": "作成したAIキャラクターはすべてここ、あなたのアカウントに保存されます。",
+    "sign_up_free": "無料登録",
+    "start_creating": "作成を始める",
+    "empty": "まだAIキャラクターを作成していません。",
+    "create_first": "最初のAIを作成",
+    "search_placeholder": "名前、スタイル、タグで検索…",
+    "filter_status": "ステータス",
+    "no_matches": "検索条件に一致するキャラクターがありません。"
   },
   "ErrorPage": {
-    "title": "Something went wrong",
-    "retry": "Try again"
+    "title": "何か問題が発生しました",
+    "retry": "再試行"
   },
   "Errors": {
-    "not_authenticated": "Not authenticated",
-    "generation_timed_out": "Generation timed out",
-    "generation_failed": "Generation failed"
+    "not_authenticated": "認証されていません",
+    "generation_timed_out": "生成がタイムアウトしました",
+    "generation_failed": "生成に失敗しました"
   },
   "SignUpPrompts": {
-    "generate_scenes": "Sign up to generate scenes — your creations will be saved to your account.",
-    "create_character": "Sign up to bring your companion to life — your creation will be saved to your account.",
-    "manage_scenes": "Sign up to manage your scenes — deleting is only available on your own account.",
-    "enrich_prompt": "Sign up to enrich your prompt with AI."
+    "generate_scenes": "登録してシーンを生成しましょう。作成した作品はアカウントに保存されます。",
+    "create_character": "登録してコンパニオンに命を吹き込みましょう。作成した内容はアカウントに保存されます。",
+    "manage_scenes": "登録してシーンを管理しましょう。削除は自分のアカウントでのみ可能です。",
+    "enrich_prompt": "登録してAIでプロンプトを強化しましょう。"
   }
 }

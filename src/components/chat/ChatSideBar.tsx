@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AddIcon, GroupIcon, NewChatIcon, OpenIcon, SearchIcon } from '@/components/icons';
+import { AddIcon, ChevronDownIcon, GroupIcon, NewChatIcon, OpenIcon, SearchIcon } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -50,10 +50,24 @@ const ChatSideBarTrigger = (props: { className?: string }) => {
   );
 };
 
+const SectionHeader = (props: { label: string; open: boolean; onToggle?: () => void; disabled?: boolean }) => (
+  <button
+    type="button"
+    onClick={props.onToggle}
+    disabled={props.disabled}
+    className="flex h-8 w-full items-center justify-between rounded-md px-2 text-xs font-semibold text-white-75 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-white-75"
+  >
+    <span>{props.label}</span>
+    <span className={`inline-flex transition-transform ${props.open ? 'rotate-180' : ''}`}>
+      <ChevronDownIcon />
+    </span>
+  </button>
+);
+
 const ChatHistoryList = (props: { search: string; onSelect: () => void; scrollRoot: React.RefObject<HTMLDivElement | null> }) => {
   const t = useTranslations('ChatSideBar');
   const { token } = useAuth();
-  const { chatListVersion, setActiveChat } = useChatNavigation();
+  const { activeChat, chatListVersion, setActiveChat } = useChatNavigation();
   const { setMessages, setNextCursor, setHasMoreMessages, setIsTyping } = useChatMessages();
   const { getChatList, getMessages } = useChatService();
   const router = useRouter();
@@ -61,6 +75,7 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void; scrollRo
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [open, setOpen] = useState(true);
   const bottomSentinelRef = useRef<HTMLDivElement>(null);
   const loadingMoreRef = useRef(false);
 
@@ -126,68 +141,78 @@ const ChatHistoryList = (props: { search: string; onSelect: () => void; scrollRo
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <span className="flex h-8 items-center px-2 text-xs font-semibold text-white-75">
-        {t('your_chats', { count: visibleRooms.length })}
-      </span>
+      <SectionHeader
+        label={t('your_chats', { count: visibleRooms.length })}
+        open={open}
+        onToggle={() => setOpen(prev => !prev)}
+      />
 
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {visibleRooms.map(room => (
-            <SidebarMenuItem key={room.id}>
-              <SidebarMenuButton
-                onClick={() => {
-                  setActiveChat({
-                    chatroomId: room.id,
-                    characterId: room.character.id,
-                    name: room.character.name,
-                    image: room.character.image_url,
-                    greetingMessage: '',
-                  });
-                  setMessages([]);
-                  setIsTyping(false);
-                  getMessages(room.id).then((res) => {
-                    const items = res?.content?.messages ?? res?.messages ?? res?.content?.items ?? res?.content ?? res?.data;
-                    if (Array.isArray(items)) {
-                      setMessages([...(items as Record<string, unknown>[])].reverse().map((m, i) => {
-                        const ts = m.timestamp ? new Date(m.timestamp as number) : null;
-                        return {
-                          id: i,
-                          messageId: (m.id ?? m.message_id ?? m._id) as string | undefined,
-                          text: (m.text ?? m.content ?? m.message) as string | undefined,
-                          sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
-                          time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-                          date: ts ? (ts.toDateString() === new Date().toDateString() ? 'Today' : ts.toLocaleDateString([], { month: 'short', day: 'numeric' })) : 'Today',
-                        };
-                      }));
-                      setNextCursor((res?.content?.nextCursor as string) ?? null);
-                      setHasMoreMessages(!!(res?.content?.nextCursor));
-                    }
-                    router.push('/chat');
-                    props.onSelect();
-                  }).catch(() => {
-                    router.push('/chat');
-                    props.onSelect();
-                  });
-                }}
-                className="h-auto py-2 text-white hover:bg-black-40"
-              >
-                <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
-                  {isValidImageSrc(room.character.image_url) && (
-                    <Image src={room.character.image_url} alt={room.character.name} fill sizes="32px" className="object-cover" />
+      {open && (
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {visibleRooms.map((room) => {
+              const isRoomActive = activeChat?.chatroomId === room.id;
+              return (
+                <SidebarMenuItem key={room.id}>
+                  <SidebarMenuButton
+                    onClick={() => {
+                      setActiveChat({
+                        chatroomId: room.id,
+                        characterId: room.character.id,
+                        name: room.character.name,
+                        image: room.character.image_url,
+                        greetingMessage: '',
+                      });
+                      setMessages([]);
+                      setIsTyping(false);
+                      getMessages(room.id).then((res) => {
+                        const items = res?.content?.messages ?? res?.messages ?? res?.content?.items ?? res?.content ?? res?.data;
+                        if (Array.isArray(items)) {
+                          setMessages([...(items as Record<string, unknown>[])].reverse().map((m, i) => {
+                            const ts = m.timestamp ? new Date(m.timestamp as number) : null;
+                            return {
+                              id: i,
+                              messageId: (m.id ?? m.message_id ?? m._id) as string | undefined,
+                              text: (m.text ?? m.content ?? m.message) as string | undefined,
+                              sender: m.sender_type === 'user' ? 'user' as const : 'character' as const,
+                              time: ts ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+                              date: ts ? (ts.toDateString() === new Date().toDateString() ? 'Today' : ts.toLocaleDateString([], { month: 'short', day: 'numeric' })) : 'Today',
+                            };
+                          }));
+                          setNextCursor((res?.content?.nextCursor as string) ?? null);
+                          setHasMoreMessages(!!(res?.content?.nextCursor));
+                        }
+                        router.push('/chat');
+                        props.onSelect();
+                      }).catch(() => {
+                        router.push('/chat');
+                        props.onSelect();
+                      });
+                    }}
+                    className="h-auto py-2 text-white hover:bg-black-40"
+                  >
+                    <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+                      {isValidImageSrc(room.character.image_url) && (
+                        <Image src={room.character.image_url} alt={room.character.name} fill sizes="32px" className="object-cover" />
+                      )}
+                    </div>
+                    <span className="truncate text-xs font-medium text-white">{room.title || room.character.name}</span>
+                  </SidebarMenuButton>
+                  {isRoomActive && (
+                    <span className="pointer-events-none absolute inset-y-1 -right-2 w-1 rounded-l-full bg-success-100" />
                   )}
-                </div>
-                <span className="truncate text-xs font-medium text-white">{room.title || room.character.name}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                </SidebarMenuItem>
+              );
+            })}
 
-          {page < pages && (
-            <div ref={bottomSentinelRef} className="flex items-center justify-center py-2">
-              {loadingMore && <span className="text-xs text-white-75">{t('loading_more')}</span>}
-            </div>
-          )}
-        </SidebarMenu>
-      </SidebarGroupContent>
+            {page < pages && (
+              <div ref={bottomSentinelRef} className="flex items-center justify-center py-2">
+                {loadingMore && <span className="text-xs text-white-75">{t('loading_more')}</span>}
+              </div>
+            )}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      )}
     </SidebarGroup>
   );
 };
@@ -209,10 +234,7 @@ const ChatSideBarContent = () => {
   return (
     <Sidebar collapsible="icon" className="border-black-40 bg-black-100">
       <SidebarHeader className="gap-3 pt-5">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-white group-data-[collapsible=icon]:hidden">Chats</span>
-          <ChatSideBarTrigger />
-        </div>
+        <ChatSideBarTrigger />
 
         <div className="relative group-data-[collapsible=icon]:hidden">
           <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 [&>svg]:h-4 [&>svg]:w-4">
@@ -254,6 +276,14 @@ const ChatSideBarContent = () => {
         <SidebarSeparator className="bg-black-40" />
 
         <ChatHistoryList search={search} onSelect={() => setOpenMobile(false)} scrollRoot={scrollRef} />
+
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SectionHeader label={t('your_groups', { count: 0 })} open={false} disabled />
+        </SidebarGroup>
+
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SectionHeader label={t('your_scenario', { count: 0 })} open={false} disabled />
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );
@@ -262,13 +292,13 @@ const ChatSideBarContent = () => {
 export const ChatSideBar = () => {
   return (
     // The transform makes this div the positioning container for the Sidebar's
-    // fixed-position panel, so it docks to this column (right after the main
-    // nav rail) instead of overlaying the viewport's left edge.
+    // fixed-position panel, so it docks to this column instead of the
+    // viewport's left edge.
     <SidebarProvider className="h-screen min-h-0 w-fit transform-[translateZ(0)]">
       {/* The mobile panel is a sheet that only exists while it is open, so its
-          trigger sits outside the sidebar to stay reachable, next to the main
-          nav trigger in the gutter the chat template reserves. */}
-      <ChatSideBarTrigger className="fixed top-3 left-11 z-40 md:hidden" />
+          trigger sits outside the sidebar to stay reachable. It floats in the
+          gutter the chat template reserves at the start of the top bar. */}
+      <ChatSideBarTrigger className="fixed top-3 left-2 z-40 md:hidden" />
       <ChatSideBarContent />
     </SidebarProvider>
   );

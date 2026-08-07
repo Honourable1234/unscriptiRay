@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { ActionIcon, EmojiIcon, GroupIcon, StarIcon, VoiceIcon } from '@/components/icons';
 import { useCreate } from '@/context/CreateContext';
 import { CharacterInfoCard } from './CharacterInfoCard';
 import { OptionModal } from './OptionModal';
@@ -27,19 +28,19 @@ export const CharacterInfo = () => {
       <h3 className="mb-4 text-center text-lg font-medium text-white">{t('heading')}</h3>
       <div className="flex flex-wrap justify-between gap-3">
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('voice')} value={data.voice} onClick={() => setVoiceOpen(true)} />
+          <CharacterInfoCard title={t('voice')} value={data.voice} icon={<VoiceIcon />} onClick={() => setVoiceOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('personality')} value={data.personality} iconColor="#4e9f3d" hideIcon onClick={() => setPersonalityOpen(true)} />
+          <CharacterInfoCard title={t('personality')} value={data.personality} icon={<EmojiIcon />} onClick={() => setPersonalityOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('relationship')} value={data.relationship} iconColor="#4e9f3d" hideIcon onClick={() => setRelationshipOpen(true)} />
+          <CharacterInfoCard title={t('relationship')} value={data.relationship} icon={<GroupIcon />} onClick={() => setRelationshipOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('kinks')} value={data.kinks.join(', ')} iconColor="#4e9f3d" hideIcon onClick={() => setKinksOpen(true)} />
+          <CharacterInfoCard title={t('kinks')} value={data.kinks.join(', ')} icon={<StarIcon filled />} onClick={() => setKinksOpen(true)} />
         </div>
         <div className="min-w-80 flex-1">
-          <CharacterInfoCard title={t('hobby')} value={data.socialRole} iconColor="#4e9f3d" hideIcon onClick={() => setHobbyOpen(true)} />
+          <CharacterInfoCard title={t('hobby')} value={data.socialRole} icon={<ActionIcon />} onClick={() => setHobbyOpen(true)} />
         </div>
       </div>
 

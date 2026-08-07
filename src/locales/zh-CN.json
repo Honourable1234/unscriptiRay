@@ -1,45 +1,46 @@
 {
-  "LocaleSwitcher": {
-    "change_language": "更改语言"
+  "LanguageModal": {
+    "title": "语言",
+    "current": "当前"
   },
   "SignInPage": {
     "title": "登录",
     "google_button": "登录",
-    "divider": "继续使用电子邮件",
-    "email_label": "电子邮件",
-    "email_placeholder": "请输入您的电子邮箱",
+    "divider": "使用邮箱继续",
+    "email_label": "邮箱",
+    "email_placeholder": "输入您的邮箱",
     "password_label": "密码",
-    "forgot_password": "忘记密码了吗？",
+    "forgot_password": "忘记密码？",
     "submit": "登录",
-    "no_account": "还没有账号吗？",
+    "no_account": "还没有账号？",
     "sign_up_link": "注册",
     "login_failed": "登录失败"
   },
   "SignUpPage": {
-    "title": "创建您的账户",
+    "title": "创建您的账号",
     "google_button": "注册",
-    "divider": "继续使用电子邮件",
-    "email_label": "电子邮件",
-    "email_placeholder": "请输入您的电子邮箱",
+    "divider": "使用邮箱继续",
+    "email_label": "邮箱",
+    "email_placeholder": "输入您的邮箱",
     "password_label": "密码",
     "confirm_password_label": "确认密码",
     "submit": "注册",
-    "have_account": "已有账户吗？",
+    "have_account": "已有账号？",
     "sign_in_link": "登录",
-    "passwords_mismatch": "密码不匹配",
-    "password_too_short": "密码必须至少为 8 个字符",
+    "passwords_mismatch": "两次密码不一致",
+    "password_too_short": "密码至少需要8个字符",
     "sign_up_failed": "注册失败",
-    "check_email": "请查看您的电子邮件以确认您的账户。"
+    "check_email": "请查收邮箱以确认您的账号。"
   },
   "ForgotPasswordPage": {
     "title": "忘记密码了吗？",
-    "subtitle": "系统将向您的电子邮箱发送一个重置密码的链接",
-    "email_label": "电子邮件",
-    "email_placeholder": "请输入您的电子邮箱",
+    "subtitle": "我们将向您的邮箱发送一个链接以重置密码",
+    "email_label": "邮箱",
+    "email_placeholder": "输入您的邮箱",
     "submit": "提交",
-    "check_email": "请查看您的电子邮件，查找重置链接。",
-    "remember_password": "Remember your password?",
-    "sign_in_link": "Sign in"
+    "check_email": "请查收邮箱中的重置链接。",
+    "remember_password": "想起密码了？",
+    "sign_in_link": "登录"
   },
   "NewPasswordPage": {
     "title": "新密码",
@@ -47,14 +48,14 @@
     "new_password_label": "新密码",
     "confirm_password_label": "确认密码",
     "submit": "提交",
-    "passwords_mismatch": "密码不匹配",
-    "password_too_short": "密码必须至少为 8 个字符"
+    "passwords_mismatch": "两次密码不一致",
+    "password_too_short": "密码至少需要8个字符"
   },
   "GoogleButton": {
-    "with_google": "通过 Google"
+    "with_google": "使用Google"
   },
   "ExplorePage": {
-    "title": "探索你的",
+    "title": "探索您的",
     "title_highlight": "幻想"
   },
   "ExploreSection": {
@@ -65,18 +66,17 @@
     "filter_sort": "排序"
   },
   "ExploreCharacters": {
-    "loading": "请稍候，我们正在加载媒体内容……",
-    "error": "无法加载角色。",
-    "per_page": "每页：",
-    "loading_more": "正在加载...",
+    "error": "加载角色失败。",
+    "per_page": "每页显示：",
+    "loading_more": "加载中...",
     "load_more": "加载更多"
   },
   "CharacterModal": {
     "show_more": "显示更多",
-    "show_less": "显示更少",
-    "profile": "个人简介",
-    "more_tags": "+{count} 更多",
-    "want_more": "还想看更多吗？",
+    "show_less": "收起",
+    "profile": "资料",
+    "more_tags": "还有{count}个",
+    "want_more": "想看更多？",
     "view_content": "查看内容",
     "generate": "生成",
     "chat": "聊天"
@@ -86,49 +86,43 @@
   },
   "CharacterHeader": {
     "chat": "聊天",
-    "new_group": "创建一个新组",
+    "new_group": "创建新群组",
     "generate": "生成",
     "new_scenario": "新场景"
   },
   "CharacterContent": {
-    "error": "无法加载角色。"
+    "error": "加载角色失败。"
   },
   "CharacterUnlockButton": {
-    "unlock": "解锁“ {name} ” — 50枚金币",
+    "unlock": "解锁{name}",
+    "sign_up_prompt": "创建账号以解锁{name}的合集——您的金币和已解锁内容将保留在您的账号中。",
+    "unlocked": "合集已解锁",
+    "already_unlocked": "您已拥有此合集",
     "purchase_failed": "购买失败",
-    "error": "出现了一些问题",
-    "sign_up_prompt": "Create an account to unlock {name}'s collection — your coins and unlocks stay with your account.",
-    "unlocked": "Collection unlocked",
-    "already_unlocked": "You already own this collection"
-  },
-  "CharacterMediaGrid": {
-    "secrets_locked": "被锁住的秘密",
-    "tap_to_reveal": "点击查看"
+    "error": "出错了"
   },
   "ChatRoom": {
-    "clear_confirm": "清除所有消息？",
-    "clear": "清除",
-    "cancel": "Cancel",
-    "toast_cleared": "Chat cleared.",
-    "toast_clear_failed": "Could not clear chat.",
-    "toast_deleted": "Chat room deleted.",
-    "toast_delete_failed": "Could not delete chat room."
+    "clear_confirm": "清空所有消息？",
+    "clear": "清空",
+    "toast_cleared": "聊天记录已清空。",
+    "toast_clear_failed": "无法清空聊天记录。",
+    "toast_deleted": "聊天室已删除。",
+    "toast_delete_failed": "无法删除聊天室。"
   },
   "ChatInputBar": {
-    "getting_suggestions": "征集建议…",
+    "generating_suggestion": "正在生成建议…",
     "placeholder": "发送消息...",
-    "generating_suggestion": "Generating suggestion…",
-    "send_message": "Send message"
+    "send_message": "发送消息"
   },
   "ChatSideBar": {
-    "new_chat": "新建聊天",
+    "new_chat": "新聊天",
     "new_group": "新群组",
     "new_scenario": "新场景",
-    "your_chats": "您的聊天记录（{count}）",
-    "loading_more": "正在加载...",
-    "load_more": "加载更多",
-    "close_sidebar": "关闭侧边栏",
-    "search_placeholder": "Search chats…"
+    "your_chats": "您的聊天（{count}）",
+    "your_groups": "您的群组（{count}）",
+    "your_scenario": "您的场景（{count}）",
+    "loading_more": "加载中...",
+    "search_placeholder": "搜索聊天…"
   },
   "ChatRightPanel": {
     "view_media": "查看媒体",
@@ -136,733 +130,721 @@
     "voice": "语音",
     "memory": "记忆",
     "settings": "设置",
-    "instructions": "Instructions",
-    "toast_call_started": "Call started!",
-    "toast_call_failed": "Could not start call."
+    "instructions": "指令",
+    "toast_call_started": "通话已开始！",
+    "toast_call_failed": "无法发起通话。"
   },
   "ChatRatingPrompt": {
-    "question": "谈话进行得怎么样？",
-    "toast_thanks": "Thanks for your rating!",
-    "toast_failed": "Could not submit rating."
+    "question": "这次对话感觉如何？",
+    "toast_thanks": "感谢您的评价！",
+    "toast_failed": "无法提交评价。"
   },
   "ChatSettingsPanel": {
-    "loading": "正在加载…",
-    "error": "无法加载设置。",
-    "saving": "拯救…",
-    "allow_messages": "允许发送字符消息",
+    "loading": "加载中…",
+    "error": "加载设置失败。",
+    "saving": "保存中…",
+    "allow_messages": "允许角色发送消息",
     "background_display": "背景显示",
     "lust_level": "欲望等级",
-    "response_length": "响应长度",
+    "response_length": "回复长度",
     "language": "语言",
-    "toast_saved": "Settings saved.",
-    "toast_save_failed": "Could not save settings."
+    "toast_saved": "设置已保存。",
+    "toast_save_failed": "无法保存设置。"
   },
   "NewGroupView": {
-    "heading": "你想把谁加进群里？",
-    "group_name_label": "给你的小组起个名字",
-    "group_name_placeholder": "MyGroup"
+    "heading": "您想添加谁到群组中？",
+    "group_name_label": "为您的群组起个名字",
+    "group_name_placeholder": "我的群组"
   },
   "NewScenarioView": {
-    "heading": "在这个场景中，你想扮演哪个角色？",
+    "heading": "您想在此场景中使用哪个角色？",
     "create_label": "创建场景",
-    "placeholder": "请在此输入您的场景……"
+    "placeholder": "在此输入您的场景..."
   },
   "SelectedCharacterBar": {
-    "selected_list": "精选角色列表（{count}/{max}）",
-    "no_selection": "您尚未选择任何角色",
-    "coming_soon": "即将推出",
+    "selected_list": "已选角色列表（{count}/{max}）",
+    "no_selection": "您还没有选择任何角色",
+    "coming_soon": "敬请期待",
     "create_group": "创建群组"
   },
   "GeneratePage": {
     "title": "打造您的",
-    "title_highlight": "奇幻场景"
+    "title_highlight": "幻想场景"
   },
   "GenerateOptionsGrid": {
-    "select_star": "选择星",
+    "select_star": "选择角色",
+    "stars_count": "{count}个角色",
     "required": "（必填）",
     "optional": "（可选）",
     "action": "动作",
-    "setting": "场景",
-    "mood": "心情",
+    "setting": "场景设定",
+    "mood": "氛围",
     "creative_input": "创意输入（高级）",
-    "creator_tier": "创作者等级专属",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars"
+    "creator_tier": "创作者等级专享"
   },
   "GenerateTypeToggle": {
-    "still_images": "静止图像",
-    "animated_scenes": "动画场景",
+    "still_images": "静态图片",
+    "animated_scenes": "动态场景",
     "mode": "模式"
   },
   "GenerateControls": {
     "visual_label": "视觉效果：",
-    "orientation_label": "入职培训：",
-    "cinematic_desc": "生成高质量的结果，且提示词准确率极高",
-    "realistic_desc": "超逼真的画面效果，搭配增强的光照效果",
-    "anime_desc": "风格化的动漫美学，色彩鲜艳"
+    "orientation_label": "方向：",
+    "cinematic_desc": "高质量效果，精准还原提示词",
+    "realistic_desc": "超逼真画面，光影效果增强"
   },
   "GenerateButton": {
     "generate_image": "生成图片"
   },
   "SelectStarModal": {
-    "title": "选择星",
-    "search_placeholder": "搜索字符...",
-    "loading": "正在加载角色...",
-    "no_results": "未找到任何角色。",
-    "selected_count": "{count} of {max} selected",
-    "done": "Done"
+    "title": "选择角色",
+    "search_placeholder": "搜索角色...",
+    "no_results": "未找到角色。",
+    "selected_count": "已选{count}/{max}",
+    "done": "完成"
+  },
+  "PickOptionModal": {
+    "loading": "正在加载选项...",
+    "no_results": "暂无可用选项。"
   },
   "GenerateSceneModal": {
-    "title_remix": "混音",
+    "title_remix": "混合重制",
     "title_video": "图片转视频",
     "title_edit": "编辑图片",
     "title_speech": "对口型视频",
-    "title_enhance": "增强图像",
+    "title_enhance": "增强图片",
     "title_more": "更多"
   },
   "GenerateVideoControls": {
-    "quality_label": "质量等级：",
-    "orientation_label": "入职培训：",
+    "quality_label": "画质等级：",
+    "orientation_label": "方向：",
     "duration_label": "时长：",
     "audio": "音频",
-    "balanced_label": "平衡 (480p)",
-    "balanced_desc": "最适合搭配服装、背景和特效",
-    "ultra_label": "Ultra（1080p）",
-    "ultra_desc": "针对不适合在工作场所查看的内容及解剖细节进行了优化"
+    "balanced_label": "均衡（480p）",
+    "balanced_desc": "最适合服装、背景和特效",
+    "ultra_label": "超清（1080p）",
+    "ultra_desc": "针对NSFW内容与身体细节优化"
+  },
+  "VideoContent": {
+    "motion": "动作",
+    "select_star": "选择角色",
+    "required": "（必填）",
+    "creative_input": "创意输入",
+    "creator_tier": "创作者等级",
+    "select_star_first": "请先选择一个角色。",
+    "generating": "生成中...",
+    "generate_video": "生成视频",
+    "video_ready": "视频已就绪！"
+  },
+  "EditContent": {
+    "visual_label": "视觉效果：",
+    "scene_alt": "正在编辑的场景",
+    "model_label": "模型：",
+    "orientation_label": "方向：",
+    "select_star": "选择角色",
+    "required": "（必填）",
+    "editing": "编辑中...",
+    "edit_scene": "编辑场景",
+    "edit_complete": "编辑完成！"
+  },
+  "SpeechContent": {
+    "scene_label": "场景",
+    "audio_script": "音频脚本",
+    "voice": "语音",
+    "required": "（必填）",
+    "select_voice_first": "请先选择一个语音。",
+    "enter_script_first": "请先输入音频脚本。",
+    "generating": "生成中...",
+    "generate_speech": "生成语音",
+    "scene_ready": "场景已就绪！"
+  },
+  "EnhanceContent": {
+    "description": "增强将使您的图片更清晰，并提升分辨率",
+    "enhancing": "增强中...",
+    "enhance_scene": "增强场景",
+    "enhance_complete": "增强完成！"
+  },
+  "RemixContent": {
+    "select_star_first": "请先选择一个角色。",
+    "generating": "生成中...",
+    "remix_scene": "混合重制场景",
+    "scene_ready": "场景已就绪！"
+  },
+  "StillStylePresent": {
+    "generating": "生成中...",
+    "generate_image": "生成图片",
+    "image_ready": "图片已就绪！"
+  },
+  "StillEditStyle": {
+    "generating": "生成中...",
+    "generate_image": "生成图片",
+    "image_ready": "图片已就绪！",
+    "model_label": "模型：",
+    "orientation_label": "方向：",
+    "visual_label": "视觉效果：",
+    "select_image": "选择图片"
+  },
+  "AnimatedStylePresent": {
+    "generating": "生成中...",
+    "generate_scene": "生成场景",
+    "scene_ready": "场景已就绪！"
+  },
+  "AnimatedImageToVideo": {
+    "image": "图片",
+    "required": "（必填）",
+    "motion": "动作",
+    "creative_input_advanced": "创意输入（高级）",
+    "creator_tier_exclusive": "创作者等级专享",
+    "generating": "生成中...",
+    "generate_scene": "生成场景",
+    "select_image": "选择图片",
+    "select_star": "选择角色",
+    "stars_count": "{count}个角色",
+    "scene_ready": "场景已就绪！"
+  },
+  "AnimatedExtendVideo": {
+    "video": "视频",
+    "required": "（必填）",
+    "select_star": "选择角色",
+    "stars_count": "{count}个角色",
+    "motion": "动作",
+    "creative_input_advanced": "创意输入（高级）",
+    "creator_tier_exclusive": "创作者等级专享",
+    "generating": "生成中...",
+    "generate_scene": "生成场景",
+    "select_video": "选择视频",
+    "scene_ready": "场景已就绪！"
+  },
+  "AnimatedTalking": {
+    "image_video": "图片/视频",
+    "required": "（必填）",
+    "select_star": "选择角色",
+    "stars_count": "{count}个角色",
+    "voice": "语音",
+    "audio_script": "音频脚本",
+    "generating": "生成中...",
+    "generate_scene": "生成场景",
+    "select_image_video": "选择图片/视频",
+    "scene_ready": "场景已就绪！"
+  },
+  "CreativeInputModal": {
+    "title": "创意输入",
+    "placeholder": "描述您场景的额外细节...",
+    "enrich_with_ai": "AI智能扩写",
+    "enrich_failed": "无法扩写提示词。",
+    "save": "保存"
+  },
+  "GenerateResultGrid": {
+    "no_scenes": "尚未生成任何场景",
+    "generating": "生成中...",
+    "scene_alt": "已生成场景"
+  },
+  "GenerateScenePage": {
+    "download_started": "正在准备下载...",
+    "download_saved": "下载已保存。",
+    "download_failed": "无法保存文件，将改为直接打开。",
+    "link_copied": "链接已复制到剪贴板！",
+    "copy_failed": "无法复制链接。",
+    "scene_deleted": "场景已删除。",
+    "delete_failed": "无法删除场景。",
+    "not_available": "暂不可用。",
+    "scene_not_found": "未找到场景",
+    "scene_alt": "已生成场景",
+    "thumbnail_alt": "缩略图",
+    "generated_label": "已生成的{type}"
+  },
+  "GenerationToasts": {
+    "complete": "生成完成！",
+    "restarted": "生成已重新开始，处理中...",
+    "retry_failed": "重试失败。",
+    "started": "生成已开始，处理中...",
+    "failed": "生成失败。",
+    "retry": "重试"
   },
   "CreatePage": {
-    "title": "创建一个",
+    "title": "创建",
     "title_highlight": "伴侣",
-    "prev": "上一页",
-    "next": "下一页",
+    "prev": "上一步",
+    "next": "下一步",
     "generate": "生成",
-    "image_gen_failed": "Character created but image generation failed to start.",
-    "create_failed": "Failed to create character.",
-    "save_tags_failed": "Failed to save tags."
+    "image_gen_failed": "角色已创建，但图片生成未能启动。",
+    "create_failed": "创建角色失败。",
+    "save_tags_failed": "保存标签失败。"
   },
   "CreateStep1": {
-    "ethnic_influence": "民族影响",
+    "ethnic_influence": "种族特征",
     "eye_color": "眼睛颜色",
-    "eye_intensity": "眼部强度",
+    "eye_intensity": "眼神强度",
     "facial_shape": "脸型",
-    "figure_type": "图例类型",
+    "figure_type": "身材类型",
     "hair_color": "发色",
     "hair_style": "发型",
-    "hip_profile": "髋关节轮廓",
-    "bust_profile": "胸部轮廓",
+    "hip_profile": "臀部曲线",
+    "bust_profile": "胸部曲线",
     "skin_tone": "肤色"
   },
   "CreateStep2": {
     "character_name": "角色名称",
     "character_age": "角色年龄",
-    "gender": "Gender",
-    "gender_female": "Female",
-    "gender_male": "Male",
-    "gender_non_binary": "Non-binary"
+    "gender": "性别",
+    "gender_female": "女性",
+    "gender_male": "男性",
+    "gender_non_binary": "非二元性别"
   },
   "CharacterInfo": {
     "heading": "角色信息",
     "voice": "语音",
-    "personality": "人格原型",
-    "relationship": "人际关系动态",
-    "kinks": "怪癖与慰藉",
+    "personality": "性格原型",
+    "relationship": "关系模式",
+    "kinks": "癖好与偏好",
+    "hobby": "爱好",
     "select_voice": "选择语音",
     "select_personality": "选择性格",
     "select_relationship": "选择关系",
-    "select_kinks": "选择“Kinks”",
-    "hobby": "Hobby",
-    "select_hobby": "Select Hobby",
-    "custom": "Custom"
+    "select_kinks": "选择癖好",
+    "select_hobby": "选择爱好",
+    "custom": "自定义"
   },
   "CharacterInfoCard": {
-    "select": "选择 {title}"
+    "select": "选择{title}"
   },
   "CreateStep3": {
-    "ai_enrichment": "AI 增强功能（自动完成）",
-    "ai_subtitle": "利用人工智能填补空白，塑造更立体的角色",
+    "ai_enrichment": "AI智能扩写（自动补全）",
+    "ai_subtitle": "使用AI填补空白，打造更立体的角色",
     "backstory": "背景故事",
-    "backstory_placeholder": "未设置背景故事",
-    "custom_physical": "定制体检",
-    "custom_physical_placeholder": "无自定义物理集",
+    "backstory_placeholder": "尚未设置背景故事",
+    "custom_physical": "自定义体型",
+    "custom_physical_placeholder": "尚未设置自定义体型",
     "custom_face": "自定义面部细节",
-    "custom_face_placeholder": "未设置自定义面部细节",
-    "greeting": "问候",
-    "greeting_placeholder": "未设置问候语",
-    "personality_details": "性格详情",
-    "personality_details_placeholder": "未设置人物详情",
-    "toast_enriched": "Character enriched with AI.",
-    "toast_enrich_failed": "AI enrichment failed."
+    "custom_face_placeholder": "尚未设置自定义面部细节",
+    "greeting": "开场白",
+    "greeting_placeholder": "尚未设置开场白",
+    "personality_details": "性格细节",
+    "personality_details_placeholder": "尚未设置性格细节",
+    "toast_enriched": "已使用AI扩写角色。",
+    "toast_enrich_failed": "AI扩写失败。"
   },
   "CreateStep4": {
-    "tab_appearance": "外观",
-    "tab_personality": "个性",
+    "tab_appearance": "外貌",
+    "tab_personality": "性格",
     "preview": "预览角色",
-    "generate_process": "生成流程",
-    "meet_companion": "认识你的伙伴",
-    "no_character": "没有相关角色信息。",
-    "tags": "标签 ({count}/10)",
+    "generate_process": "生成进度",
+    "meet_companion": "认识您的伴侣",
+    "no_character": "暂无角色数据。",
+    "tags": "标签（{count}/10）",
     "tag_placeholder": "添加标签...",
     "voice": "语音",
-    "ethnic": "民族",
+    "ethnic": "种族",
     "facial_shape": "脸型",
     "hair_style": "发型",
-    "eye_intensity": "眼部浓郁度",
-    "figure_type": "图例类型",
-    "bust": "胸围",
-    "hip": "髋",
-    "personality_attr": "个性",
+    "eye_intensity": "眼神强度",
+    "figure_type": "身材类型",
+    "bust": "胸部",
+    "hip": "臀部",
+    "personality_attr": "性格",
     "relationship": "关系",
-    "kinks_comforts": "怪癖与慰藉",
-    "social_role": "社会角色",
+    "kinks_comforts": "癖好与偏好",
+    "social_role": "社交角色",
     "backstory": "背景故事",
-    "physical": "物理",
+    "physical": "体型",
     "face_details": "面部细节",
-    "greeting": "问候",
-    "personality_details": "性格详情",
+    "greeting": "开场白",
+    "personality_details": "性格细节",
     "hair_color": "发色",
     "eye_color": "眼睛颜色",
     "skin_tone": "肤色",
-    "saved": "Saved.",
-    "save_failed": "Failed to save.",
-    "image_failed": "Image generation failed",
-    "retry": "Retry",
-    "save": "Save"
+    "saved": "已保存。",
+    "save_failed": "保存失败。",
+    "image_failed": "图片生成失败",
+    "retry": "重试",
+    "save": "保存"
   },
   "OptionModal": {
-    "loading": "正在加载...",
-    "search_placeholder": "Search..."
+    "loading": "加载中...",
+    "search_placeholder": "搜索..."
   },
   "CreateTagsField": {
     "tags": "标签（{count}/{max}）",
-    "no_tags": "未设置标签",
+    "no_tags": "尚未设置标签",
     "add_tag": "添加标签..."
   },
-  "_comment": "i18n coverage: all user-visible strings are extracted. fr.json mirrors en.json structurally and still holds English copy as placeholders pending translation.",
-  "PickOptionModal": {
-    "loading": "Loading options...",
-    "no_results": "No options available."
-  },
-  "VideoContent": {
-    "motion": "Motion",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "creative_input": "Creative Input",
-    "creator_tier": "Creator Tier",
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "generate_video": "Generate Video",
-    "video_ready": "Video ready!"
-  },
-  "EditContent": {
-    "visual_label": "Visual:",
-    "scene_alt": "Scene being edited",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "spark_desc": "Fast and efficient editing",
-    "pro_desc": "High quality, detailed edits",
-    "select_star": "Select Star",
-    "required": "(Required)",
-    "editing": "Editing...",
-    "edit_scene": "Edit Scene",
-    "edit_complete": "Edit complete!"
-  },
-  "SpeechContent": {
-    "aurora_sublabel": "(Character default)",
-    "scene_label": "Scene",
-    "audio_script": "Audio Script",
-    "voice": "Voice",
-    "required": "(Required)",
-    "select_voice_first": "Please select a voice first.",
-    "enter_script_first": "Please enter an audio script first.",
-    "generating": "Generating...",
-    "generate_speech": "Generate Speech",
-    "scene_ready": "Scene ready!"
-  },
-  "EnhanceContent": {
-    "description": "Enhancing will make your image sharper and improve its resolution",
-    "enhancing": "Enhancing...",
-    "enhance_scene": "Enhance Scene",
-    "enhance_complete": "Enhancement complete!"
-  },
-  "RemixContent": {
-    "select_star_first": "Please select a star first.",
-    "generating": "Generating...",
-    "remix_scene": "Remix Scene",
-    "scene_ready": "Scene ready!"
-  },
-  "StillStylePresent": {
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!"
-  },
-  "StillEditStyle": {
-    "upload_failed": "Upload failed.",
-    "generating": "Generating...",
-    "generate_image": "Generate Image",
-    "image_ready": "Image ready!",
-    "model_label": "Model:",
-    "orientation_label": "Orientation:",
-    "visual_label": "Visual:",
-    "select_image": "Select image"
-  },
-  "AnimatedStylePresent": {
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "scene_label": "Scene {id}",
-    "add": "Add",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedImageToVideo": {
-    "image": "Image",
-    "required": "(Required)",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image": "Select Image",
-    "select_star": "Select Star",
-    "add_star": "Add Star",
-    "stars_count": "{count} stars",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedExtendVideo": {
-    "video": "Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "motion": "Motion",
-    "creative_input_advanced": "Creative Input (Advanced)",
-    "creator_tier_exclusive": "Creator Tier Exclusive",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_video": "Select Video",
-    "scene_ready": "Scene ready!"
-  },
-  "AnimatedTalking": {
-    "image_video": "Image / Video",
-    "required": "(Required)",
-    "select_star": "Select Star",
-    "stars_count": "{count} stars",
-    "voice": "Voice",
-    "audio_script": "Audio Script",
-    "generating": "Generating...",
-    "generate_scene": "Generate Scene",
-    "select_image_video": "Select Image / Video",
-    "scene_ready": "Scene ready!"
-  },
-  "CreativeInputModal": {
-    "title": "Creative Input",
-    "placeholder": "Describe extra details for your scene...",
-    "enrich_with_ai": "Enrich with AI",
-    "enrich_failed": "Could not enrich prompt.",
-    "save": "Save"
-  },
-  "GenerateResultGrid": {
-    "no_scenes": "No generated scenes yet",
-    "generating": "Generating...",
-    "scene_alt": "Generated scene"
-  },
-  "GenerateScenePage": {
-    "download_started": "Preparing download...",
-    "download_saved": "Download saved.",
-    "download_failed": "Could not save the file. Opening it instead.",
-    "link_copied": "Link copied to clipboard!",
-    "copy_failed": "Could not copy the link.",
-    "scene_deleted": "Scene deleted.",
-    "delete_failed": "Could not delete the scene.",
-    "not_available": "Not available yet.",
-    "scene_not_found": "Scene not found",
-    "scene_alt": "Generated scene",
-    "thumbnail_alt": "Thumbnail",
-    "generated_label": "Generated {type}"
-  },
-  "GenerationToasts": {
-    "complete": "Generation complete!",
-    "restarted": "Generation restarted, processing...",
-    "retry_failed": "Retry failed.",
-    "started": "Generation started, processing...",
-    "failed": "Generation failed.",
-    "retry": "Retry"
-  },
   "SubscriptionSection": {
-    "title": "Subscription",
-    "current_plan": "Current plan",
-    "renews_expires": "Renews/expires {date}",
-    "plan_free": "Free",
-    "plan_free_caption": "Limited access",
-    "plan_monthly": "Monthly",
-    "plan_monthly_caption": "Billed every month",
-    "plan_yearly": "Yearly",
-    "plan_yearly_caption": "Billed once a year",
-    "change_plan": "Change plan",
-    "upgrade_to_premium": "Upgrade to Premium",
-    "current": "Current",
-    "opening": "Opening…",
-    "action_switch": "Switch",
-    "action_upgrade": "Upgrade",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to unlock premium features",
-    "sign_up_now": "Sign up now",
-    "manage_billing": "Manage billing",
-    "cancel_subscription": "Cancel subscription",
-    "billing_history": "Billing history",
-    "no_invoices": "No invoices yet.",
-    "column_amount": "Amount",
-    "column_date": "Date",
-    "column_status": "Status",
-    "column_invoice": "Invoice",
+    "title": "订阅",
+    "current_plan": "当前套餐",
+    "renews_expires": "续订/到期日：{date}",
+    "plan_free": "免费",
+    "plan_free_caption": "有限访问权限",
+    "plan_monthly": "月付",
+    "plan_monthly_caption": "按月计费",
+    "plan_yearly": "年付",
+    "plan_yearly_caption": "按年计费",
+    "change_plan": "更改套餐",
+    "upgrade_to_premium": "升级到高级版",
+    "current": "当前",
+    "opening": "打开中…",
+    "action_switch": "切换",
+    "action_upgrade": "升级",
+    "get_started": "立即开始",
+    "get_started_caption": "注册以解锁高级功能",
+    "sign_up_now": "立即注册",
+    "manage_billing": "管理账单",
+    "cancel_subscription": "取消订阅",
+    "billing_history": "账单记录",
+    "no_invoices": "暂无账单。",
+    "column_amount": "金额",
+    "column_date": "日期",
+    "column_status": "状态",
+    "column_invoice": "发票",
     "pdf": "PDF",
-    "cancel_confirm_body": "Are you sure you want to cancel your subscription? You'll keep access until {date}.",
-    "end_of_billing_period": "the end of your billing period",
-    "keep_subscription": "Keep subscription",
-    "confirm_cancel": "Confirm cancel",
-    "toast_payment_received": "Payment received. Your plan updates once Stripe confirms it.",
-    "toast_upgrade_cancelled": "Upgrade cancelled.",
-    "toast_back_from_portal": "Back from the billing portal.",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_subscription_active": "Subscription active.",
-    "toast_payments_unavailable": "Payments are not available yet. You have not been charged.",
-    "toast_portal_failed": "Could not open the billing portal.",
-    "toast_portal_unavailable": "The billing portal is not available yet.",
-    "toast_cancel_failed": "Could not cancel subscription.",
-    "toast_subscription_cancelled": "Subscription cancelled."
+    "cancel_confirm_body": "确定要取消订阅吗？您可继续使用至{date}。",
+    "end_of_billing_period": "本计费周期结束",
+    "keep_subscription": "保留订阅",
+    "confirm_cancel": "确认取消",
+    "toast_payment_received": "已收到付款。Stripe确认后您的套餐将更新。",
+    "toast_upgrade_cancelled": "已取消升级。",
+    "toast_back_from_portal": "已从账单管理页面返回。",
+    "toast_checkout_failed": "无法发起结账。您尚未被扣款。",
+    "toast_subscription_active": "订阅已生效。",
+    "toast_payments_unavailable": "支付功能暂不可用。您尚未被扣款。",
+    "toast_portal_failed": "无法打开账单管理页面。",
+    "toast_portal_unavailable": "账单管理页面暂不可用。",
+    "toast_cancel_failed": "无法取消订阅。",
+    "toast_subscription_cancelled": "订阅已取消。"
   },
   "WalletSection": {
-    "title": "Wallet",
-    "balance": "Balance",
+    "title": "钱包",
+    "balance": "余额",
     "dreamcoins": "Dreamcoins",
-    "image_credits": "Image credits:",
-    "video_credits": "Video credits:",
-    "credits_reset": "Credits reset:",
-    "not_scheduled": "Not scheduled",
-    "buy_more_coins": "Buy more coins",
-    "get_started": "Get started",
-    "get_started_caption": "Sign up to buy Dreamcoins",
-    "sign_up_now": "Sign up now",
-    "transactions": "Transactions",
-    "no_transactions": "No transactions yet.",
-    "column_reason": "Reason",
-    "column_date": "Date",
-    "column_coins": "Coins",
-    "pagination": "Page {page} of {pageCount} · {total} transactions",
-    "prev": "Prev",
-    "next": "Next",
-    "toast_payment_received": "Payment received. Your coins will appear once Stripe confirms it.",
-    "toast_purchase_cancelled": "Purchase cancelled."
+    "image_credits": "图片额度：",
+    "video_credits": "视频额度：",
+    "credits_reset": "额度重置：",
+    "not_scheduled": "未安排",
+    "buy_more_coins": "购买更多金币",
+    "get_started": "立即开始",
+    "get_started_caption": "注册以购买Dreamcoins",
+    "sign_up_now": "立即注册",
+    "transactions": "交易记录",
+    "no_transactions": "暂无交易记录。",
+    "column_reason": "原因",
+    "column_date": "日期",
+    "column_coins": "金币",
+    "pagination": "第{page}/{pageCount}页 · 共{total}笔交易",
+    "prev": "上一页",
+    "next": "下一页",
+    "toast_payment_received": "已收到付款。Stripe确认后金币将到账。",
+    "toast_purchase_cancelled": "购买已取消。"
   },
   "ProfileSection": {
-    "unnamed": "Unnamed",
-    "visit_profile": "Visit profile",
+    "unnamed": "未命名",
+    "visit_profile": "查看主页",
     "dreamcoins": "Dreamcoins",
-    "wallet": "Wallet",
-    "wallet_caption": "Buy Dreamcoins and review your transactions",
-    "subscription": "Subscription",
-    "tier_free": "Free",
-    "change_password": "Change password",
-    "change_password_caption": "Update the password you sign in with",
-    "language": "Language",
-    "coming_soon": "Coming soon.",
-    "sign_out": "Sign out"
+    "wallet": "钱包",
+    "wallet_caption": "购买Dreamcoins并查看您的交易记录",
+    "subscription": "订阅",
+    "tier_free": "免费版",
+    "change_password": "更改密码",
+    "change_password_caption": "更新您的登录密码",
+    "language": "语言",
+    "sign_out": "退出登录"
   },
   "ProfileView": {
-    "unnamed": "Unnamed",
-    "interactions": "interactions",
-    "followers": "followers",
-    "following": "following",
-    "edit_profile": "Edit profile",
-    "tab_highlighted": "Highlighted",
-    "tab_characters": "Characters",
-    "tab_activity": "Activity",
-    "filter_style": "Style",
-    "filter_sort": "Sort",
-    "nothing_to_show": "Nothing to show yet.",
-    "loading": "Loading…",
-    "no_matches": "No characters match your style filters",
-    "create_new_character": "CREATE NEW CHARACTER",
-    "create": "Create"
+    "unnamed": "未命名",
+    "interactions": "互动",
+    "followers": "粉丝",
+    "following": "关注",
+    "edit_profile": "编辑资料",
+    "tab_highlighted": "精选",
+    "tab_characters": "角色",
+    "tab_activity": "动态",
+    "filter_style": "风格",
+    "filter_sort": "排序",
+    "nothing_to_show": "暂无内容。",
+    "loading": "加载中…",
+    "no_matches": "没有符合筛选条件的角色",
+    "create_new_character": "创建新角色",
+    "create": "创建"
   },
   "ProfileEditModal": {
-    "title": "Edit profile",
-    "uploading": "Uploading…",
-    "change_photo": "Change photo",
-    "display_name": "Display name",
-    "display_name_placeholder": "How your name appears",
-    "username": "Username",
-    "username_placeholder": "Your handle",
-    "save": "Save changes",
-    "toast_upload_failed": "Could not upload that image",
-    "toast_save_failed": "Could not save your profile",
-    "toast_saved": "Profile updated"
+    "title": "编辑资料",
+    "uploading": "上传中…",
+    "change_photo": "更换头像",
+    "display_name": "显示名称",
+    "display_name_placeholder": "您的名称将如何显示",
+    "username": "用户名",
+    "username_placeholder": "您的用户名",
+    "save": "保存更改",
+    "toast_upload_failed": "无法上传该图片",
+    "toast_save_failed": "无法保存您的资料",
+    "toast_saved": "资料已更新"
   },
   "ChangePasswordModal": {
-    "title": "Change password",
-    "google_account": "This account signs in with Google, so there is no password to change.",
-    "close": "Close",
-    "current_password": "Current password",
-    "new_password": "New password",
-    "confirm_new_password": "Confirm new password",
-    "submit": "Update password",
-    "error_mismatch": "The new passwords do not match.",
-    "error_too_short": "Use at least {count} characters.",
-    "error_same_password": "The new password is the same as the current one.",
-    "error_no_email": "This account has no email address to verify against.",
-    "error_wrong_current": "That current password is not correct.",
-    "toast_changed": "Password changed"
+    "title": "更改密码",
+    "google_account": "此账号使用Google登录，无需更改密码。",
+    "close": "关闭",
+    "current_password": "当前密码",
+    "new_password": "新密码",
+    "confirm_new_password": "确认新密码",
+    "submit": "更新密码",
+    "error_mismatch": "两次输入的新密码不一致。",
+    "error_too_short": "至少使用{count}个字符。",
+    "error_same_password": "新密码不能与当前密码相同。",
+    "error_no_email": "此账号没有可用于验证的邮箱地址。",
+    "error_wrong_current": "当前密码不正确。",
+    "toast_changed": "密码已更改"
   },
   "NavBar": {
-    "log_in": "Log in",
-    "sign_up": "Sign up",
-    "coins": "Coins",
-    "upgrade": "Upgrade",
-    "close_notifications": "Close notifications",
-    "notifications": "Notifications",
-    "loading": "Loading…",
-    "no_notifications": "No notifications to show."
+    "log_in": "登录",
+    "sign_up": "注册",
+    "coins": "金币",
+    "upgrade": "升级",
+    "close_notifications": "关闭通知",
+    "notifications": "通知",
+    "loading": "加载中…",
+    "no_notifications": "暂无通知。"
   },
   "SideBar": {
-    "create": "Create",
-    "explore": "Explore",
-    "chat": "Chat",
-    "generate": "Generate",
-    "my_ai": "My AI",
-    "feed": "Feed",
-    "upgrade": "Upgrade",
-    "sign_in": "Sign in",
-    "account": "Account",
-    "sign_out": "Sign out"
+    "create": "创建",
+    "explore": "探索",
+    "chat": "聊天",
+    "generate": "生成",
+    "my_ai": "我的AI",
+    "feed": "动态",
+    "upgrade": "升级",
+    "sign_in": "登录",
+    "account": "账号",
+    "sign_out": "退出登录"
   },
   "ChatTemplate": {
-    "dreamcoins_left": "{count} dreamcoins left",
-    "bonus_on_signup": "+50 on signup",
-    "sign_up_free": "Sign up free",
-    "login": "Login",
-    "join_free": "Join free"
+    "dreamcoins_left": "剩余{count}枚Dreamcoins",
+    "bonus_on_signup": "注册即送50枚",
+    "sign_up_free": "免费注册",
+    "login": "登录",
+    "join_free": "免费加入"
   },
   "AuthTemplate": {
-    "copyright": "Copyright© {year}. Unscripti AI"
+    "copyright": "版权所有© {year}. Unscripti AI"
   },
   "ChatMemoryPanel": {
-    "placeholder": "Add a memory…",
-    "add": "Add",
-    "loading": "Loading…",
-    "empty": "No memories yet.",
-    "load_failed": "Could not load memories.",
-    "toast_saved": "Memory saved.",
-    "toast_save_failed": "Could not save memory."
+    "placeholder": "添加记忆…",
+    "add": "添加",
+    "loading": "加载中…",
+    "empty": "暂无记忆。",
+    "load_failed": "无法加载记忆。",
+    "toast_saved": "记忆已保存。",
+    "toast_save_failed": "无法保存记忆。"
   },
   "ChatInstructionsPanel": {
-    "placeholder": "Add custom instructions…",
-    "save": "Save",
-    "loading": "Loading…",
-    "load_failed": "Could not load instructions.",
-    "toast_saved": "Instructions saved.",
-    "toast_save_failed": "Could not save instructions."
+    "placeholder": "添加自定义指令…",
+    "save": "保存",
+    "loading": "加载中…",
+    "load_failed": "无法加载指令。",
+    "toast_saved": "指令已保存。",
+    "toast_save_failed": "无法保存指令。"
   },
   "ChatVoicePanel": {
-    "loading": "Loading…",
-    "load_failed": "Could not load voices.",
-    "search_placeholder": "Search voices…",
-    "no_voices": "No voices found.",
-    "female": "Female",
-    "male": "Male",
-    "selected": "Selected",
-    "toast_update_failed": "Could not update voice."
+    "loading": "加载中…",
+    "load_failed": "无法加载语音。",
+    "search_placeholder": "搜索语音…",
+    "no_voices": "未找到语音。",
+    "female": "女性",
+    "male": "男性",
+    "selected": "已选择",
+    "toast_update_failed": "无法更新语音。"
   },
   "ChatGuestLimitPrompt": {
-    "title": "You've reached the guest limit",
-    "description": "Sign up to keep chatting — your conversation will be saved to your account.",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "您已达到访客限制",
+    "description": "注册以继续聊天——您的对话将保存到您的账号中。",
+    "sign_up_free": "免费注册",
+    "log_in": "登录"
   },
   "ChatMessageActions": {
-    "copy": "Copy message",
-    "edit": "Edit message",
-    "more": "More actions",
-    "duplicate": "Duplicate from here",
-    "delete": "Delete"
+    "copy": "复制消息",
+    "edit": "编辑消息",
+    "more": "更多操作",
+    "duplicate": "从此处复制",
+    "delete": "删除"
   },
   "ChatMessageBubble": {
-    "play_voice": "Play voice",
-    "cancel": "Cancel",
-    "save": "Save",
-    "toast_voice_failed": "Could not play voice."
+    "play_voice": "播放语音",
+    "cancel": "取消",
+    "save": "保存",
+    "toast_voice_failed": "无法播放语音。"
   },
   "CharacterEditSections": {
-    "profile_label": "Profile",
-    "profile_description": "Their avatar, and who can find them.",
-    "appearance_label": "Appearance",
-    "appearance_description": "Changing these updates how new images are generated; regenerate the avatar to match.",
-    "details_label": "Details",
-    "details_description": "Name, age and the traits that shape how they speak.",
-    "story_label": "Story",
-    "story_description": "Backstory, greeting and the prompts behind their personality."
+    "profile_label": "资料",
+    "profile_description": "他们的头像，以及谁可以找到他们。",
+    "appearance_label": "外貌",
+    "appearance_description": "更改这些设置会影响新图片的生成方式；请重新生成头像以保持一致。",
+    "details_label": "详情",
+    "details_description": "姓名、年龄以及影响其说话方式的特质。",
+    "story_label": "故事",
+    "story_description": "背景故事、开场白以及塑造其性格的提示词。"
   },
   "CharacterEditNav": {
-    "title": "Manage"
+    "title": "管理"
   },
   "CharacterEditForm": {
-    "back_to_profile": "Back to profile",
-    "save_changes": "Save changes",
-    "toast_saved": "Changes saved",
-    "toast_save_failed": "Could not save changes"
+    "back_to_profile": "返回资料",
+    "save_changes": "保存更改",
+    "toast_saved": "更改已保存",
+    "toast_save_failed": "无法保存更改"
   },
   "CharacterEditAvatar": {
-    "description": "Regenerating is free, and replaces the picture shown everywhere this character appears.",
-    "generating": "Generating…",
-    "regenerate": "Regenerate image",
-    "toast_ready": "New avatar ready",
-    "toast_no_image": "Generation finished without an image",
-    "toast_failed": "Image generation failed",
-    "toast_start_failed": "Could not start image generation"
+    "description": "重新生成免费，将替换该角色在所有位置显示的图片。",
+    "generating": "生成中…",
+    "regenerate": "重新生成图片",
+    "toast_ready": "新头像已就绪",
+    "toast_no_image": "生成完成但未产生图片",
+    "toast_failed": "图片生成失败",
+    "toast_start_failed": "无法启动图片生成"
   },
   "CharacterVisibilityField": {
-    "title": "Visibility",
-    "public_label": "Public",
-    "public_hint": "Anyone can find this character in Explore.",
-    "unlisted_label": "Unlisted",
-    "unlisted_hint": "Only people with the link can open it.",
-    "private_label": "Private",
-    "private_hint": "Only you can see this character.",
-    "toast_updated": "Character is now {visibility}",
-    "toast_failed": "Could not change visibility"
+    "title": "可见性",
+    "public_label": "公开",
+    "public_hint": "任何人都可以在探索页面找到此角色。",
+    "unlisted_label": "不公开列出",
+    "unlisted_hint": "只有拥有链接的人才能打开。",
+    "private_label": "私密",
+    "private_hint": "只有您可以看到此角色。",
+    "toast_updated": "角色现在为{visibility}",
+    "toast_failed": "无法更改可见性"
   },
   "CharacterDeleteButton": {
-    "delete": "Delete",
-    "confirm_title": "Delete {name}?",
-    "confirm_body": "Their chats and generated media go with them. This cannot be undone.",
-    "confirm_delete": "Delete permanently",
-    "keep": "Keep character",
-    "toast_deleted": "{name} was deleted",
-    "toast_delete_failed": "Could not delete this character"
+    "delete": "删除",
+    "confirm_title": "删除{name}？",
+    "confirm_body": "其聊天记录和生成的媒体内容也将一并删除。此操作无法撤销。",
+    "confirm_delete": "永久删除",
+    "keep": "保留角色",
+    "toast_deleted": "{name}已被删除",
+    "toast_delete_failed": "无法删除此角色"
   },
   "CharacterEditContent": {
-    "unavailable_title": "Character unavailable",
-    "unavailable_body": "We could not load this character. It may have been deleted.",
-    "unavailable_action": "Back to My AI",
-    "not_yours_title": "This character isn't yours",
-    "not_yours_body": "Only the creator of a character can edit it. You can still chat with this one from its profile.",
-    "not_yours_action": "View profile"
+    "unavailable_title": "角色不可用",
+    "unavailable_body": "无法加载此角色，它可能已被删除。",
+    "unavailable_action": "返回我的AI",
+    "not_yours_title": "此角色不属于您",
+    "not_yours_body": "只有角色的创建者才能对其进行编辑。您仍可以从其资料页与该角色聊天。",
+    "not_yours_action": "查看资料"
   },
   "CharacterManageBar": {
-    "title": "This is your AI",
-    "description": "Edit their details, change who can see them, or delete them.",
-    "manage": "Manage AI"
+    "title": "这是您的AI",
+    "description": "编辑其详情、更改可见范围或将其删除。",
+    "manage": "管理AI"
   },
   "AudioModal": {
-    "title": "Audio",
-    "script_placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "scene": "Scene",
-    "voice_preset": "Voice preset",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script.",
-    "scene_happy": "Happy",
-    "scene_natural": "Natural",
-    "scene_sad": "Sad",
-    "scene_angry": "Angry",
-    "scene_fearful": "Fearful",
-    "scene_disgusted": "Disgusted",
-    "scene_surprised": "Surprised"
+    "title": "音频",
+    "script_placeholder": "输入您想让他们说的内容…",
+    "enrich": "AI智能扩写",
+    "scene": "场景",
+    "voice_preset": "语音预设",
+    "save": "保存",
+    "toast_enrich_failed": "无法扩写脚本。",
+    "scene_happy": "开心",
+    "scene_natural": "自然",
+    "scene_sad": "悲伤",
+    "scene_angry": "愤怒",
+    "scene_fearful": "恐惧",
+    "scene_disgusted": "厌恶",
+    "scene_surprised": "惊讶"
   },
   "ScriptModal": {
-    "title": "Audio script",
-    "placeholder": "Type what you want them to say…",
-    "enrich": "Enrich with AI",
-    "save": "Save",
-    "toast_enrich_failed": "Could not enrich script."
+    "title": "音频脚本",
+    "placeholder": "输入您想让他们说的内容…",
+    "enrich": "AI智能扩写",
+    "save": "保存",
+    "toast_enrich_failed": "无法扩写脚本。"
   },
   "SelectMotionModal": {
-    "title": "Select motion",
-    "search_placeholder": "Search motion…",
-    "loading": "Loading motions…",
-    "empty": "No motions found."
+    "title": "选择动作",
+    "search_placeholder": "搜索动作…",
+    "loading": "正在加载动作…",
+    "empty": "未找到动作。"
   },
   "SelectAssetModal": {
-    "empty": "Nothing generated yet — generate a scene first"
+    "empty": "尚未生成任何内容——请先生成一个场景"
   },
   "VoiceModal": {
-    "title": "Select voice",
-    "empty": "No voices available.",
-    "female": "Female",
-    "male": "Male"
+    "title": "选择语音",
+    "empty": "暂无可用语音。",
+    "female": "女性",
+    "male": "男性"
   },
   "EditStyle": {
-    "select_star": "Select star",
-    "required": "Required",
-    "image": "Image",
-    "select_image": "Select image"
+    "select_star": "选择角色",
+    "required": "必填",
+    "image": "图片",
+    "select_image": "选择图片"
   },
   "SignUpPromptModal": {
-    "title": "Sign up to continue",
-    "sign_up_free": "Sign up free",
-    "log_in": "Log in"
+    "title": "注册以继续",
+    "sign_up_free": "免费注册",
+    "log_in": "登录"
   },
   "InsufficientCoinsModal": {
-    "title": "Out of coins",
-    "balance": "Balance:",
+    "title": "金币不足",
+    "balance": "余额：",
     "dreamcoins": "Dreamcoins",
-    "top_up": "Top up to continue",
-    "not_now": "Not now"
+    "top_up": "充值以继续",
+    "not_now": "暂不"
   },
   "CoinPackageGrid": {
-    "buy": "Buy",
-    "opening_checkout": "Opening checkout…",
-    "toast_checkout_failed": "Could not start checkout. You have not been charged.",
-    "toast_added": "Dreamcoins added.",
-    "toast_added_count": "{count} Dreamcoins added."
+    "buy": "购买",
+    "opening_checkout": "正在打开结账页面…",
+    "toast_checkout_failed": "无法发起结账。您尚未被扣款。",
+    "toast_added": "Dreamcoins已到账。",
+    "toast_added_count": "已添加{count}枚Dreamcoins。"
   },
   "FeedCard": {
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "chat": "Chat",
-    "share": "Share"
+    "mute": "静音",
+    "unmute": "取消静音",
+    "chat": "聊天",
+    "share": "分享"
   },
   "FeedSection": {
-    "loading_more": "Loading more…"
+    "loading_more": "加载更多…"
   },
   "FeedPaywall": {
-    "title": "Free feed limit reached!",
-    "subtitle": "You must upgrade to premium to get an unlimited feed",
-    "premium_features": "✦ Premium features ✦",
-    "feature_coins": "+1,000 Dreamcoins monthly",
-    "feature_feed": "Unlimited feed",
-    "feature_messages": "Unlimited messages",
-    "feature_media": "Custom images & videos",
-    "feature_calls": "Phone calls",
-    "try_now": "Try now",
-    "much_more": "& much more",
-    "upgrade_cta": "♡ Click here to upgrade now ♡"
+    "title": "免费动态浏览次数已用完！",
+    "subtitle": "升级到高级版即可无限畅览动态",
+    "premium_features": "✦ 高级功能 ✦",
+    "feature_coins": "每月+1,000枚Dreamcoins",
+    "feature_feed": "无限动态浏览",
+    "feature_messages": "无限消息",
+    "feature_media": "自定义图片与视频",
+    "feature_calls": "语音通话",
+    "try_now": "立即体验",
+    "much_more": "以及更多",
+    "upgrade_cta": "♡ 点击这里立即升级 ♡"
   },
   "MyAiCard": {
-    "pending": "Pending",
-    "profile": "Profile",
-    "chat": "Chat"
+    "pending": "生成中",
+    "profile": "资料",
+    "chat": "聊天"
   },
   "MyAiSection": {
-    "signup_title": "Sign up to start your collection",
-    "signup_description": "Every AI character you create is saved here to your account.",
-    "sign_up_free": "Sign up free",
-    "start_creating": "Start creating",
-    "empty": "You haven't created any AI characters yet.",
-    "create_first": "Create your first AI",
-    "search_placeholder": "Search by name, style or tag…",
-    "filter_status": "Status",
-    "no_matches": "No characters match your search."
+    "signup_title": "注册以开始您的收藏",
+    "signup_description": "您创建的每个AI角色都会保存在您的账号中。",
+    "sign_up_free": "免费注册",
+    "start_creating": "开始创建",
+    "empty": "您还没有创建任何AI角色。",
+    "create_first": "创建您的第一个AI",
+    "search_placeholder": "按名称、风格或标签搜索…",
+    "filter_status": "状态",
+    "no_matches": "没有符合搜索条件的角色。"
   },
   "ErrorPage": {
-    "title": "Something went wrong",
-    "retry": "Try again"
+    "title": "出错了",
+    "retry": "重试"
   },
   "Errors": {
-    "not_authenticated": "Not authenticated",
-    "generation_timed_out": "Generation timed out",
-    "generation_failed": "Generation failed"
+    "not_authenticated": "未通过身份验证",
+    "generation_timed_out": "生成超时",
+    "generation_failed": "生成失败"
   },
   "SignUpPrompts": {
-    "generate_scenes": "Sign up to generate scenes — your creations will be saved to your account.",
-    "create_character": "Sign up to bring your companion to life — your creation will be saved to your account.",
-    "manage_scenes": "Sign up to manage your scenes — deleting is only available on your own account.",
-    "enrich_prompt": "Sign up to enrich your prompt with AI."
+    "generate_scenes": "注册以生成场景——您的创作将保存到您的账号中。",
+    "create_character": "注册以让您的伴侣栩栩如生——您的创作将保存到您的账号中。",
+    "manage_scenes": "注册以管理您的场景——只有在您自己的账号中才能删除。",
+    "enrich_prompt": "注册以使用AI扩写您的提示词。"
   }
 }
